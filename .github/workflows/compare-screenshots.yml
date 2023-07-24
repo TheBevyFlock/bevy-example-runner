@@ -33,9 +33,9 @@ jobs:
           path: 'bevy-tools'
       - name: Copy Bevy tools to latest
         run: |
-          rm -rf tools
+          rm -r tools
           cp -r bevy-tools/tools/ tools
-          rm -rf bevy-tools
+          rm -r bevy-tools
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable

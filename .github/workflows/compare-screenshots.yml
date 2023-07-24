@@ -18,7 +18,7 @@ jobs:
         page: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     steps:
 
-      - name: Checkout Bevy latest tag
+      - name: Checkout Bevy main branch
         uses: actions/checkout@master
         with:
           repository: 'bevyengine/bevy'
@@ -31,7 +31,7 @@ jobs:
           repository: 'mockersf/bevy'
           ref: 'main'
           path: 'bevy-tools'
-      - name: Copy Bevy tools to latest
+      - name: Copy Bevy tools to main
         run: |
           rm -r tools
           cp -r bevy-tools/tools/ tools

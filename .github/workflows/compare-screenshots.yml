@@ -81,7 +81,7 @@ jobs:
           for screenshotfolder in screenshots-linux-*
           do
             echo $screenshotfolder
-            rsync -a $screenshotfolder/* screenshots-linux/
+            rsync --verbose --archive $screenshotfolder/* screenshots-linux/
             rm -rf $screenshotfolder
           done
 

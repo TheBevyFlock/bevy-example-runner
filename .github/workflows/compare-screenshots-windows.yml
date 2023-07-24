@@ -36,10 +36,6 @@ jobs:
           rm -r tools
           cp -r bevy-tools/tools/ tools
 
-      - name: apply patch
-        run: |
-          git apply --verbose --ignore-whitespace tools/example-showcase/remove-desktop-app-mode.patch
-
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 

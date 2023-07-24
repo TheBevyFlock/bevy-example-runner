@@ -24,12 +24,12 @@ jobs:
           repository: 'bevyengine/bevy'
           ref: 'main'
 
-      # temporary: fetch tools from main branch
+      # temporary: fetch tools from PR
       - name: Checkout Bevy Tools
         uses: actions/checkout@master
         with:
           repository: 'mockersf/bevy'
-          ref: 'main'
+          ref: 'example-showcase-can-remove-desktop-mode'
           path: 'bevy-tools'
       - name: Copy Bevy tools to main
         run: |

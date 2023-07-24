@@ -78,10 +78,11 @@ jobs:
       - name: Move examples to the correct folder
         run: |
           mkdir screenshots-linux
-          for file in screenshots-linux-*
+          for screenshotfolder in screenshots-linux-*
           do
-            rsync -a $file/* screenshots-linux/
-            rm -rf $file
+            echo $screenshotfolder
+            rsync -a $screenshotfolder/* screenshots-linux/
+            rm -rf $screenshotfolder
           done
 
       - name: Send to Percy

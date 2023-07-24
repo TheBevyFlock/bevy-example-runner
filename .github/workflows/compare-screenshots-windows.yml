@@ -1,9 +1,9 @@
-name: Compare Screenshots - Linux Vulkan
+name: Compare Screenshots - Windows DX12
 
 on:
   workflow_dispatch:
   schedule:
-    - cron:  '0 12 * * *'
+    - cron:  '0 13 * * *'
   
 env:
   PER_PAGE: 17
@@ -11,7 +11,7 @@ env:
 jobs:
   take-screenshots:
     name: Take Screenshots
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     strategy:
       matrix:
         # if all examples are not built, add a new page here
@@ -40,27 +40,14 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Install Bevy dependencies
-        run: |
-          sudo apt-get update;
-          DEBIAN_FRONTEND=noninteractive sudo apt-get install --no-install-recommends -yq \
-            libasound2-dev libudev-dev;
-
-      - name: install xvfb, llvmpipe and lavapipe
-        run: |
-          sudo apt-get update -y -qq
-          sudo add-apt-repository ppa:oibaf/graphics-drivers -y
-          sudo apt-get update
-          sudo apt install -y xvfb libegl1-mesa libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers
-
       - name: Take Screenshots
         run: |
-          xvfb-run cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests
+          cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests
 
       - name: Upload Generated Files
         uses: actions/upload-artifact@v3
         with:
-          name: screenshots-linux-${{ matrix.page }}
+          name: screenshots-windows-${{ matrix.page }}
           path: screenshots
 
   send-to-percy:
@@ -77,16 +64,16 @@ jobs:
 
       - name: Move examples to the correct folder
         run: |
-          mkdir screenshots-linux
-          for file in screenshots-linux-*
+          mkdir screenshots-windows
+          for file in screenshots-windows-*
           do
-            rsync -a $file/* screenshots-linux/
+            rsync -a $file/* screenshots-windows/
             rm -rf $file
           done
 
       - name: Send to Percy
         run: |
           npm install -g @percy/cli@latest
-          npx percy upload screenshots-linux
+          npx percy upload screenshots-windows
         env:
-          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN_LINUX_VULKAN }}
+          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN_WINDOWS_DX12 }}

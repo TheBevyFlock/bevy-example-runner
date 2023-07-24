@@ -18,6 +18,15 @@ jobs:
         page: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     steps:
 
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-examples-stable-${{ hashFiles('**/Cargo.toml') }}
+
       - name: Checkout Bevy main branch
         uses: actions/checkout@master
         with:
@@ -62,6 +71,9 @@ jobs:
         with:
           name: screenshots-linux-${{ matrix.page }}
           path: screenshots
+
+      - name: Reduce cache size
+        run: rm -rf target/release/examples
 
   send-to-percy:
     name: Send screenshots to Percy

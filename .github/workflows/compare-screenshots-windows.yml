@@ -38,7 +38,7 @@ jobs:
 
       - name: apply patch
         run: |
-          git apply tools/example-showcase/remove-desktop-app-mode.patch
+          git apply --verbose tools/example-showcase/remove-desktop-app-mode.patch
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable

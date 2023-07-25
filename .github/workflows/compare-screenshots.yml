@@ -2,8 +2,6 @@ name: Compare Screenshots - Linux Vulkan
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron:  '0 12 * * *'
   
 env:
   PER_PAGE: 17

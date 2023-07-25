@@ -2,8 +2,6 @@ name: Compare Screenshots - Windows DX12
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron:  '0 13 * * *'
   
 env:
   PER_PAGE: 17

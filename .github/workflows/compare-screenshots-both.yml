@@ -6,7 +6,7 @@ on:
     - cron:  '0 10 * * *'
   
 env:
-  PER_PAGE: 2
+  PER_PAGE: 20
 
 jobs:
   take-screenshots:
@@ -82,12 +82,19 @@ jobs:
           path: screenshots
 
       - name: Reduce cache size
-        run: rm -rf target/release/examples
+        run: rm -r target/release/examples
 
-  send-linux-to-percy:
-    name: Send Linux screenshots to Percy
+  send-to-percy:
+    name: Send screenshots to Percy
     runs-on: ubuntu-latest
     needs: take-screenshots
+    strategy:
+      matrix:
+        include:
+          - os: linux
+            percy_key: PERCY_TOKEN_LINUX_VULKAN
+          - os: windows
+            percy_key: PERCY_TOKEN_WINDOWS_DX12
     steps:
       
       - name: Clone bevy-website repo
@@ -98,47 +105,18 @@ jobs:
 
       - name: Move examples to the correct folder
         run: |
-          mkdir screenshots-linux
-          for screenshotfolder in screenshots-linux-*
+          mkdir screenshots-${{ matrix.os }}
+          for screenshotfolder in screenshots-${{ matrix.os }}-*
           do
             echo $screenshotfolder
-            rsync --verbose --archive $screenshotfolder/* screenshots-linux/
+            rsync --verbose --archive $screenshotfolder/* screenshots-${{ matrix.os }}/
             rm -rf $screenshotfolder
           done
 
       - name: Send to Percy
         run: |
           npm install -g @percy/cli@latest
-          npx percy upload screenshots-linux
+          npx percy upload screenshots-${{ matrix.os }}
         env:
-          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN_LINUX_VULKAN }}
-
-  send-windows-to-percy:
-    name: Send Windows screenshots to Percy
-    runs-on: ubuntu-latest
-    needs: take-screenshots
-    steps:
-      
-      - name: Clone bevy-website repo
-        uses: actions/checkout@master
-
-      - name: Download all artifacts
-        uses: actions/download-artifact@v3
-
-      - name: Move examples to the correct folder
-        run: |
-          mkdir screenshots-windows
-          for screenshotfolder in screenshots-windows-*
-          do
-            echo $screenshotfolder
-            rsync --verbose --archive $screenshotfolder/* screenshots-windows/
-            rm -rf $screenshotfolder
-          done
-
-      - name: Send to Percy
-        run: |
-          npm install -g @percy/cli@latest
-          npx percy upload screenshots-windows
-        env:
-          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN_WINDOWS_DX12 }}
+          PERCY_TOKEN: ${{ secrets[matrix.percy_key] }}
       

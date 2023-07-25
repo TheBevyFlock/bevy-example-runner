@@ -82,6 +82,7 @@ jobs:
           path: screenshots
 
       - name: Reduce cache size
+        continue-on-error: true
         run: rm -r target/release/examples
 
   send-to-percy:

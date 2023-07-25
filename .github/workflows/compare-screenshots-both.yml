@@ -110,8 +110,10 @@ jobs:
         include:
           - os: Linux
             percy_key: PERCY_TOKEN_LINUX_VULKAN
+            percy_project: dede4209/Screenshots-Linux-Vulkan
           - os: Windows
             percy_key: PERCY_TOKEN_WINDOWS_DX12
+            percy_project: dede4209/Screenshots-Windows-DX12
     steps:
       
       - name: Clone bevy-website repo
@@ -134,6 +136,13 @@ jobs:
         run: |
           npm install -g @percy/cli@latest
           npx percy upload screenshots-${{ matrix.os }}
+        env:
+          PERCY_TOKEN: ${{ secrets[matrix.percy_key] }}
+          PERCY_COMMIT: ${{ needs.get-git-ref.outputs.gitref }}
+
+      - name: Wait for result
+        run: |
+          npx percy build:wait --project ${{ matrix.percy_project }} --commit ${{ needs.get-git-ref.outputs.gitref }} --fail-on-changes --pass-if-approved
         env:
           PERCY_TOKEN: ${{ secrets[matrix.percy_key] }}
           PERCY_COMMIT: ${{ needs.get-git-ref.outputs.gitref }}

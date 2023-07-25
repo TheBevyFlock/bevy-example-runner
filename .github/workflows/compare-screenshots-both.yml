@@ -92,9 +92,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: linux
+          - os: Linux
             percy_key: PERCY_TOKEN_LINUX_VULKAN
-          - os: windows
+          - os: Windows
             percy_key: PERCY_TOKEN_WINDOWS_DX12
     steps:
       

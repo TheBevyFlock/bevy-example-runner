@@ -43,14 +43,10 @@ jobs:
           repository: 'bevyengine/bevy'
           ref: ${{ needs.get-environment.outputs.gitref }}
 
-      - uses: actions/cache@v3
+      - name: Cache
+        uses: Swatinem/rust-cache@v2
         with:
-          path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-examples-stable-${{ hashFiles('**/Cargo.toml') }}
+          prefix-key: ${{ runner.os }}
 
       # temporary: fetch tools from PR
       - name: Checkout Bevy Tools
@@ -107,10 +103,6 @@ jobs:
         with:
           name: screenshots-${{ runner.os }}-${{ matrix.page }}
           path: screenshots
-
-      - name: Reduce cache size
-        continue-on-error: true
-        run: rm -r target/release/examples
 
   send-to-percy:
     name: Send screenshots to Percy

@@ -27,11 +27,14 @@ jobs:
       - name: Get Environment
         id: env
         run: |
+          example_count=`cat Cargo.toml | grep '\[\[example\]\]' | wc -l`
+          page_count=$((example_count / ${{ env.PER_PAGE }} + 1))
+
           echo "gitref=`git rev-parse HEAD`" >> $GITHUB_OUTPUT
           echo "date=`date +%Y%m%d%H%M`" >> $GITHUB_OUTPUT
           echo "linux_percy_project=dede4209/Screenshots-Linux-Vulkan" >> $GITHUB_OUTPUT
           echo "windows_percy_project=dede4209/Screenshots-Windows-DX12" >> $GITHUB_OUTPUT
-          echo "pages=`python -c 'import json; print(json.dumps([i for i in range(10)]))'`" >> $GITHUB_OUTPUT
+          echo "pages=`python -c \"import json; print(json.dumps([i for i in range($page_count)]))\"`" >> $GITHUB_OUTPUT
 
   take-screenshots:
     name: Take Screenshots

@@ -1,0 +1,28 @@
+name: tests git
+
+on:
+  workflow_dispatch:
+  
+jobs:
+  commit:
+    name: commit
+    runs-on: ubuntu-latest
+    steps:
+      
+      - uses: actions/checkout@v3
+        with:
+          ref: "results"
+          path: "results"
+      
+      - name: Store results
+        run: |
+          cd results
+
+          echo "hello" > test
+
+          git config user.name 'Workflow'
+          git config user.email '<>'
+
+          git add .
+          git commit -m "Update Results"
+          git push

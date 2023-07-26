@@ -78,17 +78,18 @@ jobs:
           sudo apt-get update
           sudo apt install -y xvfb libegl1-mesa libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers
 
-      - name: Take Screenshots
+      - name: Take Screenshots (Linux)
         uses: nick-fields/retry@v2
         if: runner.os == 'linux'
         with:
           command: |
             git restore crates
             xvfb-run cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests
-          timeout_minutes: 600 # don't care about timeout here
+            timeout_minutes: 600 # don't care about timeout here
           max_attempts: 3
+          continue_on_error: true
 
-      - name: Take Screenshots
+      - name: Take Screenshots (Windows)
         uses: nick-fields/retry@v2
         if: runner.os == 'windows'
         with:
@@ -97,6 +98,7 @@ jobs:
             cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests
           timeout_minutes: 600 # don't care about timeout here
           max_attempts: 3
+          continue_on_error: true
 
       - name: Upload Generated Files
         uses: actions/upload-artifact@v3

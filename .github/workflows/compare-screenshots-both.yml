@@ -93,10 +93,7 @@ jobs:
         id: screenshots-windows
         if: runner.os == 'windows'
         continue-on-error: true
-        run: |
-          cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests --report-details
-          xargs -n 1 -I{} echo "::error file=Cargo.toml::Error running example: {}" < <(cat failures)
-          xargs -n 1 -I{} echo "::warning file=Cargo.toml::Error running example: {}" < <(cat no_screenshots)
+        run: cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests --report-details
 
       - name: Upload Screenshots
         uses: actions/upload-artifact@v3

@@ -34,7 +34,7 @@ jobs:
     strategy:
       matrix:
         # if all examples are not built, add a new page here
-        page: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        page: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
         os: [ubuntu-latest, windows-latest]
 
     steps:
@@ -44,18 +44,6 @@ jobs:
         with:
           repository: 'bevyengine/bevy'
           ref: ${{ needs.get-environment.outputs.gitref }}
-
-      - name: Cache (restore)
-        uses: actions/cache/restore@v3
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/            
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: ${{ runner.os }}-cargo-
 
       # temporary: fetch tools from PR
       - name: Checkout Bevy Tools
@@ -113,18 +101,6 @@ jobs:
             successes
             failures
             no_screenshots
-
-      - name: Cache (save)
-        if: steps.screenshots-linux.outcome == 'success' || steps.screenshots-windows.outcome == 'success'
-        uses: actions/cache/save@v3
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/            
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
   send-to-percy:
     name: Send screenshots to Percy

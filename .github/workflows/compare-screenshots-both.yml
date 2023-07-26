@@ -23,7 +23,7 @@ jobs:
       - name: Get Git Ref
         id: gitref
         run: |
-          echo "gitref=`git rev-parse --short HEAD`" >> $GITHUB_OUTPUT
+          echo "gitref=`git rev-parse HEAD`" >> $GITHUB_OUTPUT
 
   take-screenshots:
     name: Take Screenshots

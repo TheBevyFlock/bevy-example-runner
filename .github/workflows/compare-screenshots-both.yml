@@ -86,7 +86,7 @@ jobs:
         if: runner.os == 'linux'
         with:
           command: |
-            git restore .
+            git restore crates
             xvfb-run cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests
           timeout_minutes: 600 # don't care about timeout here
           max_attempts: 3
@@ -96,7 +96,7 @@ jobs:
         if: runner.os == 'windows'
         with:
           command: |
-            git restore .
+            git restore crates
             cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests
           timeout_minutes: 600 # don't care about timeout here
           max_attempts: 3

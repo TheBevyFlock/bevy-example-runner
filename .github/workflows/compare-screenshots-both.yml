@@ -85,7 +85,9 @@ jobs:
         uses: nick-fields/retry@v2
         if: runner.os == 'linux'
         with:
-          command: git restore . && xvfb-run cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests
+          command: |
+            git restore .
+            xvfb-run cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests
           timeout_minutes: 600 # don't care about timeout here
           max_attempts: 3
 
@@ -93,7 +95,9 @@ jobs:
         uses: nick-fields/retry@v2
         if: runner.os == 'windows'
         with:
-          command: git restore . && cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests
+          command: |
+            git restore .
+            cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests
           timeout_minutes: 600 # don't care about timeout here
           max_attempts: 3
 

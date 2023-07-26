@@ -145,7 +145,9 @@ jobs:
       - name: Remove example known to be random
         run: |
           rm "screenshots-${{ matrix.os }}/3D Rendering/spotlight.png" || true
+          rm "screenshots-${{ matrix.os }}/Animation/animated_fox.png" || true
           rm "screenshots-${{ matrix.os }}/Animation/custom_skinned_mesh.png" || true
+          rm "screenshots-${{ matrix.os }}/Animation/morph_targets.png" || true
           rm "screenshots-${{ matrix.os }}/Async Tasks/async_compute.png" || true
           rm "screenshots-${{ matrix.os }}/Async Tasks/external_source_external_thread.png" || true
           rm "screenshots-${{ matrix.os }}/ECS (Entity Component System)/iter_combinations.png" || true

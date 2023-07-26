@@ -46,7 +46,7 @@ jobs:
       - name: Cache
         uses: Swatinem/rust-cache@v2
         with:
-          prefix-key: ${{ runner.os }}
+          shared-key: ${{ runner.os }}
 
       # temporary: fetch tools from PR
       - name: Checkout Bevy Tools

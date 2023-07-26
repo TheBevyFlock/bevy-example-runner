@@ -13,6 +13,7 @@ jobs:
     name: Get Environment
     runs-on: ubuntu-latest
     outputs:
+      pages: ${{ steps.env.outputs.pages }}
       gitref: ${{ steps.env.outputs.gitref }}
       date: ${{ steps.env.outputs.date }}
       linux_percy_project: ${{ steps.env.outputs.linux_percy_project }}
@@ -30,6 +31,7 @@ jobs:
           echo "date=`date +%Y%m%d%H%M`" >> $GITHUB_OUTPUT
           echo "linux_percy_project=dede4209/Screenshots-Linux-Vulkan" >> $GITHUB_OUTPUT
           echo "windows_percy_project=dede4209/Screenshots-Windows-DX12" >> $GITHUB_OUTPUT
+          echo "pages=`python -c 'import json; print(json.dumps([i for i in range(10)]))'`" >> $GITHUB_OUTPUT
 
   take-screenshots:
     name: Take Screenshots
@@ -37,8 +39,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # if all examples are not built, add a new page here
-        page: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        page: ${{ fromJSON(needs.get-environment.outputs.pages) }}
         os: [ubuntu-latest, windows-latest]
 
     steps:

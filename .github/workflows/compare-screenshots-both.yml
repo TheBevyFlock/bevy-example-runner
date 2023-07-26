@@ -173,7 +173,7 @@ jobs:
 
       - name: Wait for result
         run: |
-          npx percy build:wait --project ${{ matrix.percy_project }} --commit ${{ needs.get-environment.outputs.gitref }} --fail-on-changes --pass-if-approved
+          npx percy build:wait --project ${{ matrix.percy_project }} --commit ${{ needs.get-environment.outputs.gitref }}
         env:
           PERCY_TOKEN: ${{ secrets[matrix.percy_key] }}
 

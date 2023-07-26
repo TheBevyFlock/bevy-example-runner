@@ -6,7 +6,7 @@ on:
     - cron:  '0 12 * * *'
   
 env:
-  PER_PAGE: 10
+  PER_PAGE: 20
 
 jobs:
   get-environment:
@@ -32,7 +32,7 @@ jobs:
     strategy:
       matrix:
         # if all examples are not built, add a new page here
-        page: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        page: [0, 1, 2, 3, 4, 5, 6, 7, 8]
         os: [ubuntu-latest, windows-latest]
 
     steps:
@@ -43,10 +43,17 @@ jobs:
           repository: 'bevyengine/bevy'
           ref: ${{ needs.get-environment.outputs.gitref }}
 
-      - name: Cache
-        uses: Swatinem/rust-cache@v2
+      - name: Cache (restore)
+        uses: actions/cache/restore@v3
         with:
-          shared-key: ${{ runner.os }}
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/            
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-
 
       # temporary: fetch tools from PR
       - name: Checkout Bevy Tools
@@ -79,32 +86,34 @@ jobs:
           sudo apt install -y xvfb libegl1-mesa libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers
 
       - name: Take Screenshots (Linux)
-        uses: nick-fields/retry@v2
+        id: screenshots-linux
         if: runner.os == 'linux'
-        with:
-          command: |
-            git restore crates
-            xvfb-run cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests
-            timeout_minutes: 600 # don't care about timeout here
-          max_attempts: 3
-          continue_on_error: true
+        continue-on-error: true
+        run: xvfb-run cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests
 
       - name: Take Screenshots (Windows)
-        uses: nick-fields/retry@v2
+        id: screenshots-windows
         if: runner.os == 'windows'
-        with:
-          command: |
-            git restore crates
-            cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests
-          timeout_minutes: 600 # don't care about timeout here
-          max_attempts: 3
-          continue_on_error: true
+        continue-on-error: true
+        run: cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests
 
       - name: Upload Generated Files
         uses: actions/upload-artifact@v3
         with:
           name: screenshots-${{ runner.os }}-${{ matrix.page }}
           path: screenshots
+
+      - name: Cache (save)
+        if: steps.screenshots-linux.outcome == 'success' || steps.screenshots-windows.outcome == 'success'
+        uses: actions/cache/save@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/            
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
   send-to-percy:
     name: Send screenshots to Percy

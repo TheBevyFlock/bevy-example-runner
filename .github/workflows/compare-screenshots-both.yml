@@ -133,22 +133,22 @@ jobs:
       
       - name: Remove example known to be random
         run: |
-          rm "screenshots-${{ matrix.os }}/3D Rendering/spotlight.png"
-          rm "screenshots-${{ matrix.os }}/Animation/custom_skinned_mesh.png"
-          rm "screenshots-${{ matrix.os }}/Async Tasks/async_compute.png"
-          rm "screenshots-${{ matrix.os }}/Async Tasks/external_source_external_thread.png"
-          rm "screenshots-${{ matrix.os }}/ECS (Entity Component System)/iter_combinations.png"
-          rm "screenshots-${{ matrix.os }}/ECS (Entity Component System)/parallel_query.png"
-          rm "screenshots-${{ matrix.os }}/Games/alien_cake_addict.png"
-          rm "screenshots-${{ matrix.os }}/Games/contributors.png"
-          rm "screenshots-${{ matrix.os }}/UI (User Interface)/font_atlas_debug.png"
+          rm "screenshots-${{ matrix.os }}/3D Rendering/spotlight.png" || true
+          rm "screenshots-${{ matrix.os }}/Animation/custom_skinned_mesh.png" || true
+          rm "screenshots-${{ matrix.os }}/Async Tasks/async_compute.png" || true
+          rm "screenshots-${{ matrix.os }}/Async Tasks/external_source_external_thread.png" || true
+          rm "screenshots-${{ matrix.os }}/ECS (Entity Component System)/iter_combinations.png" || true
+          rm "screenshots-${{ matrix.os }}/ECS (Entity Component System)/parallel_query.png" || true
+          rm "screenshots-${{ matrix.os }}/Games/alien_cake_addict.png" || true
+          rm "screenshots-${{ matrix.os }}/Games/contributors.png" || true
+          rm "screenshots-${{ matrix.os }}/UI (User Interface)/font_atlas_debug.png" || true
 
       # Windows only
       - name: Remove example known to be random (Windows)
         if: matrix.os == 'Windows'
         run: |
-          rm "screenshots-${{ matrix.os }}/UI (User Interface)/relative_cursor_position.png"
-          rm "screenshots-${{ matrix.os }}/Shaders/compute_shader_game_of_life.png"
+          rm "screenshots-${{ matrix.os }}/UI (User Interface)/relative_cursor_position.png" || true
+          rm "screenshots-${{ matrix.os }}/Shaders/compute_shader_game_of_life.png" || true
 
       - name: Send to Percy
         run: |

@@ -197,16 +197,24 @@ jobs:
 
           for status in status-Linux-*
           do
-            cat $status/successes >> results/$folder/Linux-successes
-            cat $status/failures >> results/$folder/Linux-failures
-            cat $status/no_screenshots >> results/$folder/Linux-no_screenshots
+            (cat $status/successes; echo) >> results/$folder/Linux-successes
+            (cat $status/failures; echo) >> results/$folder/Linux-failures
+            (cat $status/no_screenshots; echo) >> results/$folder/Linux-no_screenshots
           done
+          # remove empty lines
+          grep . results/$folder/Linux-successes > results/$folder/Linux-successes
+          grep . results/$folder/Linux-failures > results/$folder/Linux-failures
+          grep . results/$folder/Linux-no_screenshots > results/$folder/Linux-no_screenshots
+
           for status in status-Windows-*
           do
-            cat $status/successes >> results/$folder/Windows-successes
-            cat $status/failures >> results/$folder/Windows-failures
-            cat $status/no_screenshots >> results/$folder/Windows-no_screenshots
+            (cat $status/successes; echo) >> results/$folder/Windows-successes
+            (cat $status/failures; echo) >> results/$folder/Windows-failures
+            (cat $status/no_screenshots; echo) >> results/$folder/Windows-no_screenshots
           done
+          grep . results/$folder/Windows-successes > results/$folder/Windows-successes
+          grep . results/$folder/Windows-failures > results/$folder/Windows-failures
+          grep . results/$folder/Windows-no_screenshots > results/$folder/Windows-no_screenshots
 
       - name: Save Percy results
         run: |

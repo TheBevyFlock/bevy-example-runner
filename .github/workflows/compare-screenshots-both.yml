@@ -3,7 +3,7 @@ name: Compare Screenshots
 on:
   workflow_dispatch:
   schedule:
-    - cron:  '0 12 * * *'
+    - cron:  '0 */8 * * *'
   
 env:
   PER_PAGE: 20

@@ -184,16 +184,17 @@ jobs:
       
       - uses: actions/checkout@v3
         with:
-          ref: "results"
-          path: "results"
+          ref: 'results'
+          path: 'results'
 
       - name: Download all artifacts
         uses: actions/download-artifact@v3
 
       - name: Concatenate status
         run: |
-          folder=${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}
-          mkdir results/$folder
+          set -x
+
+          mkdir results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}
 
           for report in status-Linux-*
           do
@@ -202,9 +203,9 @@ jobs:
             (cat $report/no_screenshots; echo) >> Linux-no_screenshots-concat
           done
           # remove empty lines
-          grep . Linux-successes-concat > results/$folder/Linux-successes
-          grep . Linux-failures-concat > results/$folder/Linux-failures
-          grep . Linux-no_screenshots-concat > results/$folder/Linux-no_screenshots
+          grep . Linux-successes-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Linux-successes
+          grep . Linux-failures-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Linux-failures
+          grep . Linux-no_screenshots-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Linux-no_screenshots
 
           for report in status-Windows-*
           do
@@ -213,9 +214,9 @@ jobs:
             (cat $report/no_screenshots; echo) >> Windows-no_screenshots-concat
           done
           # remove empty lines
-          grep . Windows-successes-concat > results/$folder/Windows-successes
-          grep . Windows-failures-concat > results/$folder/Windows-failures
-          grep . Windows-no_screenshots-concat > results/$folder/Windows-no_screenshots
+          grep . Windows-successes-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-successes
+          grep . Windows-failures-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-failures
+          grep . Windows-no_screenshots-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-no_screenshots
 
       - name: Save Percy results
         run: |

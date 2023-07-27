@@ -197,24 +197,25 @@ jobs:
 
           for status in status-Linux-*
           do
-            (cat $status/successes; echo) >> results/$folder/Linux-successes
-            (cat $status/failures; echo) >> results/$folder/Linux-failures
-            (cat $status/no_screenshots; echo) >> results/$folder/Linux-no_screenshots
+            (cat $status/successes; echo) >> Linux-successes-concat
+            (cat $status/failures; echo) >> Linux-failures-concat
+            (cat $status/no_screenshots; echo) >> Linux-no_screenshots-concat
           done
           # remove empty lines
-          grep . results/$folder/Linux-successes > results/$folder/Linux-successes
-          grep . results/$folder/Linux-failures > results/$folder/Linux-failures
-          grep . results/$folder/Linux-no_screenshots > results/$folder/Linux-no_screenshots
+          grep . Linux-successe-concat > results/$folder/Linux-successes
+          grep . Linux-failures-concat > results/$folder/Linux-failures
+          grep . Linux-no_screenshots-concat > results/$folder/Linux-no_screenshots
 
           for status in status-Windows-*
           do
-            (cat $status/successes; echo) >> results/$folder/Windows-successes
-            (cat $status/failures; echo) >> results/$folder/Windows-failures
-            (cat $status/no_screenshots; echo) >> results/$folder/Windows-no_screenshots
+            (cat $status/successes; echo) >> Windows-successes-concat
+            (cat $status/failures; echo) >> Windows-failures-concat
+            (cat $status/no_screenshots; echo) >> Windows-no_screenshots-concat
           done
-          grep . results/$folder/Windows-successes > results/$folder/Windows-successes
-          grep . results/$folder/Windows-failures > results/$folder/Windows-failures
-          grep . results/$folder/Windows-no_screenshots > results/$folder/Windows-no_screenshots
+          # remove empty lines
+          grep . Windows-successes-concat > results/$folder/Windows-successes
+          grep . Windows-failures-concat > results/$folder/Windows-failures
+          grep . Windows-no_screenshots-concat > results/$folder/Windows-no_screenshots
 
       - name: Save Percy results
         run: |

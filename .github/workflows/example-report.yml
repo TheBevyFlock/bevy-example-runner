@@ -195,22 +195,22 @@ jobs:
           folder=${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}
           mkdir results/$folder
 
-          for status in status-Linux-*
+          for report in status-Linux-*
           do
-            (cat $status/successes; echo) >> Linux-successes-concat
-            (cat $status/failures; echo) >> Linux-failures-concat
-            (cat $status/no_screenshots; echo) >> Linux-no_screenshots-concat
+            (cat $report/successes; echo) >> Linux-successes-concat
+            (cat $report/failures; echo) >> Linux-failures-concat
+            (cat $report/no_screenshots; echo) >> Linux-no_screenshots-concat
           done
           # remove empty lines
           grep . Linux-successes-concat > results/$folder/Linux-successes
           grep . Linux-failures-concat > results/$folder/Linux-failures
           grep . Linux-no_screenshots-concat > results/$folder/Linux-no_screenshots
 
-          for status in status-Windows-*
+          for report in status-Windows-*
           do
-            (cat $status/successes; echo) >> Windows-successes-concat
-            (cat $status/failures; echo) >> Windows-failures-concat
-            (cat $status/no_screenshots; echo) >> Windows-no_screenshots-concat
+            (cat $report/successes; echo) >> Windows-successes-concat
+            (cat $report/failures; echo) >> Windows-failures-concat
+            (cat $report/no_screenshots; echo) >> Windows-no_screenshots-concat
           done
           # remove empty lines
           grep . Windows-successes-concat > results/$folder/Windows-successes

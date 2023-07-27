@@ -220,10 +220,8 @@ jobs:
 
       - name: Save Percy results
         run: |
-          folder=${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}
-
-          curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.windows_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/$folder/Windows-percy
-          curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.linux_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/$folder/Linux-percy
+          curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.windows_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-percy
+          curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.linux_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Linux-percy
 
       - name: Store results in git
         run: |

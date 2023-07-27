@@ -1,4 +1,4 @@
-name: Compare Screenshots
+name: Example report - Status and Screenshots
 
 on:
   workflow_dispatch:

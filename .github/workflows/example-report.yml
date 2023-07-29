@@ -3,7 +3,7 @@ name: Example report - Status and Screenshots
 on:
   workflow_dispatch:
   schedule:
-    - cron:  '0 */8 * * *'
+    - cron:  '0 */4 * * *'
   
 env:
   PER_PAGE: 20

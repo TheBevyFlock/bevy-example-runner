@@ -41,7 +41,9 @@
 
         .no-border {
             border: 0px;
-            background-color: transparent;
+            font-weight: lighter;
+            vertical-align: top;
+            font-size: 1rem;
         }
 
         .top-left {
@@ -93,14 +95,12 @@
             color: var(--bs-danger);
             border: 2px var(--bs-danger-border-subtle) solid;
             padding: 2px;
-            font-size: 1.5rem;
         }
 
         .missing-screenshot::before {
             content: '\f070';
             font: var(--fa-font-regular);
             color: var(--bs-info-text-emphasis);
-            font-size: 1rem;
         }
 
         .bigger-popover {
@@ -114,7 +114,24 @@
     <table>
         <thead>
             <tr>
-                <th class="no-border"></th>
+                <th class="no-border">
+                    <div style="padding: 3px;">
+                        <span class="success"></span> Example ran successfully, screenshot available
+                    </div>
+                    <div style="padding: 3px;">
+                        <span class="fail"></span> Error running the example
+                    </div>
+                    <div style="padding: 3px;">
+                        <span class="missing-screenshot"></span> Example ran successfully, but couldn't capture a
+                        screenshot
+                    </div>
+                    <div style="padding: 3px;">
+                        <span class="changed-approved"></span> Screenshot changed and has been approved
+                    </div>
+                    <div style="padding: 3px;">
+                        <span class="changed-new"></span> Screenshot changed and has not been approved yet
+                    </div>
+                </th>
                 <th class="no-border"></th>
                 {% for run in runs %}
                 <th style="width: 4rem; height: 13rem;">
@@ -153,12 +170,12 @@
                         {% endif %}
                     </div>
                     {% else %}
-                    <span class="missing-screenshot"></span>
+                    <span class="missing-screenshot" style="font-size: 1rem;"></span>
                     {% endif %}
                     {% elif run.results[example.name]["Windows"] == "failures" %}
-                    <span class="fail"></span>
+                    <span class="fail" style="font-size: 1.5rem;"></span>
                     {% elif run.results[example.name]["Windows"] == "no_screenshots" %}
-                    <span class="missing-screenshot"></span>
+                    <span class="missing-screenshot" style="font-size: 1rem;"></span>
                     {% endif %}
                     {% else %}
                     -
@@ -178,12 +195,12 @@
                         {% endif %}
                     </div>
                     {% else %}
-                    <span class="missing-screenshot"></span>
+                    <span class="missing-screenshot" style="font-size: 1rem;"></span>
                     {% endif %}
                     {% elif run.results[example.name]["Linux"] == "failures" %}
-                    <span class="fail"></span>
+                    <span class="fail" style="font-size: 1.5rem;"></span>
                     {% elif run.results[example.name]["Linux"] == "no_screenshots" %}
-                    <span class="missing-screenshot"></span>
+                    <span class="missing-screenshot" style="font-size: 1rem;"></span>
                     {% endif %}
                     {% else %}
                     -

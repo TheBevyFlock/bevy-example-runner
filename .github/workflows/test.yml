@@ -2,28 +2,27 @@ name: Test
 
 on:
   workflow_dispatch:
-  
+    inputs:
+      force:
+        type: boolean
+        description: Force
+
 jobs:
-  update-website:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
+  job_a:
+    runs-on: ubuntu-latest
+    outputs:
+      null_value: ${{ steps.b.outputs.never }}
     steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: "results"
-          path: "results"
-      - name: Log errors
-        shell: pwsh
-        run: |
-          if (Get-Content results/202307271925-0566e73af460b9d128354a20970b1e1e0cc3b719/${{ runner.os }}-no_screenshots) {
-            perl -p -e 's/(.*) - [.0-9]*\n/\1, /g' results/202307271925-0566e73af460b9d128354a20970b1e1e0cc3b719/${{ runner.os }}-no_screenshots > cleaned
-            $no_screenshots = Get-Content .\cleaned -Raw
-            echo "::warning title=No Screenshots ${{ runner.os }}::$no_screenshots"
-          }
-          if (Get-Content results/202307271925-0566e73af460b9d128354a20970b1e1e0cc3b719/${{ runner.os }}-failures) {
-            perl -p -e 's/(.*) - [.0-9]*\n/\1, /g' results/202307271925-0566e73af460b9d128354a20970b1e1e0cc3b719/${{ runner.os }}-failures > cleaned
-            $failures = Get-Content .\cleaned -Raw
-            echo "::error title=Failed To Run ${{ runner.os }}::$failures"
-          }
+      - id: b
+        run: echo "We opt not to set any output at this time"
+  job_b:
+    runs-on: ubuntu-latest
+    needs: job_a
+    if: needs.job_a.outputs.null_value || github.event.inputs.force == 'true'
+    steps:
+      - run: echo "We've ensured this job will be skipped"
+  job_c:
+    runs-on: ubuntu-latest
+    needs: [job_a, job_b]
+    steps:
+      - run: echo "This won't run, even though the IF condition evaluates true."

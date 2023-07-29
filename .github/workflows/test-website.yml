@@ -16,6 +16,8 @@ jobs:
         with:
           ref: "results"
           path: "results"
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
       - name: Build website
         run: |
           cargo run -- results

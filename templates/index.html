@@ -99,6 +99,11 @@
             color: var(--bs-info-text-emphasis);
             font-size: 1rem;
         }
+
+        .bigger-popover {
+            --bs-popover-max-width: 600px;
+            --bs-popover-max-height: 600px;
+        }
     </style>
 </head>
 
@@ -135,6 +140,7 @@
                     {% if run.results[example.name]["Windows"] == "successes" %}
                     {% if run.screenshots[example.name]["Windows"] %}
                     <div data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html=true
+                        data-bs-custom-class="bigger-popover"
                         data-bs-content='<img class="img-fluid" src="{{ run.screenshots[example.name]["Windows"].0 }}" />'>
                         <span class="success"></span>
                         {% if run.screenshots[example.name]["Windows"].1 == "user_approved" %}
@@ -159,6 +165,7 @@
                     {% if run.results[example.name]["Linux"] == "successes" %}
                     {% if run.screenshots[example.name]["Linux"] %}
                     <div data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html=true
+                        data-bs-custom-class="bigger-popover"
                         data-bs-content='<img class="img-fluid" src="{{ run.screenshots[example.name]["Linux"].0 }}" />'>
                         <span class="success"></span>
                         {% if run.screenshots[example.name]["Linux"].1 == "user_approved" %}

@@ -19,7 +19,5 @@ jobs:
         run: |
           echo "Errors:"
           cat results/202307271925-0566e73af460b9d128354a20970b1e1e0cc3b719/Windows-no_screenshots
-          no_screenshots=`cat results/202307271925-0566e73af460b9d128354a20970b1e1e0cc3b719/Windows-no_screenshots | tr '\n' ', '`
+          no_screenshots=`cat results/202307271925-0566e73af460b9d128354a20970b1e1e0cc3b719/Windows-no_screenshots | perl -p -e 's/(.*) - [.0-9]*\n/\1, /g'`
           echo "::warning title=no screenshots::$no_screenshots"
-
-          

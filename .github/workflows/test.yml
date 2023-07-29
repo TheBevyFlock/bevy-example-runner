@@ -16,14 +16,10 @@ jobs:
           ref: "results"
           path: "results"
       - name: Log errors
+        shell: bash
         run: |
           echo "Errors:"
           cat results/202307271925-0566e73af460b9d128354a20970b1e1e0cc3b719/Windows-no_screenshots
-          echo "::error file=app.js,line=1,col=5,endColumn=7::Missing semicolon"
-          # while read -r line
-          # do
-          #   echo "::warning title=no screenshots::$line"
-          # done < results/202307271925-0566e73af460b9d128354a20970b1e1e0cc3b719/Windows-no_screenshots
-          echo "::warning title=no screenshots::`cat results/202307271925-0566e73af460b9d128354a20970b1e1e0cc3b719/Windows-no_screenshots`"
+          echo "::warning title=no screenshots::`cat results/202307271925-0566e73af460b9d128354a20970b1e1e0cc3b719/Windows-no_screenshots | tr '\n' '', '`"
 
           

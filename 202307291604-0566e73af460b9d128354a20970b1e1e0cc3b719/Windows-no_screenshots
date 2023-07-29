@@ -1,0 +1,14 @@
+3D Rendering/pbr - 282.32965
+Application/headless - 13.726734
+ECS (Entity Component System)/custom_query_param - 9.792883
+Application/custom_loop - 3.0430717
+3D Rendering/tonemapping - 364.04718
+ECS (Entity Component System)/startup_system - 2.695602
+ECS (Entity Component System)/system_param - 2.7362742
+Async Tasks/async_compute - 29.987518
+ECS (Entity Component System)/system_piping - 5.398592
+Application/empty - 2.5082896
+Application/without_winit - 6.1634207
+Application/no_renderer - 4.5930834
+ECS (Entity Component System)/ecs_guide - 20.190485
+ECS (Entity Component System)/system_closure - 2.9374905

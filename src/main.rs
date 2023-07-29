@@ -21,7 +21,7 @@ struct Run {
     date: String,
     commit: String,
     results: HashMap<String, HashMap<String, String>>,
-    screenshots: HashMap<String, HashMap<String, String>>,
+    screenshots: HashMap<String, HashMap<String, (String, String)>>,
 }
 
 fn main() {
@@ -36,7 +36,7 @@ fn main() {
     folders.sort();
     folders.reverse();
 
-    for path in folders {
+    for path in folders.iter().take(50) {
         let file_name = path.file_name().unwrap().to_str().unwrap();
         if file_name.starts_with(".") {
             continue;
@@ -80,7 +80,7 @@ fn main() {
                 let screenshots =
                     read_percy_results(fs::read_to_string(file.as_ref().unwrap().path()).unwrap());
                 thread::sleep(Duration::from_secs(10));
-                for (example, screenshot) in screenshots.into_iter() {
+                for (example, screenshot, changed) in screenshots.into_iter() {
                     run.screenshots
                         .entry(
                             example
@@ -94,7 +94,7 @@ fn main() {
                                 .to_string(),
                         )
                         .or_insert_with(HashMap::new)
-                        .insert(platform.to_string(), screenshot);
+                        .insert(platform.to_string(), (screenshot, changed));
                 }
             }
         }

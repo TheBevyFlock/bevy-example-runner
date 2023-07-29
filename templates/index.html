@@ -72,17 +72,32 @@
             color: var(--bs-success-text-emphasis);
         }
 
+        .changed-approved::before {
+            content: '\f005';
+            font: var(--fa-font-regular);
+            color: var(--bs-info-text-emphasis);
+        }
+
+        .changed-new::before {
+            content: '\f005';
+            font: var(--fa-font-solid);
+            color: var(--bs-warning-text-emphasis);
+        }
+
         .fail::before {
             content: '\f00d';
             font: var(--fa-font-solid);
-            color: var(--bs-danger-text-emphasis);
+            color: var(--bs-danger);
             border: 2px var(--bs-danger-border-subtle) solid;
+            padding: 2px;
+            font-size: 1.5rem;
         }
 
         .missing-screenshot::before {
             content: '\f070';
-            font: var(--fa-font-solid);
+            font: var(--fa-font-regular);
             color: var(--bs-info-text-emphasis);
+            font-size: 1rem;
         }
     </style>
 </head>
@@ -119,8 +134,15 @@
                     {% if run.results[example.name]["Windows"] %}
                     {% if run.results[example.name]["Windows"] == "successes" %}
                     {% if run.screenshots[example.name]["Windows"] %}
-                    <span class="success" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html=true
-                        data-bs-content='<img class="img-fluid" src="{{ run.screenshots[example.name]["Windows"] }}" />'></span>
+                    <div data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html=true
+                        data-bs-content='<img class="img-fluid" src="{{ run.screenshots[example.name]["Windows"].0 }}" />'>
+                        <span class="success"></span>
+                        {% if run.screenshots[example.name]["Windows"].1 == "user_approved" %}
+                        <span class="changed-approved"></span>
+                        {% elif run.screenshots[example.name]["Windows"].1 == "unreviewed_comparisons" %}
+                        <span class="changed-new"></span>
+                        {% endif %}
+                    </div>
                     {% else %}
                     <span class="missing-screenshot"></span>
                     {% endif %}
@@ -136,8 +158,15 @@
                     {% if run.results[example.name]["Linux"] %}
                     {% if run.results[example.name]["Linux"] == "successes" %}
                     {% if run.screenshots[example.name]["Linux"] %}
-                    <span class="success" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html=true
-                        data-bs-content='<img class="img-fluid" src="{{ run.screenshots[example.name]["Linux"] }}" />'></span>
+                    <div data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html=true
+                        data-bs-content='<img class="img-fluid" src="{{ run.screenshots[example.name]["Linux"].0 }}" />'>
+                        <span class="success"></span>
+                        {% if run.screenshots[example.name]["Linux"].1 == "user_approved" %}
+                        <span class="changed-approved"></span>
+                        {% elif run.screenshots[example.name]["Linux"].1 == "unreviewed_comparisons" %}
+                        <span class="changed-new"></span>
+                        {% endif %}
+                    </div>
                     {% else %}
                     <span class="missing-screenshot"></span>
                     {% endif %}

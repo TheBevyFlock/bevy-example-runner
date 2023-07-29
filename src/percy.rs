@@ -8,7 +8,7 @@ pub struct Main {
     pub total_comparisons_diff: u32,
 }
 
-pub fn read_percy_results(results: String) -> Vec<(String, String)> {
+pub fn read_percy_results(results: String) -> Vec<(String, String, String)> {
     let main: Main = serde_json::from_str(&results).unwrap();
     let build_id = main.web_url.split('/').last().unwrap();
     let data = ureq::get(&format!(
@@ -27,7 +27,7 @@ pub fn read_percy_results(results: String) -> Vec<(String, String)> {
     }
 }
 
-fn snapshots_to_images(snapshots: SnapshotsData) -> Vec<(String, String)> {
+fn snapshots_to_images(snapshots: SnapshotsData) -> Vec<(String, String, String)> {
     let mut images = Vec::new();
     for snapshot in snapshots.data {
         match snapshot {
@@ -36,18 +36,18 @@ fn snapshots_to_images(snapshots: SnapshotsData) -> Vec<(String, String)> {
                 relationships,
                 ..
             } => {
-                if attributes.review_state_reason == "no_diffs" {
-                    let comparison_id = relationships.comparisons.data[0].id.clone();
-                    let comparison = snapshots
-                        .included
-                        .iter()
-                        .find_map(|included| match included {
-                            Snapshot::Comparisons { id, relationships } if id == &comparison_id => {
-                                Some(relationships)
-                            }
-                            _ => None,
-                        })
-                        .unwrap();
+                let comparison_id = relationships.comparisons.data[0].id.clone();
+                let comparison = snapshots
+                    .included
+                    .iter()
+                    .find_map(|included| match included {
+                        Snapshot::Comparisons { id, relationships } if id == &comparison_id => {
+                            Some(relationships)
+                        }
+                        _ => None,
+                    })
+                    .unwrap();
+                let image_id = if attributes.review_state_reason == "no_diffs" {
                     let base_screenshot_id =
                         comparison.base_screenshot.data.as_ref().unwrap().id.clone();
                     let base_screenshot = snapshots
@@ -62,19 +62,41 @@ fn snapshots_to_images(snapshots: SnapshotsData) -> Vec<(String, String)> {
                             _ => None,
                         })
                         .unwrap();
-                    let image_id = base_screenshot.image.data.as_ref().unwrap().id.clone();
-                    let image = snapshots
+                    base_screenshot.image.data.as_ref().unwrap().id.clone()
+                } else if ["unreviewed_comparisons", "user_approved"]
+                    .contains(&attributes.review_state_reason.as_str())
+                {
+                    let head_screenshot_id =
+                        comparison.head_screenshot.data.as_ref().unwrap().id.clone();
+                    let head_screenshot = snapshots
                         .included
                         .iter()
                         .find_map(|included| match included {
-                            Snapshot::Images { id, attributes } if id == &image_id => {
-                                Some(attributes)
+                            Snapshot::Screenshots { id, relationships }
+                                if id == &head_screenshot_id =>
+                            {
+                                Some(relationships)
                             }
                             _ => None,
                         })
                         .unwrap();
-                    images.push((attributes.name, image.url.clone()));
-                }
+                    head_screenshot.image.data.as_ref().unwrap().id.clone()
+                } else {
+                    "".to_string()
+                };
+                let image = snapshots
+                    .included
+                    .iter()
+                    .find_map(|included| match included {
+                        Snapshot::Images { id, attributes } if id == &image_id => Some(attributes),
+                        _ => None,
+                    })
+                    .unwrap();
+                images.push((
+                    attributes.name,
+                    image.url.clone(),
+                    attributes.review_state_reason,
+                ));
             }
             _ => {}
         }
@@ -157,6 +179,7 @@ struct ScreenshotRelationship {
 #[serde(rename_all = "kebab-case")]
 struct ComparisonRelationship {
     base_screenshot: RelationshipSingleData,
+    head_screenshot: RelationshipSingleData,
 }
 
 #[cfg(test)]

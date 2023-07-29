@@ -95,6 +95,20 @@ jobs:
         continue-on-error: true
         run: cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests --report-details
 
+      - name: Log errors
+        shell: pwsh
+        run: |
+          if (Get-Content no_screenshots) {
+            perl -p -e 's/(.*) - [.0-9]*\n/\1, /g' no_screenshots > cleaned
+            $no_screenshots = Get-Content .\cleaned -Raw
+            echo "::warning title=No Screenshots ${{ runner.os }}/${{ matrix.page }}::$no_screenshots"
+          }
+          if (Get-Content failures) {
+            perl -p -e 's/(.*) - [.0-9]*\n/\1, /g' failures > cleaned
+            $failures = Get-Content .\cleaned -Raw
+            echo "::error title=Failed To Run ${{ runner.os }}/${{ matrix.page }}::$failures"
+          }
+
       - name: Upload Screenshots
         uses: actions/upload-artifact@v3
         with:

@@ -22,7 +22,6 @@
             vertical-align: top;
             position: sticky;
             top: 0;
-            /* background-color: white; */
             background-color: var(--bs-dark-bg-subtle);
         }
 
@@ -33,7 +32,7 @@
 
         td,
         th {
-            border: 1px solid black;
+            border: 1px solid var(--bs-secondary-color);
             padding: 5px;
         }
 
@@ -83,7 +82,7 @@
         .missing-screenshot::before {
             content: '\f070';
             font: var(--fa-font-solid);
-            color: var(--bs-warning-text-emphasis);
+            color: var(--bs-info-text-emphasis);
         }
     </style>
 </head>
@@ -96,10 +95,11 @@
                 <th class="no-border"></th>
                 {% for run in runs %}
                 <th style="width: 4rem; height: 13rem;">
-                    <!-- <th> -->
-                    <div class="vertical">{{ run.date }} <a
-                            href="https://github.com/bevyengine/bevy/commit/{{ run.commit }}">{{
-                            run.commit|truncate(length=7, end="") }}</a></div>
+                    <div class="vertical">
+                        {{ run.date }}
+                        <a href="https://github.com/bevyengine/bevy/commit/{{ run.commit }}">{{
+                            run.commit|truncate(length=7, end="") }}</a>
+                    </div>
                 </th>
                 {% endfor %}
             </tr>

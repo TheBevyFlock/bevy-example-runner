@@ -3,17 +3,33 @@ use percy::read_percy_results;
 use serde::Serialize;
 use std::{
     collections::{HashMap, HashSet},
-    fs, thread,
+    fs,
+    hash::Hash,
+    thread,
     time::Duration,
 };
 use tera::{Context, Tera};
 
 mod percy;
 
-#[derive(Debug, PartialEq, Eq, Hash, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize)]
 struct Example {
     name: String,
     category: String,
+    flaky: bool,
+}
+
+impl PartialEq for Example {
+    fn eq(&self, other: &Self) -> bool {
+        self.name == other.name && self.category == other.category
+    }
+}
+impl Eq for Example {}
+impl Hash for Example {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.name.hash(state);
+        self.category.hash(state);
+    }
 }
 
 #[derive(Debug, Serialize, Default)]
@@ -68,8 +84,14 @@ fn main() {
                         let example = Example {
                             category: details.next().unwrap().to_string(),
                             name: details.next().unwrap().to_string(),
+                            flaky: kind != "successes",
                         };
-                        all_examples.insert(example.clone());
+                        let previous = all_examples.take(&example);
+                        all_examples.insert(Example {
+                            flaky: previous.map(|ex: Example| ex.flaky).unwrap_or(false)
+                                || example.flaky,
+                            ..example.clone()
+                        });
                         run.results
                             .entry(example.name)
                             .or_insert_with(HashMap::new)
@@ -79,20 +101,24 @@ fn main() {
             if kind == "percy" {
                 let screenshots =
                     read_percy_results(fs::read_to_string(file.as_ref().unwrap().path()).unwrap());
+                // sleep to limit how hard Percy API are used
                 thread::sleep(Duration::from_secs(10));
                 for (example, screenshot, changed) in screenshots.into_iter() {
+                    let mut split = example.split('.').next().unwrap().split('/');
+                    let example = Example {
+                        category: split.next().unwrap().to_string(),
+                        name: split.next().unwrap().to_string(),
+                        flaky: false,
+                    };
+                    if changed != "no_diffs" {
+                        let previous = all_examples.take(&example).unwrap();
+                        all_examples.insert(Example {
+                            flaky: true,
+                            ..previous
+                        });
+                    }
                     run.screenshots
-                        .entry(
-                            example
-                                .split('/')
-                                .last()
-                                .unwrap()
-                                .to_string()
-                                .split('.')
-                                .next()
-                                .unwrap()
-                                .to_string(),
-                        )
+                        .entry(example.name)
                         .or_insert_with(HashMap::new)
                         .insert(platform.to_string(), (screenshot, changed));
                 }
@@ -101,12 +127,23 @@ fn main() {
         runs.push(run);
     }
 
-    let mut sorted_examples = all_examples.iter().collect::<Vec<_>>();
-    sorted_examples.sort_by_key(|a| format!("{}/{}", a.category, a.name));
+    let mut all_examples_cleaned = Vec::new();
+    // examples that never have screenshot are not flaky
+    for mut example in all_examples.drain() {
+        let has_screenshot = runs
+            .iter()
+            .any(|run| run.screenshots.get(&example.name).is_some());
+        if !has_screenshot {
+            example.flaky = false;
+        }
+        all_examples_cleaned.push(example);
+    }
+
+    all_examples_cleaned.sort_by_key(|a| format!("{}/{}", a.category, a.name));
 
     let mut context = Context::new();
     context.insert("runs".to_string(), &runs);
-    context.insert("all_examples".to_string(), &sorted_examples);
+    context.insert("all_examples".to_string(), &all_examples_cleaned);
 
     let mut tera = Tera::default();
     tera.add_raw_template(

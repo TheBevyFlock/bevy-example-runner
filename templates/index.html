@@ -131,6 +131,11 @@
                     <div style="padding: 3px;">
                         <span class="changed-new"></span> Screenshot changed and has not been approved yet
                     </div>
+                    <br />
+                    <div class="form-check form-switch form-check-reverse" onclick="toggle_visibility()">
+                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckReverse" checked>
+                        <label class="form-check-label" for="flexSwitchCheckReverse">Only show changed examples</label>
+                    </div>
                 </th>
                 <th class="no-border"></th>
                 {% for run in runs %}
@@ -146,7 +151,7 @@
         </thead>
         <tbody>
             {% for example in all_examples %}
-            <tr>
+            <tr {% if example.flaky %}class="flaky" {% else %}class="all-good" style="display: none;" {% endif %}>
                 <td style="border-right: none;">{{ example.category }} / {{ example.name }}</td>
                 <td style="border-left: none;">
                     <span class="windows"></span>
@@ -222,6 +227,13 @@
     <script>
         const popoverTriggerList = document.querySelectorAll(' [data-bs-toggle="popover" ]')
         const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+
+        function toggle_visibility() {
+            const examples = document.getElementsByClassName("all-good");
+            for (var i = 0; i < examples.length; i++) {
+                examples[i].style.display = examples[i].style.display === 'none' ? '' : 'none';
+            }
+        }
     </script>
 </body>
 

@@ -267,6 +267,8 @@ jobs:
       contents: read
       pages: write
       id-token: write
+    environment:
+      name: github-pages
     steps:
       - uses: actions/checkout@v3
       - uses: actions/checkout@v3
@@ -284,17 +286,6 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           path: ./site
-
-  deploy-website:
-    needs: update-website
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-    runs-on: ubuntu-latest
-    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1

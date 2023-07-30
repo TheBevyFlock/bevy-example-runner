@@ -44,13 +44,14 @@ jobs:
         id: version-check
         run: |
           gitref=`git rev-parse HEAD`
-          updated=`if ls results/*-$gitref 1> /dev/null 2>&1; then echo "true"; else echo "false"; fi`
+          updated=`if ls results/*-$gitref 1> /dev/null 2>&1; then echo "false"; else echo "true"; fi`
           echo "updated=$updated" >> $GITHUB_OUTPUT
 
   take-screenshots:
     name: Take Screenshots
     needs: get-environment
-    if: needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch'
+    # if: needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch'
+    if: needs.get-environment.outputs.updated == 'true'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

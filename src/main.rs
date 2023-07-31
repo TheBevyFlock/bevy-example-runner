@@ -52,12 +52,12 @@ fn main() {
     folders.sort();
     folders.reverse();
 
-    for path in folders.iter().take(50) {
+    for (i, path) in folders.iter().take(50).enumerate() {
         let file_name = path.file_name().unwrap().to_str().unwrap();
         if file_name.starts_with(".") {
             continue;
         }
-        println!("Processing {:?}", path);
+        println!("Processing {:?} ({})", path, i);
         let mut split = file_name.split('-');
         let mut run = Run {
             date: NaiveDateTime::parse_from_str(split.next().unwrap(), "%Y%m%d%H%M")

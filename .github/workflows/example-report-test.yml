@@ -183,19 +183,19 @@ jobs:
           rm "screenshots-${{ matrix.os }}/Shaders/compute_shader_game_of_life.png" || true
           rm "screenshots-${{ matrix.os }}/ECS (Entity Component System)/apply_deferred.png" || true
 
-      - name: Send to Percy
-        run: |
-          npm install -g @percy/cli@latest
-          npx percy upload screenshots-${{ matrix.os }}
-        env:
-          PERCY_TOKEN: ${{ secrets[matrix.percy_key] }}
-          PERCY_COMMIT: ${{ needs.get-environment.outputs.gitref }}
+      # - name: Send to Percy
+      #   run: |
+      #     npm install -g @percy/cli@latest
+      #     npx percy upload screenshots-${{ matrix.os }}
+      #   env:
+      #     PERCY_TOKEN: ${{ secrets[matrix.percy_key] }}
+      #     PERCY_COMMIT: ${{ needs.get-environment.outputs.gitref }}
 
-      - name: Wait for result
-        run: |
-          npx percy build:wait --project ${{ matrix.percy_project }} --commit ${{ needs.get-environment.outputs.gitref }}
-        env:
-          PERCY_TOKEN: ${{ secrets[matrix.percy_key] }}
+      # - name: Wait for result
+      #   run: |
+      #     npx percy build:wait --project ${{ matrix.percy_project }} --commit ${{ needs.get-environment.outputs.gitref }}
+      #   env:
+      #     PERCY_TOKEN: ${{ secrets[matrix.percy_key] }}
 
   update-results:
     name: Update Results
@@ -241,10 +241,10 @@ jobs:
           grep . Windows-failures-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-failures || true
           grep . Windows-no_screenshots-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-no_screenshots || true
 
-      - name: Save Percy results
-        run: |
-          curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.windows_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-percy
-          curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.linux_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Linux-percy
+      # - name: Save Percy results
+      #   run: |
+      #     curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.windows_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-percy
+      #     curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.linux_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Linux-percy
 
       # - name: Store results in git
       #   run: |
@@ -273,11 +273,6 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     steps:
 
-      - name: Download Aggregated Status
-        uses: actions/download-artifact@v3
-        with:
-          name: aggregated-status
-
       - name: Checkout Bevy main branch
         uses: actions/checkout@v3
         with:
@@ -298,6 +293,11 @@ jobs:
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Download Aggregated Status
+        uses: actions/download-artifact@v3
+        with:
+          name: aggregated-status
 
       - name: Install Bevy dependencies
         if: runner.os == 'linux'

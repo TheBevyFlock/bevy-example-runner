@@ -185,6 +185,7 @@ jobs:
         run: |
           rm "screenshots-${{ matrix.os }}/UI (User Interface)/relative_cursor_position.png" || true
           rm "screenshots-${{ matrix.os }}/Shaders/compute_shader_game_of_life.png" || true
+          rm "screenshots-${{ matrix.os }}/ECS (Entity Component System) / apply_deferred.png" || true
 
       - name: Send to Percy
         run: |

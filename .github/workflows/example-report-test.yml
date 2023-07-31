@@ -1,0 +1,365 @@
+name: (test) Example report - Status and Screenshots
+
+on:
+  workflow_dispatch:
+  
+env:
+  PER_PAGE: 20
+
+jobs:
+  get-environment:
+    name: Get Environment
+    runs-on: ubuntu-latest
+    outputs:
+      pages: ${{ steps.env.outputs.pages }}
+      gitref: ${{ steps.env.outputs.gitref }}
+      date: ${{ steps.env.outputs.date }}
+      linux_percy_project: ${{ steps.env.outputs.linux_percy_project }}
+      windows_percy_project: ${{ steps.env.outputs.windows_percy_project }}
+      updated: ${{ steps.version-check.outputs.updated }}
+    steps:
+      - name: Checkout Bevy main branch
+        uses: actions/checkout@v3
+        with:
+          repository: 'bevyengine/bevy'
+          ref: 'main'
+      - name: Get Environment
+        id: env
+        run: |
+          example_count=`cat Cargo.toml | grep '\[\[example\]\]' | wc -l`
+          page_count=$((example_count / ${{ env.PER_PAGE }} + 1))
+
+          echo "gitref=`git rev-parse HEAD`" >> $GITHUB_OUTPUT
+          echo "date=`date +%Y%m%d%H%M`" >> $GITHUB_OUTPUT
+          echo "linux_percy_project=dede4209/Screenshots-Linux-Vulkan" >> $GITHUB_OUTPUT
+          echo "windows_percy_project=dede4209/Screenshots-Windows-DX12" >> $GITHUB_OUTPUT
+          echo "pages=`python -c \"import json; print(json.dumps([i for i in range($page_count)]))\"`" >> $GITHUB_OUTPUT
+      - uses: actions/checkout@v3
+        with:
+          ref: 'results'
+          path: 'results'
+      - name: Check if current Bevy version already ran
+        id: version-check
+        run: |
+          gitref=`git rev-parse HEAD`
+          updated=`if ls results/*-$gitref 1> /dev/null 2>&1; then echo "false"; else echo "true"; fi`
+          echo "updated=$updated" >> $GITHUB_OUTPUT
+
+  take-screenshots:
+    name: Take Screenshots
+    needs: get-environment
+    if: needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        page: ${{ fromJSON(needs.get-environment.outputs.pages) }}
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+
+      - name: Checkout Bevy main branch
+        uses: actions/checkout@v3
+        with:
+          repository: 'bevyengine/bevy'
+          ref: ${{ needs.get-environment.outputs.gitref }}
+
+      # temporary: fetch tools from PR
+      - name: Checkout Bevy Tools
+        uses: actions/checkout@v3
+        with:
+          repository: 'mockersf/bevy'
+          ref: 'example-showcase-can-remove-desktop-mode'
+          path: 'bevy-tools'
+      - name: Copy Bevy tools to main
+        run: |
+          rm -r tools
+          cp -r bevy-tools/tools/ tools
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Bevy dependencies
+        if: runner.os == 'linux'
+        run: |
+          sudo apt-get update;
+          DEBIAN_FRONTEND=noninteractive sudo apt-get install --no-install-recommends -yq \
+            libasound2-dev libudev-dev;
+
+      - name: install xvfb, llvmpipe and lavapipe
+        if: runner.os == 'linux'
+        run: |
+          sudo apt-get update -y -qq
+          sudo add-apt-repository ppa:oibaf/graphics-drivers -y
+          sudo apt-get update
+          sudo apt install -y xvfb libegl1-mesa libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers
+
+      - name: Take Screenshots (Linux)
+        if: runner.os == 'linux'
+        continue-on-error: true
+        run: xvfb-run cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests --report-details
+
+      - name: Take Screenshots (Windows)
+        if: runner.os == 'windows'
+        continue-on-error: true
+        run: cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests --report-details
+
+      - name: Log errors
+        shell: pwsh
+        run: |
+          if (Get-Content no_screenshots) {
+            perl -p -e 's/(.*) - [.0-9]*\n/\1, /g' no_screenshots > cleaned
+            $no_screenshots = Get-Content .\cleaned -Raw
+            echo "::warning title=No Screenshots ${{ runner.os }}/${{ matrix.page }}::$no_screenshots"
+          }
+          if (Get-Content failures) {
+            perl -p -e 's/(.*) - [.0-9]*\n/\1, /g' failures > cleaned
+            $failures = Get-Content .\cleaned -Raw
+            echo "::error title=Failed To Run ${{ runner.os }}/${{ matrix.page }}::$failures"
+          }
+
+      - name: Upload Screenshots
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshots-${{ runner.os }}-${{ matrix.page }}
+          path: screenshots
+
+      - name: Upload Status
+        uses: actions/upload-artifact@v3
+        with:
+          name: status-${{ runner.os }}-${{ matrix.page }}
+          path: |
+            successes
+            failures
+            no_screenshots
+
+  send-to-percy:
+    name: Send screenshots to Percy
+    runs-on: ubuntu-latest
+    needs: [take-screenshots, get-environment]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: Linux
+            percy_key: PERCY_TOKEN_LINUX_VULKAN
+            percy_project: ${{ needs.get-environment.outputs.linux_percy_project }}
+          - os: Windows
+            percy_key: PERCY_TOKEN_WINDOWS_DX12
+            percy_project: ${{ needs.get-environment.outputs.windows_percy_project }}
+    steps:
+      
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+
+      - name: Move examples to the correct folder
+        run: |
+          mkdir screenshots-${{ matrix.os }}
+          for screenshotfolder in screenshots-${{ matrix.os }}-*
+          do
+            echo $screenshotfolder
+            rsync --verbose --archive $screenshotfolder/* screenshots-${{ matrix.os }}/
+            rm -rf $screenshotfolder
+          done
+      
+      - name: Remove example known to be random
+        run: |
+          rm "screenshots-${{ matrix.os }}/3D Rendering/spotlight.png" || true
+          rm "screenshots-${{ matrix.os }}/Animation/animated_fox.png" || true
+          rm "screenshots-${{ matrix.os }}/Animation/custom_skinned_mesh.png" || true
+          rm "screenshots-${{ matrix.os }}/Animation/morph_targets.png" || true
+          rm "screenshots-${{ matrix.os }}/Async Tasks/async_compute.png" || true
+          rm "screenshots-${{ matrix.os }}/Async Tasks/external_source_external_thread.png" || true
+          rm "screenshots-${{ matrix.os }}/ECS (Entity Component System)/iter_combinations.png" || true
+          rm "screenshots-${{ matrix.os }}/ECS (Entity Component System)/parallel_query.png" || true
+          rm "screenshots-${{ matrix.os }}/Games/alien_cake_addict.png" || true
+          rm "screenshots-${{ matrix.os }}/Games/contributors.png" || true
+          rm "screenshots-${{ matrix.os }}/UI (User Interface)/font_atlas_debug.png" || true
+
+      # Windows only
+      - name: Remove example known to be random (Windows)
+        if: matrix.os == 'Windows'
+        run: |
+          rm "screenshots-${{ matrix.os }}/UI (User Interface)/relative_cursor_position.png" || true
+          rm "screenshots-${{ matrix.os }}/Shaders/compute_shader_game_of_life.png" || true
+          rm "screenshots-${{ matrix.os }}/ECS (Entity Component System)/apply_deferred.png" || true
+
+      - name: Send to Percy
+        run: |
+          npm install -g @percy/cli@latest
+          npx percy upload screenshots-${{ matrix.os }}
+        env:
+          PERCY_TOKEN: ${{ secrets[matrix.percy_key] }}
+          PERCY_COMMIT: ${{ needs.get-environment.outputs.gitref }}
+
+      - name: Wait for result
+        run: |
+          npx percy build:wait --project ${{ matrix.percy_project }} --commit ${{ needs.get-environment.outputs.gitref }}
+        env:
+          PERCY_TOKEN: ${{ secrets[matrix.percy_key] }}
+
+  update-results:
+    name: Update Results
+    runs-on: ubuntu-latest
+    needs: [send-to-percy, get-environment]
+    permissions:
+      contents: write
+    steps:
+      
+      - uses: actions/checkout@v3
+        with:
+          ref: 'results'
+          path: 'results'
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+
+      - name: Concatenate status
+        run: |
+          set -x
+
+          mkdir results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}
+
+          for report in status-Linux-*
+          do
+            (cat $report/successes; echo) >> Linux-successes-concat
+            (cat $report/failures; echo) >> Linux-failures-concat
+            (cat $report/no_screenshots; echo) >> Linux-no_screenshots-concat
+          done
+          # remove empty lines
+          grep . Linux-successes-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Linux-successes || true
+          grep . Linux-failures-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Linux-failures || true
+          grep . Linux-no_screenshots-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Linux-no_screenshots || true
+
+          for report in status-Windows-*
+          do
+            (cat $report/successes; echo) >> Windows-successes-concat
+            (cat $report/failures; echo) >> Windows-failures-concat
+            (cat $report/no_screenshots; echo) >> Windows-no_screenshots-concat
+          done
+          # remove empty lines
+          grep . Windows-successes-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-successes || true
+          grep . Windows-failures-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-failures || true
+          grep . Windows-no_screenshots-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-no_screenshots || true
+
+      - name: Save Percy results
+        run: |
+          curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.windows_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-percy
+          curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.linux_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Linux-percy
+
+      - name: Store results in git
+        run: |
+          cd results
+
+          git config user.name 'Workflow'
+          git config user.email '<>'
+
+          git add .
+          git commit -m "Update Results"
+          git push
+
+      - name: Upload Aggregated Status
+        uses: actions/upload-artifact@v3
+        with:
+          name: aggregated-status
+          path: |
+            results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}
+
+  rerun-failed-examples:
+    name: Rerun Failed Examples (without screenshot)
+    needs: [get-environment, update-results]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+
+      - name: Download Aggregated Status
+        uses: actions/download-artifact@v3
+        with:
+          name: aggregated-status
+
+      - name: Checkout Bevy main branch
+        uses: actions/checkout@v3
+        with:
+          repository: 'bevyengine/bevy'
+          ref: ${{ needs.get-environment.outputs.gitref }}
+
+      # temporary: fetch tools from PR
+      - name: Checkout Bevy Tools
+        uses: actions/checkout@v3
+        with:
+          repository: 'mockersf/bevy'
+          ref: 'example-showcase-can-remove-desktop-mode'
+          path: 'bevy-tools'
+      - name: Copy Bevy tools to main
+        run: |
+          rm -r tools
+          cp -r bevy-tools/tools/ tools
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Bevy dependencies
+        if: runner.os == 'linux'
+        run: |
+          sudo apt-get update;
+          DEBIAN_FRONTEND=noninteractive sudo apt-get install --no-install-recommends -yq \
+            libasound2-dev libudev-dev;
+
+      - name: install xvfb, llvmpipe and lavapipe
+        if: runner.os == 'linux'
+        run: |
+          sudo apt-get update -y -qq
+          sudo add-apt-repository ppa:oibaf/graphics-drivers -y
+          sudo apt-get update
+          sudo apt install -y xvfb libegl1-mesa libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers
+
+      - name: Take Screenshots (Linux)
+        if: runner.os == 'linux'
+        continue-on-error: true
+        run: xvfb-run cargo run -p example-showcase -- run --screenshot --in-ci --ignore-stress-tests --report-details --example-list aggregated-status/${{ runner.os }}-failures
+
+      - name: Take Screenshots (Windows)
+        if: runner.os == 'windows'
+        continue-on-error: true
+        run: cargo run -p example-showcase -- run --screenshot --in-ci --ignore-stress-tests --report-details --example-list aggregated-status/${{ runner.os }}-failures
+  
+      - name: Upload Rerun Status
+        uses: actions/upload-artifact@v3
+        with:
+          name: status-rerun-${{ runner.os }}
+          path: |
+            successes
+            failures
+            no_screenshots
+            *.log
+
+  update-website:
+    needs: update-results
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          ref: "results"
+          path: "results"
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Build website
+        run: |
+          cargo run -- results
+          mkdir site
+          mv index.html site/index.html
+      - name: Store generated html
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: ./site
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1

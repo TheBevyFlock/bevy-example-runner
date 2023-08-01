@@ -60,7 +60,7 @@ jobs:
       - name: Checkout Bevy main branch
         uses: actions/checkout@v3
         with:
-          repository: 'bevyengine/bevy'
+          repository: 'mockersf/bevy'
           ref: ${{ needs.get-environment.outputs.gitref }}
 
       # temporary: fetch tools from PR

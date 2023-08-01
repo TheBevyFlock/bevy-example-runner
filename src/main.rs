@@ -107,7 +107,7 @@ fn main() {
                 let screenshots =
                     read_percy_results(fs::read_to_string(file.as_ref().unwrap().path()).unwrap());
                 // sleep to limit how hard Percy API are used
-                // thread::sleep(Duration::from_secs(5));
+                thread::sleep(Duration::from_secs(5));
                 for (example, screenshot, changed) in screenshots.into_iter() {
                     let mut split = example.split('.').next().unwrap().split('/');
                     let example = Example {
@@ -182,7 +182,13 @@ fn main() {
         let has_screenshot = runs
             .iter()
             .any(|run| run.screenshots.get(&example.name).is_some());
-        if !has_screenshot {
+        let has_failures = runs.iter().any(|run| {
+            run.results
+                .get(&example.name)
+                .map(|platforms| platforms.values().any(|v| v == "failures"))
+                .unwrap_or(false)
+        });
+        if !has_screenshot && !has_failures {
             example.flaky = false;
         }
         all_examples_cleaned.push(example);

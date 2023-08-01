@@ -1,0 +1,110 @@
+ Downloading crates ...
+  Downloaded overload v0.1.1
+  Downloaded raw-window-handle v0.5.2
+  Downloaded parking_lot_core v0.9.8
+  Downloaded rodio v0.17.1
+  Downloaded renderdoc-sys v1.0.0
+  Downloaded ryu v1.0.15
+  Downloaded same-file v1.0.6
+  Downloaded windows-targets v0.42.2
+  Downloaded slab v0.4.8
+  Downloaded pp-rs v0.2.1
+  Downloaded uuid v1.4.1
+  Downloaded tracing-attributes v0.1.26
+  Downloaded regex v1.9.1
+  Downloaded object v0.31.1
+  Downloaded windows-interface v0.44.0
+  Downloaded windows-implement v0.44.0
+  Downloaded winapi-util v0.1.5
+  Downloaded wgpu-types v0.16.1
+  Downloaded xi-unicode v0.3.0
+  Downloaded regex-automata v0.3.4
+  Downloaded naga_oil v0.8.1
+  Downloaded taffy v0.3.12
+  Downloaded ntapi v0.4.1
+  Downloaded wgpu v0.16.3
+  Downloaded cc v1.0.79
+  Downloaded wgpu-core v0.16.1
+  Downloaded thiserror-core v1.0.38
+  Downloaded ruzstd v0.4.0
+  Downloaded winit v0.28.6
+  Downloaded flate2 v1.0.26
+  Downloaded hashbrown v0.12.3
+  Downloaded euclid v0.22.9
+  Downloaded gilrs v0.10.2
+  Downloaded sysinfo v0.29.7
+  Downloaded glow v0.12.3
+  Downloaded cpal v0.15.2
+  Downloaded aho-corasick v1.0.2
+  Downloaded image v0.24.6
+  Downloaded glam v0.24.1
+  Downloaded gimli v0.27.3
+  Downloaded wgpu-hal v0.16.2
+  Downloaded ash v0.37.3+1.3.251
+  Downloaded syn v1.0.109
+  Downloaded slotmap v1.0.6
+  Downloaded indexmap v1.9.3
+  Downloaded windows_x86_64_msvc v0.42.2
+  Downloaded anyhow v1.0.72
+  Downloaded allocator-api2 v0.2.16
+   Compiling rectangle-pack v0.4.2
+   Compiling ab_glyph_rasterizer v0.1.8
+   Compiling cpal v0.15.2
+   Compiling ryu v1.0.15
+   Compiling inflections v1.1.1
+   Compiling gltf-derive v1.2.0
+   Compiling ab_glyph v0.2.21
+   Compiling bevy_sprite v0.12.0-dev (D:\a\bevy-example-tests\bevy-example-tests\crates\bevy_sprite)
+   Compiling tinyvec v1.6.0
+   Compiling accesskit_consumer v0.15.1
+   Compiling ogg v0.8.0
+   Compiling windows v0.46.0
+   Compiling windows v0.48.0
+   Compiling xi-unicode v0.3.0
+   Compiling gilrs v0.10.2
+   Compiling dasp_sample v0.11.0
+   Compiling no-std-compat v0.4.1
+   Compiling grid v0.9.0
+   Compiling glyph_brush_layout v0.2.3
+   Compiling gilrs-core v0.5.6
+   Compiling lewton v0.10.2
+   Compiling accesskit_windows v0.14.1
+   Compiling gltf-json v1.2.0
+   Compiling bevy_a11y v0.12.0-dev (D:\a\bevy-example-tests\bevy-example-tests\crates\bevy_a11y)
+   Compiling bevy_pbr v0.12.0-dev (D:\a\bevy-example-tests\bevy-example-tests\crates\bevy_pbr)
+   Compiling vec_map v0.8.2
+   Compiling fnv v1.0.7
+   Compiling gltf v1.2.0
+   Compiling accesskit_winit v0.14.2
+   Compiling taffy v0.3.12
+   Compiling rodio v0.17.1
+   Compiling bevy_text v0.12.0-dev (D:\a\bevy-example-tests\bevy-example-tests\crates\bevy_text)
+   Compiling bevy_scene v0.12.0-dev (D:\a\bevy-example-tests\bevy-example-tests\crates\bevy_scene)
+   Compiling bevy_animation v0.12.0-dev (D:\a\bevy-example-tests\bevy-example-tests\crates\bevy_animation)
+   Compiling percent-encoding v2.3.0
+   Compiling bevy_gltf v0.12.0-dev (D:\a\bevy-example-tests\bevy-example-tests\crates\bevy_gltf)
+   Compiling bevy_ui v0.12.0-dev (D:\a\bevy-example-tests\bevy-example-tests\crates\bevy_ui)
+   Compiling bevy_audio v0.12.0-dev (D:\a\bevy-example-tests\bevy-example-tests\crates\bevy_audio)
+   Compiling bevy_winit v0.12.0-dev (D:\a\bevy-example-tests\bevy-example-tests\crates\bevy_winit)
+   Compiling bevy_gilrs v0.12.0-dev (D:\a\bevy-example-tests\bevy-example-tests\crates\bevy_gilrs)
+   Compiling bevy_gizmos v0.12.0-dev (D:\a\bevy-example-tests\bevy-example-tests\crates\bevy_gizmos)
+   Compiling rand_core v0.6.4
+   Compiling ppv-lite86 v0.2.17
+   Compiling rand_chacha v0.3.1
+   Compiling bevy_internal v0.12.0-dev (D:\a\bevy-example-tests\bevy-example-tests\crates\bevy_internal)
+   Compiling bevy v0.12.0-dev (D:\a\bevy-example-tests\bevy-example-tests)
+   Compiling rand v0.8.5
+    Finished release [optimized] target(s) in 15m 38s
+     Running `target\release\examples\shadow_biases.exe`
+2023-08-01T10:22:48.763121Z  INFO bevy_winit::system: Creating new window "App" (0v0)
+2023-08-01T10:22:48.851051Z  WARN bevy_audio::audio_output: No audio device found.
+2023-08-01T10:22:48.884830Z  INFO bevy_render::renderer: AdapterInfo { name: "Microsoft Basic Render Driver", vendor: 5140, device: 140, device_type: IntegratedGpu, driver: "", driver_info: "", backend: Dx12 }
+2023-08-01T10:22:49.252147Z  INFO bevy_diagnostic::system_information_diagnostics_plugin::internal: SystemInfo { os: "Windows Server 2022 Datacenter", kernel: "20348", cpu: "Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz", core_count: "2", memory: "7.0 GiB" }
+2023-08-01T10:23:57.195329Z  INFO bevy_render::view::window::screenshot: Taking a screenshot at frame 100.
+2023-08-01T10:24:36.627755Z ERROR wgpu_hal::auxil::dxgi::result: Map buffer failed: 0x887A0005    
+2023-08-01T10:24:36.628470Z ERROR wgpu_core::device::life: Mapping failed Device(Lost)    
+thread '<unnamed>' panicked at 'Error occurred when trying to async map a buffer', crates\bevy_render\src\view\window\screenshot.rs:332:25
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Encountered a panic in exclusive system `thread 'Async Compute Task Pool (0)' panicked at 'called `Result::unwrap()` on an `Err` value: RecvError', crates\bevy_render\src\view\window\screenshot.rs:336:33
+bevy_render::renderer::render_system`!
+thread 'main' panicked at 'called `Result::unwrap()` on an `Err` value: RecvError', crates\bevy_render\src\pipelined_rendering.rs:143:45

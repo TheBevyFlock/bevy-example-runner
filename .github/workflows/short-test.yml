@@ -104,11 +104,6 @@ jobs:
           name: aggregated-status
           path: aggregated-status
 
-      - name: check stuff
-        run: |
-          ls -lrtha
-          ls -lrtha aggregated-status
-
       - name: Install Bevy dependencies
         if: runner.os == 'linux'
         run: |

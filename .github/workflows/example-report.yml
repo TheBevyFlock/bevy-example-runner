@@ -262,6 +262,7 @@ jobs:
           git push
 
   update-website:
+    name: Update Website
     needs: update-results
     runs-on: ubuntu-latest
     permissions:
@@ -281,8 +282,6 @@ jobs:
       - name: Build website
         run: |
           cargo run -- results
-          mkdir site
-          mv index.html site/index.html
       - name: Store generated html
         uses: actions/upload-pages-artifact@v1
         with:

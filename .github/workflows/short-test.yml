@@ -104,6 +104,10 @@ jobs:
           name: aggregated-status
           path: aggregated-status
 
+      - name: Clean Up failures list
+        run: |
+          sed 's/.*\/\(.*\) - [.0-9]*/\1/g' zut/Windows-failures > failure-list
+  
       - name: Install Bevy dependencies
         if: runner.os == 'linux'
         run: |
@@ -122,12 +126,12 @@ jobs:
       - name: Take Screenshots (Linux)
         if: runner.os == 'linux'
         continue-on-error: true
-        run: xvfb-run cargo run -p example-showcase -- run --screenshot --in-ci --ignore-stress-tests --report-details --example-list aggregated-status/${{ runner.os }}-failures
+        run: xvfb-run cargo run -p example-showcase -- run --screenshot --in-ci --ignore-stress-tests --report-details --example-list failure-list
 
       - name: Take Screenshots (Windows)
         if: runner.os == 'windows'
         continue-on-error: true
-        run: cargo run -p example-showcase -- run --screenshot --in-ci --ignore-stress-tests --report-details --example-list aggregated-status/${{ runner.os }}-failures
+        run: cargo run -p example-showcase -- run --screenshot --in-ci --ignore-stress-tests --report-details --example-list failure-list
   
       - name: Upload Rerun Status
         uses: actions/upload-artifact@v3

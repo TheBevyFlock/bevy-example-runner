@@ -1,0 +1,33 @@
+   Compiling bevy v0.12.0-dev (D:\a\bevy-example-tests\bevy-example-tests)
+    Finished release [optimized] target(s) in 12.03s
+     Running `target\release\examples\bloom_3d.exe`
+2023-08-01T00:45:24.907619Z  INFO bevy_winit::system: Creating new window "App" (0v0)
+2023-08-01T00:45:25.017626Z  WARN bevy_audio::audio_output: No audio device found.
+2023-08-01T00:45:25.057681Z  INFO bevy_render::renderer: AdapterInfo { name: "Microsoft Basic Render Driver", vendor: 5140, device: 140, device_type: IntegratedGpu, driver: "", driver_info: "", backend: Dx12 }
+2023-08-01T00:45:25.457480Z  INFO bevy_diagnostic::system_information_diagnostics_plugin::internal: SystemInfo { os: "Windows Server 2022 Datacenter", kernel: "20348", cpu: "Intel(R) Xeon(R) CPU E5-2673 v4 @ 2.30GHz", core_count: "2", memory: "7.0 GiB" }
+2023-08-01T00:46:36.297796Z  INFO bevy_render::view::window::screenshot: Taking a screenshot at frame 100.
+2023-08-01T00:47:24.680458Z  INFO bevy_render::view::window::screenshot: Screenshot saved to ./screenshot-100.png
+2023-08-01T00:48:19.507491Z ERROR wgpu_hal::dx12::descriptor: Unable to allocate descriptors: RangeAllocationError { fragmented_free_length: 0 }    
+2023-08-01T00:48:19.507654Z ERROR wgpu::backend::direct: Handling wgpu errors as fatal by default    
+thread 'Compute Task Pool (0)' panicked at 'wgpu error: Validation Error
+
+Caused by:
+    In Device::create_bind_group
+      note: label = `bloom_upsampling_bind_group`
+    Not enough memory left
+
+', C:\Users\runneradmin\.cargo\registry\src\index.crates.io-6f17d22bba15001f\wgpu-0.16.3\src\backend\direct.rs:3019:5
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Encountered a panic in system `bevy_core_pipeline::bloom::queue_bloom_bind_groups`!
+2023-08-01T00:48:19.508159Z ERROR wgpu_hal::dx12::descriptor: Unable to allocate descriptors: RangeAllocationError { fragmented_free_length: 0 }    
+2023-08-01T00:48:19.508205Z ERROR wgpu::backend::direct: Handling wgpu errors as fatal by default    
+thread 'Compute Task Pool (0)' panicked at 'wgpu error: Validation Error
+
+Caused by:
+    In Device::create_bind_group
+      note: label = `mesh_view_bind_group`
+    Not enough memory left
+
+', C:\Users\runneradmin\.cargo\registry\src\index.crates.io-6f17d22bba15001f\wgpu-0.16.3\src\backend\direct.rs:3019:5
+Encountered a panic in system `bevy_pbr::render::mesh::queue_mesh_view_bind_groups`!
+thread 'main' panicked at 'called `Result::unwrap()` on an `Err` value: RecvError', crates\bevy_render\src\pipelined_rendering.rs:143:45

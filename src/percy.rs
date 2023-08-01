@@ -1,3 +1,5 @@
+use std::{thread, time::Duration};
+
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
@@ -8,23 +10,40 @@ pub struct Main {
     pub total_comparisons_diff: u32,
 }
 
-pub fn read_percy_results(results: String) -> Vec<(String, String, String)> {
-    let main: Main = serde_json::from_str(&results).unwrap();
-    let build_id = main.web_url.split('/').last().unwrap();
-    let data = ureq::get(&format!(
+fn get_snapshots_with_retry(build_id: &str) -> SnapshotsData {
+    let mut response = ureq::get(&format!(
         "https://percy.io/api/v1/builds/{}/snapshots",
         build_id
     ))
-    .call()
-    .unwrap()
-    .into_json::<SnapshotsData>();
+    .call();
+    if response.is_err() {
+        thread::sleep(Duration::from_secs(20));
+        response = ureq::get(&format!(
+            "https://percy.io/api/v1/builds/{}/snapshots",
+            build_id
+        ))
+        .call();
+    }
+
+    let data = response.unwrap().into_json::<SnapshotsData>();
 
     if let Ok(data) = data {
-        snapshots_to_images(data)
+        data
     } else {
-        println!("error parsing percy response");
-        vec![]
+        println!("error parsing Percy response: {:?}", data);
+        SnapshotsData {
+            data: vec![],
+            included: vec![],
+        }
     }
+}
+
+pub fn read_percy_results(results: String) -> Vec<(String, String, String)> {
+    let main: Main = serde_json::from_str(&results).unwrap();
+    let build_id = main.web_url.split('/').last().unwrap();
+    let data = get_snapshots_with_retry(build_id);
+
+    snapshots_to_images(data)
 }
 
 fn snapshots_to_images(snapshots: SnapshotsData) -> Vec<(String, String, String)> {

@@ -38,10 +38,13 @@ struct Run {
     commit: String,
     results: HashMap<String, HashMap<String, String>>,
     screenshots: HashMap<String, HashMap<String, (String, String)>>,
+    logs: HashMap<String, HashMap<String, String>>,
 }
 
 fn main() {
     let paths = fs::read_dir(std::env::args().nth(1).as_deref().unwrap()).unwrap();
+
+    let _ = fs::create_dir("./site");
 
     let mut all_examples = HashSet::new();
     let mut runs = vec![];
@@ -52,12 +55,12 @@ fn main() {
     folders.sort();
     folders.reverse();
 
-    for (i, path) in folders.iter().take(50).enumerate() {
-        let file_name = path.file_name().unwrap().to_str().unwrap();
+    for (i, run_path) in folders.iter().take(50).enumerate() {
+        let file_name = run_path.file_name().unwrap().to_str().unwrap();
         if file_name.starts_with(".") {
             continue;
         }
-        println!("Processing {:?} ({})", path, i);
+        println!("Processing {:?} ({})", run_path, i);
         let mut split = file_name.split('-');
         let mut run = Run {
             date: NaiveDateTime::parse_from_str(split.next().unwrap(), "%Y%m%d%H%M")
@@ -68,13 +71,14 @@ fn main() {
             ..Default::default()
         };
 
-        for file in fs::read_dir(path).unwrap() {
+        for file in fs::read_dir(run_path).unwrap() {
             let path = file.as_ref().unwrap().path();
             let mut name = path.file_name().unwrap().to_str().unwrap().split('-');
             let platform = name.next().unwrap();
             let kind = name.next().unwrap();
 
             if ["successes", "failures", "no_screenshots"].contains(&kind) {
+                println!("  - {} / {}", kind, platform);
                 fs::read_to_string(file.as_ref().unwrap().path())
                     .unwrap()
                     .lines()
@@ -99,10 +103,11 @@ fn main() {
                     });
             }
             if kind == "percy" {
+                println!("  - {} / {}", kind, platform);
                 let screenshots =
                     read_percy_results(fs::read_to_string(file.as_ref().unwrap().path()).unwrap());
                 // sleep to limit how hard Percy API are used
-                thread::sleep(Duration::from_secs(10));
+                // thread::sleep(Duration::from_secs(5));
                 for (example, screenshot, changed) in screenshots.into_iter() {
                     let mut split = example.split('.').next().unwrap().split('/');
                     let example = Example {
@@ -121,6 +126,50 @@ fn main() {
                         .entry(example.name)
                         .or_insert_with(HashMap::new)
                         .insert(platform.to_string(), (screenshot, changed));
+                }
+            }
+        }
+        for platform in ["Windows", "Linux"] {
+            let rerun = run_path.join(format!("status-rerun-{}", platform));
+            if rerun.exists() {
+                println!("  - rerun {}", platform);
+                for file in fs::read_dir(rerun.as_path()).unwrap() {
+                    let path = file.as_ref().unwrap().path();
+                    let kind = path.file_name().unwrap().to_str().unwrap();
+                    if kind == "successes" {
+                        println!("    - {} / {}", kind, platform);
+                        fs::read_to_string(file.as_ref().unwrap().path())
+                            .unwrap()
+                            .lines()
+                            .for_each(|line| {
+                                let mut line = line.split(" - ");
+                                let mut details = line.next().unwrap().split('/');
+                                let example = Example {
+                                    category: details.next().unwrap().to_string(),
+                                    name: details.next().unwrap().to_string(),
+                                    flaky: false,
+                                };
+                                run.results
+                                    .entry(example.name)
+                                    .or_insert_with(HashMap::new)
+                                    .insert(platform.to_string(), "no_screenshots".to_string());
+                            });
+                    }
+                    if kind.ends_with(".log") {
+                        let example_name = kind.strip_suffix(".log").unwrap();
+                        println!("    - log / {} ({})", platform, example_name);
+                        let mut log = fs::read_to_string(file.as_ref().unwrap().path()).unwrap();
+                        log = log.replace("[0m", "");
+                        log = log.replace("[1m", "");
+                        log = log.replace("[2m", "");
+                        log = log.replace("[31m", "");
+                        log = log.replace("[32m", "");
+                        log = log.replace("[33m", "");
+                        run.logs
+                            .entry(example_name.to_string())
+                            .or_insert_with(HashMap::new)
+                            .insert(platform.to_string(), log);
+                    }
                 }
             }
         }
@@ -153,5 +202,5 @@ fn main() {
     .unwrap();
     let rendered = tera.render("index.html", &context).unwrap();
 
-    std::fs::write("./index.html", &rendered).unwrap();
+    std::fs::write("./site/index.html", &rendered).unwrap();
 }

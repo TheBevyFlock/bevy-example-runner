@@ -106,7 +106,7 @@ jobs:
 
       - name: Clean Up failures list
         run: |
-          sed 's/.*\/\(.*\) - [.0-9]*/\1/g' zut/Windows-failures > failure-list
+          sed 's/.*\/\(.*\) - [.0-9]*/\1/g' aggregated-status/${{ runner.os }}-failures > failure-list
   
       - name: Install Bevy dependencies
         if: runner.os == 'linux'

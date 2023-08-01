@@ -147,7 +147,7 @@
                     </div>
                 </th>
                 <th class="no-border"></th>
-                {% for run in runs %}
+                {% for run in runs -%}
                 <th style="width: 4rem; height: 13rem;">
                     <div class="vertical">
                         <div>{{ run.date }}</div>
@@ -155,95 +155,95 @@
                             run.commit|truncate(length=7, end="") }}</a>
                     </div>
                 </th>
-                {% endfor %}
+                {% endfor -%}
             </tr>
         </thead>
         <tbody>
-            {% for example in all_examples %}
-            <tr {% if example.flaky %}class="flaky" {% else %}class="all-good" style="display: none;" {% endif %}>
+            {% for example in all_examples -%}
+            <tr {% if example.flaky -%}class="flaky" {% else -%}class="all-good" style="display: none;" {% endif -%}>
                 <td style="border-right: none;">{{ example.category }} / {{ example.name }}</td>
                 <td style="border-left: none;">
                     <span class="windows"></span>
                     <hr>
                     <span class="linux"></span>
                 </td>
-                {% for run in runs %}
+                {% for run in runs -%}
                 <td style="text-align: center;">
-                    {% if run.results[example.name] %}
-                    {% if run.results[example.name]["Windows"] %}
-                    {% if run.results[example.name]["Windows"] == "successes" %}
-                    {% if run.screenshots[example.name]["Windows"] %}
+                    {% if run.results[example.name] -%}
+                    {% if run.results[example.name]["Windows"] -%}
+                    {% if run.results[example.name]["Windows"] == "successes" -%}
+                    {% if run.screenshots[example.name]["Windows"] -%}
                     <div data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html=true
                         data-bs-custom-class="image-popover"
                         data-bs-content='<img class="img-fluid" src="{{ run.screenshots[example.name]["Windows"].0 }}" />'>
                         <span class="success"></span>
-                        {% if run.screenshots[example.name]["Windows"].1 == "user_approved" %}
+                        {% if run.screenshots[example.name]["Windows"].1 == "user_approved" -%}
                         <span class="changed-approved"></span>
-                        {% elif run.screenshots[example.name]["Windows"].1 == "unreviewed_comparisons" %}
+                        {% elif run.screenshots[example.name]["Windows"].1 == "unreviewed_comparisons" -%}
                         <span class="changed-new"></span>
-                        {% endif %}
+                        {% endif -%}
                     </div>
-                    {% else %}
+                    {% else -%}
                     <span class="missing-screenshot" style="font-size: 1rem;"></span>
-                    {% endif %}
-                    {% elif run.results[example.name]["Windows"] == "failures" %}
-                    {% if run.logs[example.name] %}
+                    {% endif -%}
+                    {% elif run.results[example.name]["Windows"] == "failures" -%}
+                    {% if run.logs[example.name] -%}
                     <div data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html=true
                         data-bs-custom-class="log-popover"
                         data-bs-content='<pre>{{ run.logs[example.name]["Windows"] }}</pre>'>
                         <span class="fail" style="font-size: 1.5rem;"></span>
                     </div>
-                    {% else %}
+                    {% else -%}
                     <span class="fail" style="font-size: 1.5rem;"></span>
-                    {% endif %}
-                    {% elif run.results[example.name]["Windows"] == "no_screenshots" %}
+                    {% endif -%}
+                    {% elif run.results[example.name]["Windows"] == "no_screenshots" -%}
                     <span class="missing-screenshot" style="font-size: 1rem;"></span>
-                    {% endif %}
-                    {% else %}
+                    {% endif -%}
+                    {% else -%}
                     -
-                    {% endif %}
+                    {% endif -%}
                     <hr />
-                    {% if run.results[example.name]["Linux"] %}
-                    {% if run.results[example.name]["Linux"] == "successes" %}
-                    {% if run.screenshots[example.name]["Linux"] %}
+                    {% if run.results[example.name]["Linux"] -%}
+                    {% if run.results[example.name]["Linux"] == "successes" -%}
+                    {% if run.screenshots[example.name]["Linux"] -%}
                     <div data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html=true
                         data-bs-custom-class="image-popover"
                         data-bs-content='<img class="img-fluid" src="{{ run.screenshots[example.name]["Linux"].0 }}" />'>
                         <span class="success"></span>
-                        {% if run.screenshots[example.name]["Linux"].1 == "user_approved" %}
+                        {% if run.screenshots[example.name]["Linux"].1 == "user_approved" -%}
                         <span class="changed-approved"></span>
-                        {% elif run.screenshots[example.name]["Linux"].1 == "unreviewed_comparisons" %}
+                        {% elif run.screenshots[example.name]["Linux"].1 == "unreviewed_comparisons" -%}
                         <span class="changed-new"></span>
-                        {% endif %}
+                        {% endif -%}
                     </div>
-                    {% else %}
+                    {% else -%}
                     <span class="missing-screenshot" style="font-size: 1rem;"></span>
-                    {% endif %}
-                    {% elif run.results[example.name]["Linux"] == "failures" %}
-                    {% if run.logs[example.name] %}
+                    {% endif -%}
+                    {% elif run.results[example.name]["Linux"] == "failures" -%}
+                    {% if run.logs[example.name] -%}
                     <div data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html=true
                         data-bs-custom-class="log-popover"
                         data-bs-content='<pre>{{ run.logs[example.name]["Windows"] }}</pre>'>
                         <span class="fail" style="font-size: 1.5rem;"></span>
                     </div>
-                    {% else %}
+                    {% else -%}
                     <span class="fail" style="font-size: 1.5rem;"></span>
-                    {% endif %}
-                    {% elif run.results[example.name]["Linux"] == "no_screenshots" %}
+                    {% endif -%}
+                    {% elif run.results[example.name]["Linux"] == "no_screenshots" -%}
                     <span class="missing-screenshot" style="font-size: 1rem;"></span>
-                    {% endif %}
-                    {% else %}
+                    {% endif -%}
+                    {% else -%}
                     -
-                    {% endif %}
-                    {% else %}
+                    {% endif -%}
+                    {% else -%}
                     -
                     <hr />-
-                    {% endif %}
+                    {% endif -%}
 
                 </td>
-                {% endfor %}
+                {% endfor -%}
             </tr>
-            {% endfor %}
+            {% endfor -%}
         </tbody>
     </table>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"

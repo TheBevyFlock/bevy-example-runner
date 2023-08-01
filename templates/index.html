@@ -1,3 +1,5 @@
+{% import "macros.html" as macros %}
+
 <html>
 
 <head>
@@ -170,76 +172,13 @@
                 {% for run in runs -%}
                 <td style="text-align: center;">
                     {% if run.results[example.name] -%}
-                    {% if run.results[example.name]["Windows"] -%}
-                    {% if run.results[example.name]["Windows"] == "successes" -%}
-                    {% if run.screenshots[example.name]["Windows"] -%}
-                    <div data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html=true
-                        data-bs-custom-class="image-popover"
-                        data-bs-content='<img class="img-fluid" src="{{ run.screenshots[example.name]["Windows"].0 }}" />'>
-                        <span class="success"></span>
-                        {% if run.screenshots[example.name]["Windows"].1 == "user_approved" -%}
-                        <span class="changed-approved"></span>
-                        {% elif run.screenshots[example.name]["Windows"].1 == "unreviewed_comparisons" -%}
-                        <span class="changed-new"></span>
-                        {% endif -%}
-                    </div>
-                    {% else -%}
-                    <span class="missing-screenshot" style="font-size: 1rem;"></span>
-                    {% endif -%}
-                    {% elif run.results[example.name]["Windows"] == "failures" -%}
-                    {% if run.logs[example.name] -%}
-                    <div data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html=true
-                        data-bs-custom-class="log-popover"
-                        data-bs-content='<pre>{{ run.logs[example.name]["Windows"] }}</pre>'>
-                        <span class="fail" style="font-size: 1.5rem;"></span>
-                    </div>
-                    {% else -%}
-                    <span class="fail" style="font-size: 1.5rem;"></span>
-                    {% endif -%}
-                    {% elif run.results[example.name]["Windows"] == "no_screenshots" -%}
-                    <span class="missing-screenshot" style="font-size: 1rem;"></span>
-                    {% endif -%}
-                    {% else -%}
-                    -
-                    {% endif -%}
+                    {{ macros::status(example_name=example.name, platform="Windows", run=run) }}
                     <hr />
-                    {% if run.results[example.name]["Linux"] -%}
-                    {% if run.results[example.name]["Linux"] == "successes" -%}
-                    {% if run.screenshots[example.name]["Linux"] -%}
-                    <div data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html=true
-                        data-bs-custom-class="image-popover"
-                        data-bs-content='<img class="img-fluid" src="{{ run.screenshots[example.name]["Linux"].0 }}" />'>
-                        <span class="success"></span>
-                        {% if run.screenshots[example.name]["Linux"].1 == "user_approved" -%}
-                        <span class="changed-approved"></span>
-                        {% elif run.screenshots[example.name]["Linux"].1 == "unreviewed_comparisons" -%}
-                        <span class="changed-new"></span>
-                        {% endif -%}
-                    </div>
-                    {% else -%}
-                    <span class="missing-screenshot" style="font-size: 1rem;"></span>
-                    {% endif -%}
-                    {% elif run.results[example.name]["Linux"] == "failures" -%}
-                    {% if run.logs[example.name] -%}
-                    <div data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html=true
-                        data-bs-custom-class="log-popover"
-                        data-bs-content='<pre>{{ run.logs[example.name]["Windows"] }}</pre>'>
-                        <span class="fail" style="font-size: 1.5rem;"></span>
-                    </div>
-                    {% else -%}
-                    <span class="fail" style="font-size: 1.5rem;"></span>
-                    {% endif -%}
-                    {% elif run.results[example.name]["Linux"] == "no_screenshots" -%}
-                    <span class="missing-screenshot" style="font-size: 1rem;"></span>
-                    {% endif -%}
-                    {% else -%}
-                    -
-                    {% endif -%}
+                    {{ macros::status(example_name=example.name, platform="Linux", run=run) }}
                     {% else -%}
                     -
                     <hr />-
                     {% endif -%}
-
                 </td>
                 {% endfor -%}
             </tr>

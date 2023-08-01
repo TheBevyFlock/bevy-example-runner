@@ -1,0 +1,32 @@
+{% macro status(example_name, platform, run) %}
+{% if run.results[example_name][platform] -%}
+    {% if run.results[example_name][platform] == "successes" -%}
+        {% if run.screenshots[example_name][platform] -%}
+<div data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html=true data-bs-custom-class="image-popover"
+    data-bs-content='<img class="img-fluid" src="{{ run.screenshots[example_name][platform].0 }}" />'>
+    <span class="success"></span>
+            {% if run.screenshots[example_name][platform].1 == "user_approved" -%}
+    <span class="changed-approved"></span>
+            {% elif run.screenshots[example_name][platform].1 == "unreviewed_comparisons" -%}
+    <span class="changed-new"></span>
+            {% endif -%}
+</div>
+        {% else -%}
+<span class="missing-screenshot" style="font-size: 1rem;"></span>
+        {% endif -%}
+    {% elif run.results[example_name][platform] == "failures" -%}
+        {% if run.logs[example_name] -%}
+<div data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html=true data-bs-custom-class="log-popover"
+    data-bs-content='<pre>{{ run.logs[example_name][platform] }}</pre>'>
+    <span class="fail" style="font-size: 1.5rem;"></span>
+</div>
+        {% else -%}
+<span class="fail" style="font-size: 1.5rem;"></span>
+        {% endif -%}
+    {% elif run.results[example_name][platform] == "no_screenshots" -%}
+<span class="missing-screenshot" style="font-size: 1rem;"></span>
+    {% endif -%}
+{% else -%}
+-
+{% endif -%}
+{% endmacro status %}

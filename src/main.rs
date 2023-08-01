@@ -202,6 +202,11 @@ fn main() {
 
     let mut tera = Tera::default();
     tera.add_raw_template(
+        "macros.html",
+        &std::fs::read_to_string("./templates/macros.html").unwrap(),
+    )
+    .unwrap();
+    tera.add_raw_template(
         "index.html",
         &std::fs::read_to_string("./templates/index.html").unwrap(),
     )

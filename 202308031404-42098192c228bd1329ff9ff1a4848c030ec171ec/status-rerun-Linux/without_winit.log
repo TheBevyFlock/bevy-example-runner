@@ -1,0 +1,429 @@
+==== stdout ====
+
+==== stderr ====
+[0m[0m[1m[32m Downloading[0m crates ...
+[0m[0m[1m[32m  Downloaded[0m parking_lot_core v0.9.8
+[0m[0m[1m[32m  Downloaded[0m ryu v1.0.15
+[0m[0m[1m[32m  Downloaded[0m rustc-hash v1.1.0
+[0m[0m[1m[32m  Downloaded[0m slab v0.4.8
+[0m[0m[1m[32m  Downloaded[0m version_check v0.9.4
+[0m[0m[1m[32m  Downloaded[0m raw-window-handle v0.5.2
+[0m[0m[1m[32m  Downloaded[0m thread_local v1.1.7
+[0m[0m[1m[32m  Downloaded[0m percent-encoding v2.3.0
+[0m[0m[1m[32m  Downloaded[0m rand_chacha v0.3.1
+[0m[0m[1m[32m  Downloaded[0m gltf-derive v1.2.0
+[0m[0m[1m[32m  Downloaded[0m svg_fmt v0.4.1
+[0m[0m[1m[32m  Downloaded[0m profiling v1.0.8
+[0m[0m[1m[32m  Downloaded[0m vec_map v0.8.2
+[0m[0m[1m[32m  Downloaded[0m twox-hash v1.6.3
+[0m[0m[1m[32m  Downloaded[0m simd-adler32 v0.3.7
+[0m[0m[1m[32m  Downloaded[0m ruzstd v0.4.0
+[0m[0m[1m[32m  Downloaded[0m tracing-core v0.1.31
+[0m[0m[1m[32m  Downloaded[0m uuid v1.4.1
+[0m[0m[1m[32m  Downloaded[0m walkdir v2.3.3
+[0m[0m[1m[32m  Downloaded[0m fixedbitset v0.4.2
+[0m[0m[1m[32m  Downloaded[0m wgpu-types v0.16.1
+[0m[0m[1m[32m  Downloaded[0m waker-fn v1.1.0
+[0m[0m[1m[32m  Downloaded[0m ttf-parser v0.19.1
+[0m[0m[1m[32m  Downloaded[0m xi-unicode v0.3.0
+[0m[0m[1m[32m  Downloaded[0m wgpu-core v0.16.1
+[0m[0m[1m[32m  Downloaded[0m xml-rs v0.8.16
+[0m[0m[1m[32m  Downloaded[0m x11-dl v2.21.0
+[0m[0m[1m[32m  Downloaded[0m gltf v1.2.0
+[0m[0m[1m[32m  Downloaded[0m tracing v0.1.37
+[0m[0m[1m[32m  Downloaded[0m mio v0.8.8
+[0m[0m[1m[32m  Downloaded[0m glam v0.24.1
+[0m[0m[1m[32m  Downloaded[0m wgpu v0.16.3
+[0m[0m[1m[32m  Downloaded[0m tracing-subscriber v0.3.17
+[0m[0m[1m[32m  Downloaded[0m aho-corasick v1.0.2
+[0m[0m[1m[32m  Downloaded[0m syn v1.0.109
+[0m[0m[1m[32m  Downloaded[0m winit v0.28.6
+[0m[0m[1m[32m  Downloaded[0m regex v1.9.1
+[0m[0m[1m[32m  Downloaded[0m nix v0.24.3
+[0m[0m[1m[32m  Downloaded[0m image v0.24.6
+[0m[0m[1m[32m  Downloaded[0m regex-syntax v0.7.4
+[0m[0m[1m[32m  Downloaded[0m ash v0.37.3+1.3.251
+[0m[0m[1m[32m  Downloaded[0m regex-syntax v0.6.29
+[0m[0m[1m[32m  Downloaded[0m nix v0.26.2
+[0m[0m[1m[32m  Downloaded[0m naga v0.12.3
+[0m[0m[1m[32m  Downloaded[0m regex-automata v0.3.4
+[0m[0m[1m[32m  Downloaded[0m glow v0.12.3
+[0m[0m[1m[32m  Downloaded[0m cpal v0.15.2
+[0m[0m[1m[32m  Downloaded[0m flate2 v1.0.26
+[0m[0m[1m[32m  Downloaded[0m regex-automata v0.1.10
+[0m[0m[1m[32m  Downloaded[0m owned_ttf_parser v0.19.0
+[0m[0m[1m[32m  Downloaded[0m naga_oil v0.8.1
+[0m[0m[1m[32m  Downloaded[0m lewton v0.10.2
+[0m[0m[1m[32m  Downloaded[0m hashbrown v0.12.3
+[0m[0m[1m[32m  Downloaded[0m euclid v0.22.9
+[0m[0m[1m[32m  Downloaded[0m const_soft_float v0.1.4
+[0m[0m[1m[32m  Downloaded[0m allocator-api2 v0.2.16
+[0m[0m[1m[32m  Downloaded[0m wgpu-hal v0.16.2
+[0m[0m[1m[32m  Downloaded[0m slotmap v1.0.6
+[0m[0m[1m[32m  Downloaded[0m sharded-slab v0.1.4
+[0m[0m[1m[32m  Downloaded[0m parking_lot v0.12.1
+[0m[0m[1m[32m  Downloaded[0m notify v6.0.1
+[0m[0m[1m[32m  Downloaded[0m miniz_oxide v0.7.1
+[0m[0m[1m[32m  Downloaded[0m indexmap v1.9.3
+[0m[0m[1m[32m  Downloaded[0m guillotiere v0.6.2
+[0m[0m[1m[32m  Downloaded[0m gpu-descriptor v0.2.3
+[0m[0m[1m[32m  Downloaded[0m glyph_brush_layout v0.2.3
+[0m[0m[1m[32m  Downloaded[0m gilrs-core v0.5.6
+[0m[0m[1m[32m  Downloaded[0m futures-lite v1.13.0
+[0m[0m[1m[32m  Downloaded[0m erased-serde v0.3.28
+[0m[0m[1m[32m  Downloaded[0m encase_derive_impl v0.6.1
+[0m[0m[1m[32m  Downloaded[0m encase_derive v0.6.1
+[0m[0m[1m[32m  Downloaded[0m cfg_aliases v0.1.1
+[0m[0m[1m[32m  Downloaded[0m bytemuck v1.13.1
+[0m[0m[1m[32m  Downloaded[0m alsa v0.7.1
+[0m[0m[1m[32m  Downloaded[0m ab_glyph_rasterizer v0.1.8
+[0m[0m[1m[32m  Downloaded[0m tinyvec v1.6.0
+[0m[0m[1m[32m  Downloaded[0m scopeguard v1.2.0
+[0m[0m[1m[32m  Downloaded[0m radsort v0.1.0
+[0m[0m[1m[32m  Downloaded[0m overload v0.1.1
+[0m[0m[1m[32m  Downloaded[0m ogg v0.8.0
+[0m[0m[1m[32m  Downloaded[0m libloading v0.7.4
+[0m[0m[1m[32m  Downloaded[0m inotify v0.9.6
+[0m[0m[1m[32m  Downloaded[0m hexasphere v9.1.0
+[0m[0m[1m[32m  Downloaded[0m getrandom v0.2.10
+[0m[0m[1m[32m  Downloaded[0m concurrent-queue v2.2.0
+[0m[0m[1m[32m  Downloaded[0m codespan-reporting v0.11.1
+[0m[0m[1m[32m  Downloaded[0m async-lock v2.7.0
+[0m[0m[1m[32m  Downloaded[0m anyhow v1.0.72
+[0m[0m[1m[32m  Downloaded[0m alsa-sys v0.3.1
+[0m[0m[1m[32m  Downloaded[0m ahash v0.8.3
+[0m[0m[1m[32m  Downloaded[0m ahash v0.7.6
+[0m[0m[1m[32m  Downloaded[0m nu-ansi-term v0.46.0
+[0m[0m[1m[32m  Downloaded[0m khronos-egl v4.1.0
+[0m[0m[1m[32m  Downloaded[0m fdeflate v0.3.0
+[0m[0m[1m[32m  Downloaded[0m crc32fast v1.3.2
+[0m[0m[1m[32m  Downloaded[0m bit-vec v0.6.3
+[0m[0m[1m[32m  Downloaded[0m async-task v4.4.0
+[0m[0m[1m[32m  Downloaded[0m wayland-scanner v0.29.5
+[0m[0m[1m[32m  Downloaded[0m tracing-log v0.1.3
+[0m[0m[1m[32m  Downloaded[0m termcolor v1.2.0
+[0m[0m[1m[32m  Downloaded[0m sysinfo v0.29.7
+[0m[0m[1m[32m  Downloaded[0m rectangle-pack v0.4.2
+[0m[0m[1m[32m  Downloaded[0m rand_core v0.6.4
+[0m[0m[1m[32m  Downloaded[0m pkg-config v0.3.27
+[0m[0m[1m[32m  Downloaded[0m parking v2.1.0
+[0m[0m[1m[32m  Downloaded[0m num-rational v0.4.1
+[0m[0m[1m[32m  Downloaded[0m lock_api v0.4.10
+[0m[0m[1m[32m  Downloaded[0m inotify-sys v0.1.5
+[0m[0m[1m[32m  Downloaded[0m hexf-parse v0.2.1
+[0m[0m[1m[32m  Downloaded[0m grid v0.9.0
+[0m[0m[1m[32m  Downloaded[0m gpu-alloc v0.5.4
+[0m[0m[1m[32m  Downloaded[0m downcast-rs v1.2.0
+[0m[0m[1m[32m  Downloaded[0m data-encoding v2.4.0
+[0m[0m[1m[32m  Downloaded[0m dasp_sample v0.11.0
+[0m[0m[1m[32m  Downloaded[0m bytemuck_derive v1.4.1
+[0m[0m[1m[32m  Downloaded[0m async-executor v1.5.1
+[0m[0m[1m[32m  Downloaded[0m async-channel v1.9.0
+[0m[0m[1m[32m  Downloaded[0m accesskit v0.11.1
+[0m[0m[1m[32m  Downloaded[0m ab_glyph v0.2.21
+[0m[0m[1m[32m  Downloaded[0m pin-project-lite v0.2.10
+[0m[0m[1m[32m  Downloaded[0m petgraph v0.6.3
+[0m[0m[1m[32m  Downloaded[0m gpu-descriptor-types v0.1.1
+[0m[0m[1m[32m  Downloaded[0m fnv v1.0.7
+[0m[0m[1m[32m  Downloaded[0m adler v1.0.2
+[0m[0m[1m[32m  Downloaded[0m renderdoc-sys v1.0.0
+[0m[0m[1m[32m  Downloaded[0m no-std-compat v0.4.1
+[0m[0m[1m[32m  Downloaded[0m itoa v1.0.9
+[0m[0m[1m[32m  Downloaded[0m inflections v1.1.1
+[0m[0m[1m[32m  Downloaded[0m gilrs v0.10.2
+[0m[0m[1m[32m  Downloaded[0m futures-io v0.3.28
+[0m[0m[1m[32m  Downloaded[0m filetime v0.2.21
+[0m[0m[1m[32m  Downloaded[0m event-listener v2.5.3
+[0m[0m[1m[32m  Downloaded[0m bit-set v0.5.3
+[0m[0m[1m[32m  Downloaded[0m taffy v0.3.12
+[0m[0m[1m[32m  Downloaded[0m smol_str v0.2.0
+[0m[0m[1m[32m  Downloaded[0m serde_json v1.0.104
+[0m[0m[1m[32m  Downloaded[0m matchers v0.1.0
+[0m[0m[1m[32m  Downloaded[0m gpu-alloc-types v0.2.0
+[0m[0m[1m[32m  Downloaded[0m fastrand v1.9.0
+[0m[0m[1m[32m  Downloaded[0m const_panic v0.2.8
+[0m[0m[1m[32m  Downloaded[0m unicode-xid v0.2.4
+[0m[0m[1m[32m  Downloaded[0m tinyvec_macros v0.1.1
+[0m[0m[1m[32m  Downloaded[0m same-file v1.0.6
+[0m[0m[1m[32m  Downloaded[0m num-traits v0.2.16
+[0m[0m[1m[32m  Downloaded[0m ktx2 v0.3.0
+[0m[0m[1m[32m  Downloaded[0m gltf-json v1.2.0
+[0m[0m[1m[32m  Downloaded[0m futures-core v0.3.28
+[0m[0m[1m[32m  Downloaded[0m constgebra v0.1.3
+[0m[0m[1m[32m  Downloaded[0m autocfg v1.1.0
+[0m[0m[1m[32m  Downloaded[0m spirv v0.2.0+1.5.4
+[0m[0m[1m[32m  Downloaded[0m rand v0.8.5
+[0m[0m[1m[32m  Downloaded[0m ppv-lite86 v0.2.17
+[0m[0m[1m[32m  Downloaded[0m png v0.17.9
+[0m[0m[1m[32m  Downloaded[0m num-integer v0.1.45
+[0m[0m[1m[32m  Downloaded[0m log v0.4.19
+[0m[0m[1m[32m  Downloaded[0m approx v0.5.1
+[0m[0m[1m[32m  Downloaded[0m tracing-attributes v0.1.26
+[0m[0m[1m[32m  Downloaded[0m thiserror-impl v1.0.44
+[0m[0m[1m[32m  Downloaded[0m thiserror-core v1.0.38
+[0m[0m[1m[32m  Downloaded[0m static_assertions v1.1.0
+[0m[0m[1m[32m  Downloaded[0m smallvec v1.11.0
+[0m[0m[1m[32m  Downloaded[0m rodio v0.17.1
+[0m[0m[1m[32m  Downloaded[0m libudev-sys v0.1.4
+[0m[0m[1m[32m  Downloaded[0m libloading v0.8.0
+[0m[0m[1m[32m  Downloaded[0m instant v0.1.12
+[0m[0m[1m[32m  Downloaded[0m encase v0.6.1
+[0m[0m[1m[32m  Downloaded[0m arrayvec v0.7.4
+[0m[0m[1m[32m  Downloaded[0m accesskit_winit v0.14.2
+[0m[0m[1m[32m  Downloaded[0m unicode-width v0.1.10
+[0m[0m[1m[32m  Downloaded[0m thiserror-core-impl v1.0.38
+[0m[0m[1m[32m  Downloaded[0m thiserror v1.0.44
+[0m[0m[1m[32m  Downloaded[0m lazy_static v1.4.0
+[0m[0m[1m[32m  Downloaded[0m color_quant v1.1.0
+[0m[0m[1m[32m  Downloaded[0m byteorder v1.4.3
+[0m[0m[1m[32m  Downloaded[0m pp-rs v0.2.1
+[0m[0m[1m[32m   Compiling[0m cfg-if v1.0.0
+[0m[0m[1m[32m   Compiling[0m proc-macro2 v1.0.66
+[0m[0m[1m[32m   Compiling[0m unicode-ident v1.0.11
+[0m[0m[1m[32m   Compiling[0m libc v0.2.147
+[0m[0m[1m[32m   Compiling[0m quote v1.0.32
+[0m[0m[1m[32m   Compiling[0m autocfg v1.1.0
+[0m[0m[1m[32m   Compiling[0m syn v2.0.28
+[0m[0m[1m[32m   Compiling[0m serde v1.0.180
+[0m[0m[1m[32m   Compiling[0m serde_derive v1.0.180
+[0m[0m[1m[32m   Compiling[0m bitflags v1.3.2
+[0m[0m[1m[32m   Compiling[0m once_cell v1.18.0
+[0m[0m[1m[32m   Compiling[0m version_check v0.9.4
+[0m[0m[1m[32m   Compiling[0m getrandom v0.2.10
+[0m[0m[1m[32m   Compiling[0m ahash v0.7.6
+[0m[0m[1m[32m   Compiling[0m indexmap v1.9.3
+[0m[0m[1m[32m   Compiling[0m memchr v2.5.0
+[0m[0m[1m[32m   Compiling[0m hashbrown v0.12.3
+[0m[0m[1m[32m   Compiling[0m thiserror v1.0.44
+[0m[0m[1m[32m   Compiling[0m thiserror-impl v1.0.44
+[0m[0m[1m[32m   Compiling[0m smallvec v1.11.0
+[0m[0m[1m[32m   Compiling[0m lock_api v0.4.10
+[0m[0m[1m[32m   Compiling[0m equivalent v1.0.1
+[0m[0m[1m[32m   Compiling[0m hashbrown v0.14.0
+[0m[0m[1m[32m   Compiling[0m parking_lot_core v0.9.8
+[0m[0m[1m[32m   Compiling[0m indexmap v2.0.0
+[0m[0m[1m[32m   Compiling[0m bytemuck_derive v1.4.1
+[0m[0m[1m[32m   Compiling[0m winnow v0.5.3
+[0m[0m[1m[32m   Compiling[0m toml_datetime v0.6.3
+[0m[0m[1m[32m   Compiling[0m crossbeam-utils v0.8.16
+[0m[0m[1m[32m   Compiling[0m pin-project-lite v0.2.10
+[0m[0m[1m[32m   Compiling[0m scopeguard v1.2.0
+[0m[0m[1m[32m   Compiling[0m bytemuck v1.13.1
+[0m[0m[1m[32m   Compiling[0m toml_edit v0.19.14
+[0m[0m[1m[32m   Compiling[0m rustc-hash v1.1.0
+[0m[0m[1m[32m   Compiling[0m parking_lot v0.12.1
+[0m[0m[1m[32m   Compiling[0m bevy_macro_utils v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_macro_utils)
+[0m[0m[1m[32m   Compiling[0m tracing-core v0.1.31
+[0m[0m[1m[32m   Compiling[0m futures-core v0.3.28
+[0m[0m[1m[32m   Compiling[0m log v0.4.19
+[0m[0m[1m[32m   Compiling[0m glam v0.24.1
+[0m[0m[1m[32m   Compiling[0m ahash v0.8.3
+[0m[0m[1m[32m   Compiling[0m tracing-attributes v0.1.26
+[0m[0m[1m[32m   Compiling[0m tracing v0.1.37
+[0m[0m[1m[32m   Compiling[0m uuid v1.4.1
+[0m[0m[1m[32m   Compiling[0m slab v0.4.8
+[0m[0m[1m[32m   Compiling[0m instant v0.1.12
+[0m[0m[1m[32m   Compiling[0m event-listener v2.5.3
+[0m[0m[1m[32m   Compiling[0m concurrent-queue v2.2.0
+[0m[0m[1m[32m   Compiling[0m erased-serde v0.3.28
+[0m[0m[1m[32m   Compiling[0m futures-io v0.3.28
+[0m[0m[1m[32m   Compiling[0m waker-fn v1.1.0
+[0m[0m[1m[32m   Compiling[0m fastrand v1.9.0
+[0m[0m[1m[32m   Compiling[0m parking v2.1.0
+[0m[0m[1m[32m   Compiling[0m fixedbitset v0.4.2
+[0m[0m[1m[32m   Compiling[0m allocator-api2 v0.2.16
+[0m[0m[1m[32m   Compiling[0m bit-vec v0.6.3
+[0m[0m[1m[32m   Compiling[0m bit-set v0.5.3
+[0m[0m[1m[32m   Compiling[0m petgraph v0.6.3
+[0m[0m[1m[32m   Compiling[0m futures-lite v1.13.0
+[0m[0m[1m[32m   Compiling[0m async-lock v2.7.0
+[0m[0m[1m[32m   Compiling[0m bevy_utils_proc_macros v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_utils/macros)
+[0m[0m[1m[32m   Compiling[0m num-traits v0.2.16
+[0m[0m[1m[32m   Compiling[0m async-task v4.4.0
+[0m[0m[1m[32m   Compiling[0m async-executor v1.5.1
+[0m[0m[1m[32m   Compiling[0m bevy_utils v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_utils)
+[0m[0m[1m[32m   Compiling[0m bevy_reflect_derive v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_reflect/bevy_reflect_derive)
+[0m[0m[1m[32m   Compiling[0m async-channel v1.9.0
+[0m[0m[1m[32m   Compiling[0m bevy_math v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_math)
+[0m[0m[1m[32m   Compiling[0m thread_local v1.1.7
+[0m[0m[1m[32m   Compiling[0m bevy_ptr v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_ptr)
+[0m[0m[1m[32m   Compiling[0m downcast-rs v1.2.0
+[0m[0m[1m[32m   Compiling[0m smol_str v0.2.0
+[0m[0m[1m[32m   Compiling[0m bevy_tasks v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_tasks)
+[0m[0m[1m[32m   Compiling[0m bevy_reflect v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_reflect)
+[0m[0m[1m[32m   Compiling[0m bevy_ecs_macros v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_ecs/macros)
+[0m[0m[1m[32m   Compiling[0m base64 v0.13.1
+[0m[0m[1m[32m   Compiling[0m ron v0.8.0
+[0m[0m[1m[32m   Compiling[0m bevy_ecs v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_ecs)
+[0m[0m[1m[32m   Compiling[0m bevy_derive v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_derive)
+[0m[0m[1m[32m   Compiling[0m bevy_app v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_app)
+[0m[0m[1m[32m   Compiling[0m aho-corasick v1.0.2
+[0m[0m[1m[32m   Compiling[0m regex-syntax v0.7.4
+[0m[0m[1m[32m   Compiling[0m regex-syntax v0.6.29
+[0m[0m[1m[32m   Compiling[0m lazy_static v1.4.0
+[0m[0m[1m[32m   Compiling[0m regex-automata v0.3.4
+[0m[0m[1m[32m   Compiling[0m regex v1.9.1
+[0m[0m[1m[32m   Compiling[0m regex-automata v0.1.10
+[0m[0m[1m[32m   Compiling[0m overload v0.1.1
+[0m[0m[1m[32m   Compiling[0m nu-ansi-term v0.46.0
+[0m[0m[1m[32m   Compiling[0m matchers v0.1.0
+[0m[0m[1m[32m   Compiling[0m sharded-slab v0.1.4
+[0m[0m[1m[32m   Compiling[0m tracing-log v0.1.3
+[0m[0m[1m[32m   Compiling[0m pkg-config v0.3.27
+[0m[0m[1m[32m   Compiling[0m tracing-subscriber v0.3.17
+[0m[0m[1m[32m   Compiling[0m bevy_log v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_log)
+[0m[0m[1m[32m   Compiling[0m byteorder v1.4.3
+[0m[0m[1m[32m   Compiling[0m static_assertions v1.1.0
+[0m[0m[1m[32m   Compiling[0m raw-window-handle v0.5.2
+[0m[0m[1m[32m   Compiling[0m bevy_core v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_core)
+[0m[0m[1m[32m   Compiling[0m mio v0.8.8
+[0m[0m[1m[32m   Compiling[0m crossbeam-channel v0.5.8
+[0m[0m[1m[32m   Compiling[0m termcolor v1.2.0
+[0m[0m[1m[32m   Compiling[0m unicode-xid v0.2.4
+[0m[0m[1m[32m   Compiling[0m unicode-width v0.1.10
+[0m[0m[1m[32m   Compiling[0m codespan-reporting v0.11.1
+[0m[0m[1m[32m   Compiling[0m pp-rs v0.2.1
+[0m[0m[1m[32m   Compiling[0m spirv v0.2.0+1.5.4
+[0m[0m[1m[32m   Compiling[0m libloading v0.7.4
+[0m[0m[1m[32m   Compiling[0m crc32fast v1.3.2
+[0m[0m[1m[32m   Compiling[0m syn v1.0.109
+[0m[0m[1m[32m   Compiling[0m ash v0.37.3+1.3.251
+[0m[0m[1m[32m   Compiling[0m hexf-parse v0.2.1
+[0m[0m[1m[32m   Compiling[0m simd-adler32 v0.3.7
+[0m[0m[1m[32m   Compiling[0m khronos-egl v4.1.0
+[0m[0m[1m[32m   Compiling[0m naga v0.12.3
+[0m[0m[1m[32m   Compiling[0m bevy_time v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_time)
+[0m[0m[1m[32m   Compiling[0m gpu-alloc-types v0.2.0
+[0m[0m[1m[32m   Compiling[0m gpu-descriptor-types v0.1.1
+[0m[0m[1m[32m   Compiling[0m num-integer v0.1.45
+[0m[0m[1m[32m   Compiling[0m inotify-sys v0.1.5
+[0m[0m[1m[32m   Compiling[0m adler v1.0.2
+[0m[0m[1m[32m   Compiling[0m same-file v1.0.6
+[0m[0m[1m[32m   Compiling[0m bitflags v2.3.3
+[0m[0m[1m[32m   Compiling[0m anyhow v1.0.72
+[0m[0m[1m[32m   Compiling[0m arrayvec v0.7.4
+[0m[0m[1m[32m   Compiling[0m wgpu-types v0.16.1
+[0m[0m[1m[32m   Compiling[0m walkdir v2.3.3
+[0m[0m[1m[32m   Compiling[0m miniz_oxide v0.7.1
+[0m[0m[1m[32m   Compiling[0m inotify v0.9.6
+[0m[0m[1m[32m   Compiling[0m gpu-descriptor v0.2.3
+[0m[0m[1m[32m   Compiling[0m gpu-alloc v0.5.4
+[0m[0m[1m[32m   Compiling[0m bevy_hierarchy v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_hierarchy)
+[0m[0m[1m[32m   Compiling[0m bevy_input v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_input)
+[0m[0m[1m[32m   Compiling[0m sysinfo v0.29.7
+[0m[0m[1m[32m   Compiling[0m encase_derive_impl v0.6.1
+[0m[0m[1m[32m   Compiling[0m num-rational v0.4.1
+[0m[0m[1m[32m   Compiling[0m filetime v0.2.21
+[0m[0m[1m[32m   Compiling[0m libloading v0.8.0
+[0m[0m[1m[32m   Compiling[0m glow v0.12.3
+[0m[0m[1m[32m   Compiling[0m thiserror-core v1.0.38
+[0m[0m[1m[32m   Compiling[0m profiling v1.0.8
+[0m[0m[1m[32m   Compiling[0m renderdoc-sys v1.0.0
+[0m[0m[1m[32m   Compiling[0m wgpu-hal v0.16.2
+[0m[0m[1m[32m   Compiling[0m notify v6.0.1
+[0m[0m[1m[32m   Compiling[0m bevy_diagnostic v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_diagnostic)
+[0m[0m[1m[32m   Compiling[0m thiserror-core-impl v1.0.38
+[0m[0m[1m[32m   Compiling[0m flate2 v1.0.26
+[0m[0m[1m[32m   Compiling[0m fdeflate v0.3.0
+[0m[0m[1m[32m   Compiling[0m const_soft_float v0.1.4
+[0m[0m[1m[32m   Compiling[0m constgebra v0.1.3
+[0m[0m[1m[32m   Compiling[0m png v0.17.9
+[0m[0m[1m[32m   Compiling[0m bevy_asset v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_asset)
+[0m[0m[1m[32m   Compiling[0m wgpu-core v0.16.1
+[0m[0m[1m[32m   Compiling[0m encase_derive v0.6.1
+[0m[0m[1m[32m   Compiling[0m bevy_window v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_window)
+[0m[0m[1m[32m   Compiling[0m bevy_transform v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_transform)
+[0m[0m[1m[32m   Compiling[0m twox-hash v1.6.3
+[0m[0m[1m[32m   Compiling[0m data-encoding v2.4.0
+[0m[0m[1m[32m   Compiling[0m const_panic v0.2.8
+[0m[0m[1m[32m   Compiling[0m color_quant v1.1.0
+[0m[0m[1m[32m   Compiling[0m image v0.24.6
+[0m[0m[1m[32m   Compiling[0m encase v0.6.1
+[0m[0m[1m[32m   Compiling[0m naga_oil v0.8.1
+[0m[0m[1m[32m   Compiling[0m ruzstd v0.4.0
+[0m[0m[1m[32m   Compiling[0m wgpu v0.16.3
+[0m[0m[1m[32m   Compiling[0m hexasphere v9.1.0
+[0m[0m[1m[32m   Compiling[0m bevy_encase_derive v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_encase_derive)
+[0m[0m[1m[32m   Compiling[0m bevy_mikktspace v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_mikktspace)
+[0m[0m[1m[32m   Compiling[0m bevy_render_macros v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_render/macros)
+[0m[0m[1m[32m   Compiling[0m ktx2 v0.3.0
+[0m[0m[1m[32m   Compiling[0m bevy_render v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_render)
+[0m[0m[1m[32m   Compiling[0m radsort v0.1.0
+[0m[0m[1m[32m   Compiling[0m bevy_core_pipeline v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_core_pipeline)
+[0m[0m[1m[32m   Compiling[0m alsa-sys v0.3.1
+[0m[0m[1m[32m   Compiling[0m xml-rs v0.8.16
+[0m[0m[1m[32m   Compiling[0m x11-dl v2.21.0
+[0m[0m[1m[32m   Compiling[0m libudev-sys v0.1.4
+[0m[0m[1m[32m   Compiling[0m wayland-scanner v0.29.5
+[0m[0m[1m[32m   Compiling[0m euclid v0.22.9
+[0m[0m[1m[32m   Compiling[0m svg_fmt v0.4.1
+[0m[0m[1m[32m   Compiling[0m cfg_aliases v0.1.1
+[0m[0m[1m[32m   Compiling[0m serde_json v1.0.104
+[0m[0m[1m[32m   Compiling[0m ttf-parser v0.19.1
+[0m[0m[1m[32m   Compiling[0m guillotiere v0.6.2
+[0m[0m[1m[32m   Compiling[0m winit v0.28.6
+[0m[0m[1m[32m   Compiling[0m owned_ttf_parser v0.19.0
+[0m[0m[1m[32m   Compiling[0m approx v0.5.1
+[0m[0m[1m[32m   Compiling[0m slotmap v1.0.6
+[0m[0m[1m[32m   Compiling[0m nix v0.24.3
+[0m[0m[1m[32m   Compiling[0m rectangle-pack v0.4.2
+[0m[0m[1m[32m   Compiling[0m percent-encoding v2.3.0
+[0m[0m[1m[32m   Compiling[0m cpal v0.15.2
+[0m[0m[1m[32m   Compiling[0m ryu v1.0.15
+[0m[0m[1m[32m   Compiling[0m accesskit v0.11.1
+[0m[0m[1m[32m   Compiling[0m inflections v1.1.1
+[0m[0m[1m[32m   Compiling[0m tinyvec_macros v0.1.1
+[0m[0m[1m[32m   Compiling[0m ab_glyph_rasterizer v0.1.8
+[0m[0m[1m[32m   Compiling[0m itoa v1.0.9
+[0m[0m[1m[32m   Compiling[0m ab_glyph v0.2.21
+[0m[0m[1m[32m   Compiling[0m tinyvec v1.6.0
+[0m[0m[1m[32m   Compiling[0m gltf-derive v1.2.0
+[0m[0m[1m[32m   Compiling[0m bevy_sprite v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_sprite)
+[0m[0m[1m[32m   Compiling[0m alsa v0.7.1
+[0m[0m[1m[32m   Compiling[0m ogg v0.8.0
+[0m[0m[1m[32m   Compiling[0m nix v0.26.2
+[0m[0m[1m[32m   Compiling[0m xi-unicode v0.3.0
+[0m[0m[1m[32m   Compiling[0m vec_map v0.8.2
+[0m[0m[1m[32m   Compiling[0m no-std-compat v0.4.1
+[0m[0m[1m[32m   Compiling[0m gilrs v0.10.2
+[0m[0m[1m[32m   Compiling[0m dasp_sample v0.11.0
+[0m[0m[1m[32m   Compiling[0m grid v0.9.0
+[0m[0m[1m[32m   Compiling[0m gilrs-core v0.5.6
+[0m[0m[1m[32m   Compiling[0m glyph_brush_layout v0.2.3
+[0m[0m[1m[32m   Compiling[0m lewton v0.10.2
+[0m[0m[1m[32m   Compiling[0m gltf-json v1.2.0
+[0m[0m[1m[32m   Compiling[0m bevy_a11y v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_a11y)
+[0m[0m[1m[32m   Compiling[0m bevy_pbr v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_pbr)
+[0m[0m[1m[32m   Compiling[0m fnv v1.0.7
+[0m[0m[1m[32m   Compiling[0m gltf v1.2.0
+[0m[0m[1m[32m   Compiling[0m taffy v0.3.12
+[0m[0m[1m[32m   Compiling[0m accesskit_winit v0.14.2
+[0m[0m[1m[32m   Compiling[0m rodio v0.17.1
+[0m[0m[1m[32m   Compiling[0m bevy_text v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_text)
+[0m[0m[1m[32m   Compiling[0m bevy_animation v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_animation)
+[0m[0m[1m[32m   Compiling[0m bevy_scene v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_scene)
+[0m[0m[1m[32m   Compiling[0m bevy_gltf v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_gltf)
+[0m[0m[1m[32m   Compiling[0m bevy_ui v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_ui)
+[0m[0m[1m[32m   Compiling[0m bevy_audio v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_audio)
+[0m[0m[1m[32m   Compiling[0m bevy_winit v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_winit)
+[0m[0m[1m[32m   Compiling[0m bevy_gilrs v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_gilrs)
+[0m[0m[1m[32m   Compiling[0m bevy_gizmos v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_gizmos)
+[0m[0m[1m[32m   Compiling[0m rand_core v0.6.4
+[0m[0m[1m[32m   Compiling[0m ppv-lite86 v0.2.17
+[0m[0m[1m[32m   Compiling[0m rand_chacha v0.3.1
+[0m[0m[1m[32m   Compiling[0m bevy_internal v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests/crates/bevy_internal)
+[0m[0m[1m[32m   Compiling[0m bevy v0.12.0-dev (/home/runner/work/bevy-example-tests/bevy-example-tests)
+[0m[0m[1m[32m   Compiling[0m rand v0.8.5
+[0m[0m[1m[32m    Finished[0m release [optimized] target(s) in 8m 00s
+[0m[0m[1m[32m     Running[0m `target/release/examples/without_winit`
+ALSA lib confmisc.c:855:(parse_card) cannot find card '0'
+ALSA lib conf.c:5178:(_snd_config_evaluate) function snd_func_card_inum returned error: No such file or directory
+ALSA lib confmisc.c:422:(snd_func_concat) error evaluating strings
+ALSA lib conf.c:5178:(_snd_config_evaluate) function snd_func_concat returned error: No such file or directory
+ALSA lib confmisc.c:1334:(snd_func_refer) error evaluating name
+ALSA lib conf.c:5178:(_snd_config_evaluate) function snd_func_refer returned error: No such file or directory
+ALSA lib conf.c:5701:(snd_config_expand) Evaluate error: No such file or directory
+ALSA lib pcm.c:2664:(snd_pcm_open_noupdate) Unknown PCM default
+[2m2023-08-03T15:22:41.942616Z[0m [33m WARN[0m [2mbevy_audio::audio_output[0m[2m:[0m No audio device found.
+[2m2023-08-03T15:22:42.143452Z[0m [32m INFO[0m [2mbevy_render::renderer[0m[2m:[0m AdapterInfo { name: "llvmpipe (LLVM 15.0.7, 256 bits)", vendor: 65541, device: 0, device_type: Cpu, driver: "llvmpipe", driver_info: "Mesa 23.3~git2308020600.4de7e0~oibaf~j (git-4de7e00 2023-08-02 jammy-oibaf-ppa) (LLVM 15.0.7)", backend: Vulkan }
+[2m2023-08-03T15:22:44.283923Z[0m [32m INFO[0m [2mbevy_diagnostic::system_information_diagnostics_plugin::internal[0m[2m:[0m SystemInfo { os: "Linux 22.04 Ubuntu", kernel: "5.15.0-1042-azure", cpu: "Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz", core_count: "2", memory: "6.8 GiB" }

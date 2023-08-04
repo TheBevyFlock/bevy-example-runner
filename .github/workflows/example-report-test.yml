@@ -93,13 +93,13 @@ jobs:
           sudo apt-get update
           sudo apt install -y xvfb libegl1-mesa libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers
 
-      - name: Take Screenshots (Linux)
+      - name: Run Example (Linux)
         id: screenshots-linux
         if: runner.os == 'linux'
         continue-on-error: true
         run: xvfb-run cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests --report-details
 
-      - name: Take Screenshots (Windows)
+      - name: Run Example (Windows)
         id: screenshots-windows
         if: runner.os == 'windows'
         continue-on-error: true

@@ -211,7 +211,15 @@ fn main() {
         &std::fs::read_to_string("./templates/index.html").unwrap(),
     )
     .unwrap();
-    let rendered = tera.render("index.html", &context).unwrap();
+    tera.add_raw_template(
+        "about.html",
+        &std::fs::read_to_string("./templates/about.html").unwrap(),
+    )
+    .unwrap();
 
+    let rendered = tera.render("index.html", &context).unwrap();
     std::fs::write("./site/index.html", &rendered).unwrap();
+
+    let rendered = tera.render("about.html", &context).unwrap();
+    std::fs::write("./site/about.html", &rendered).unwrap();
 }

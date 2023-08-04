@@ -21,8 +21,8 @@
         }
 
         th {
-            max-width: 5rem;
-            max-height: 8rem;
+            min-width: 3em;
+            height: 11em;
             overflow: hidden;
             vertical-align: top;
             position: sticky;
@@ -187,7 +187,7 @@
     <table>
         <thead>
             <tr>
-                <th class="no-border" style="min-width: 35rem;">
+                <th class="no-border" style="min-width: 35em;">
                     <div style="padding: 3px;">
                         <span class="success"></span> Example ran successfully, screenshot available
                     </div>
@@ -211,9 +211,9 @@
                         <label class="form-check-label" for="flexSwitchCheckReverse">Only show flaky examples</label>
                     </div>
                 </th>
-                <th class="no-border"></th>
+                <th class="no-border" style="min-width: 1em;"></th>
                 {% for run in runs -%}
-                <th style="width: 4rem; height: 13rem;">
+                <th>
                     <div class="vertical">
                         <div>{{ run.date }}</div>
                         <a href="https://github.com/bevyengine/bevy/commit/{{ run.commit }}">{{

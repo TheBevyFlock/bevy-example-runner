@@ -39,7 +39,9 @@ fn get_snapshots_with_retry(build_id: &str) -> SnapshotsData {
 }
 
 pub fn read_percy_results(results: String) -> Vec<(String, String, String)> {
-    let main: Main = serde_json::from_str(&results).unwrap();
+    let Ok(main) = serde_json::from_str::<Main>(&results) else {
+        return vec![];
+    };
     let build_id = main.web_url.split('/').last().unwrap();
     let data = get_snapshots_with_retry(build_id);
 

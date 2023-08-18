@@ -159,6 +159,7 @@ jobs:
         uses: actions/download-artifact@v3
 
       - name: Move examples to the correct folder
+        id: gather-examples
         continue-on-error: true
         run: |
           mkdir screenshots-${{ matrix.os }}
@@ -170,6 +171,7 @@ jobs:
           done
       
       - name: Remove example known to be random
+        if: steps.gather-examples.outcome == 'success'
         run: |
           rm "screenshots-${{ matrix.os }}/Animation/animated_fox.png" || true
           rm "screenshots-${{ matrix.os }}/Animation/custom_skinned_mesh.png" || true
@@ -182,13 +184,14 @@ jobs:
 
       # Windows only
       - name: Remove example known to be random (Windows)
-        if: matrix.os == 'Windows'
+        if: steps.gather-examples.outcome == 'success' && matrix.os == 'Windows'
         run: |
           rm "screenshots-${{ matrix.os }}/UI (User Interface)/relative_cursor_position.png" || true
           rm "screenshots-${{ matrix.os }}/Shaders/compute_shader_game_of_life.png" || true
           rm "screenshots-${{ matrix.os }}/ECS (Entity Component System)/apply_deferred.png" || true
 
       - name: Send to Percy
+        if: steps.gather-examples.outcome == 'success'        
         run: |
           npm install -g @percy/cli@latest
           npx percy upload screenshots-${{ matrix.os }}
@@ -197,6 +200,7 @@ jobs:
           PERCY_COMMIT: ${{ needs.get-environment.outputs.gitref }}
 
       - name: Wait for result
+        if: steps.gather-examples.outcome == 'success'
         run: |
           npx percy build:wait --project ${{ matrix.percy_project }} --commit ${{ needs.get-environment.outputs.gitref }}
         env:

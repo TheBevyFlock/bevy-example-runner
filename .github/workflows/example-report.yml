@@ -159,6 +159,7 @@ jobs:
         uses: actions/download-artifact@v3
 
       - name: Move examples to the correct folder
+        continue-on-error: true
         run: |
           mkdir screenshots-${{ matrix.os }}
           for screenshotfolder in screenshots-${{ matrix.os }}-*

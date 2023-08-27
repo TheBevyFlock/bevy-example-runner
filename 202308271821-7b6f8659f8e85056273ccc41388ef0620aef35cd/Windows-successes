@@ -1,0 +1,155 @@
+Application/empty_defaults - 922.26556
+Shaders/shader_material - 33.41537
+Audio/audio_control - 14.274619
+ECS (Entity Component System)/timers - 12.211135
+Transforms/3d_rotation - 21.66384
+Animation/animated_transform - 38.611397
+Scene/scene - 18.58296
+3D Rendering/two_passes - 125.58859
+ECS (Entity Component System)/fixed_timestep - 11.99413
+Shaders/shader_material_glsl - 33.114227
+UI (User Interface)/flex_layout - 23.30243
+Input/text_input - 17.096703
+2D Rendering/sprite - 14.737353
+2D Rendering/sprite_flipping - 14.729427
+UI (User Interface)/button - 15.693847
+UI (User Interface)/display_and_visibility - 28.3087
+2D Rendering/texture_atlas - 18.851114
+3D Rendering/pbr - 207.35791
+Application/thread_pool_resources - 10.527383
+3D Rendering/shadow_biases - 1566.012
+Input/mouse_input_events - 17.04233
+Games/breakout - 27.82571
+UI (User Interface)/transparency_ui - 19.746223
+UI (User Interface)/grid - 22.85709
+Input/touch_input - 14.164071
+3D Rendering/load_gltf - 199.27148
+ECS (Entity Component System)/run_conditions - 15.995408
+Input/gamepad_rumble - 14.567887
+Shaders/compute_shader_game_of_life - 41.93381
+Games/game_menu - 31.811415
+Reflection/reflection_types - 16.71722
+UI (User Interface)/ui_texture_atlas - 21.028189
+Application/logs - 14.000222
+3D Rendering/3d_scene - 113.03575
+Animation/animated_fox - 372.17517
+Input/keyboard_input_events - 13.595258
+ECS (Entity Component System)/state - 23.08939
+UI (User Interface)/viewport_debug - 1183.8776
+2D Rendering/mesh2d_vertex_color_texture - 19.26252
+ECS (Entity Component System)/apply_deferred - 20.404915
+Shaders/custom_vertex_attribute - 35.903225
+Application/drag_and_drop - 13.144158
+Input/mouse_input - 12.783392
+3D Rendering/bloom_3d - 237.23009
+Audio/decodable - 22.488722
+3D Rendering/tonemapping - 377.1134
+3D Rendering/orthographic - 93.1287
+3D Rendering/fog - 219.60092
+Application/plugin_group - 12.644361
+2D Rendering/2d_gizmos - 19.222767
+Reflection/trait_reflection - 14.549188
+Diagnostics/custom_diagnostic - 12.316603
+3D Rendering/spotlight - 231.85866
+3D Rendering/ssao - 234.68883
+2D Rendering/mesh2d_manual - 22.82687
+Tools/gamepad_viewer - 24.546955
+Shaders/post_processing - 922.6331
+UI (User Interface)/text - 15.591158
+Shaders/animate_shader - 28.197063
+Shaders/shader_prepass - 113.02957
+2D Rendering/2d_shapes - 14.11793
+Application/return_after_run - 11.540257
+UI (User Interface)/font_atlas_debug - 20.4707
+Window/clear_color - 13.105936
+3D Rendering/lines - 28.49746
+Window/window_settings - 12.742165
+UI (User Interface)/borders - 16.754486
+Input/mouse_grab - 12.3838415
+3D Rendering/spherical_area_lights - 219.68384
+Shaders/array_texture - 64.26469
+Async Tasks/external_source_external_thread - 17.032124
+Shaders/shader_material_screenspace_texture - 88.08666
+Diagnostics/log_diagnostics - 10.66336
+3D Rendering/lighting - 294.65955
+Assets/asset_loading - 53.257534
+ECS (Entity Component System)/event - 12.41257
+Shaders/texture_binding_array - 1504.4291
+3D Rendering/wireframe - 112.54692
+Window/scale_factor_override - 17.823893
+Animation/morph_targets - 44.8047
+UI (User Interface)/z_index - 18.995731
+2D Rendering/bloom_2d - 124.40454
+3D Rendering/vertex_colors - 122.923836
+2D Rendering/rotation - 21.858236
+Shaders/shader_defs - 41.07446
+3D Rendering/render_to_texture - 74.94433
+2D Rendering/sprite_sheet - 20.576174
+3D Rendering/parallax_mapping - 223.62639
+UI (User Interface)/size_constraints - 31.702667
+3D Rendering/parenting - 42.664017
+ECS (Entity Component System)/nondeterministic_system_order - 15.255008
+ECS (Entity Component System)/component_change_detection - 16.10998
+Input/gamepad_input_events - 15.275088
+Application/plugin - 14.721635
+Async Tasks/async_compute - 63.638668
+Transforms/scale - 1041.6172
+Window/multiple_windows - 85.43806
+Input/keyboard_modifiers - 11.713417
+Assets/hot_asset_reloading - 48.30498
+Input/gamepad_input - 11.777031
+UI (User Interface)/relative_cursor_position - 15.083203
+UI (User Interface)/text_debug - 17.210926
+Audio/audio - 12.697845
+Assets/custom_asset_io - 14.669005
+3D Rendering/3d_shapes - 203.8736
+3D Rendering/blend_modes - 189.66022
+Assets/custom_asset - 16.636992
+Input/keyboard_input - 11.637932
+3D Rendering/generate_custom_mesh - 53.5427
+Window/window_resizing - 15.01985
+Transforms/transform - 39.70402
+2D Rendering/mesh2d - 14.303225
+UI (User Interface)/ui - 19.226044
+Games/contributors - 1486.7611
+Reflection/reflection - 22.134077
+2D Rendering/move_sprite - 21.6409
+3D Rendering/split_screen - 211.38385
+Animation/cubic_curve - 189.36034
+Shaders/shader_instancing - 34.01775
+UI (User Interface)/window_fallthrough - 22.14881
+2D Rendering/transparency_2d - 22.622684
+ECS (Entity Component System)/removal_detection - 21.500004
+UI (User Interface)/overflow_debug - 26.03446
+3D Rendering/anti_aliasing - 321.21735
+3D Rendering/skybox - 39.772808
+UI (User Interface)/text_wrap_debug - 48.03098
+Audio/spatial_audio_2d - 22.253036
+3D Rendering/update_gltf_scene - 179.17542
+Transforms/translation - 32.11514
+3D Rendering/transparency_3d - 184.75385
+Audio/pitch - 17.008322
+Reflection/generic_reflection - 1141.9991
+3D Rendering/texture - 39.94721
+UI (User Interface)/ui_scaling - 19.203543
+3D Rendering/atmospheric_fog - 310.13144
+Tools/scene_viewer - 179.42061
+ECS (Entity Component System)/iter_combinations - 77.48446
+3D Rendering/3d_gizmos - 84.68221
+Window/screenshot - 116.998856
+Animation/custom_skinned_mesh - 68.1771
+UI (User Interface)/overflow - 22.328346
+Audio/spatial_audio_3d - 31.20804
+ECS (Entity Component System)/parallel_query - 22.49219
+Animation/gltf_skinned_mesh - 35.118645
+ECS (Entity Component System)/generic_system - 15.626923
+2D Rendering/custom_gltf_vertex_attribute - 28.301395
+Games/alien_cake_addict - 211.81836
+3D Rendering/shadow_caster_receiver - 285.6925
+Window/transparent_window - 17.886398
+2D Rendering/pixel_perfect - 1408.5962
+Input/char_input_events - 14.555452
+2D Rendering/text2d - 24.907747
+Window/low_power - 42.76758
+Input/touch_input_events - 15.085343
+ECS (Entity Component System)/hierarchy - 21.25423

@@ -55,7 +55,7 @@ fn main() {
     folders.sort();
     folders.reverse();
 
-    for (i, run_path) in folders.iter().take(50).enumerate() {
+    for (i, run_path) in folders.iter().take(40).enumerate() {
         let file_name = run_path.file_name().unwrap().to_str().unwrap();
         if file_name.starts_with(".") {
             continue;

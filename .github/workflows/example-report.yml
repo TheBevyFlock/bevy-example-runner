@@ -274,123 +274,122 @@ jobs:
           path: |
             results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}
 
-  # rerun-failed-examples:
-  #   name: Rerun Failed Examples (without screenshot)
-  #   needs: [get-environment, update-results]
-  #   runs-on: ${{ matrix.os }}
-  #   strategy:
-  #     matrix:
-  #       os: [ubuntu-latest, windows-latest]
-  #   steps:
+  rerun-failed-examples:
+    name: Rerun Failed Examples (without screenshot)
+    needs: [get-environment, update-results]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
 
-  #     - name: Checkout Bevy main branch
-  #       uses: actions/checkout@v3
-  #       with:
-  #         repository: 'bevyengine/bevy'
-  #         ref: ${{ needs.get-environment.outputs.gitref }}
+      - name: Checkout Bevy main branch
+        uses: actions/checkout@v3
+        with:
+          repository: 'bevyengine/bevy'
+          ref: ${{ needs.get-environment.outputs.gitref }}
 
-  #     # temporary: fetch tools from PR
-  #     - name: Checkout Bevy Tools
-  #       uses: actions/checkout@v3
-  #       with:
-  #         repository: 'mockersf/bevy'
-  #         ref: 'example-showcase-can-remove-desktop-mode'
-  #         path: 'bevy-tools'
-  #     - name: Copy Bevy tools to main
-  #       run: |
-  #         rm -r tools
-  #         cp -r bevy-tools/tools/ tools
+      # temporary: fetch tools from PR
+      - name: Checkout Bevy Tools
+        uses: actions/checkout@v3
+        with:
+          repository: 'mockersf/bevy'
+          ref: 'example-showcase-can-remove-desktop-mode'
+          path: 'bevy-tools'
+      - name: Copy Bevy tools to main
+        run: |
+          rm -r tools
+          cp -r bevy-tools/tools/ tools
 
-  #     - name: Setup Rust
-  #       uses: dtolnay/rust-toolchain@stable
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
 
-  #     - name: Download Aggregated Status
-  #       uses: actions/download-artifact@v3
-  #       with:
-  #         name: aggregated-status
-  #         path: aggregated-status
+      - name: Download Aggregated Status
+        uses: actions/download-artifact@v3
+        with:
+          name: aggregated-status
+          path: aggregated-status
 
-  #     - name: Clean Up failures list
-  #       run: |
-  #         sed 's/.*\/\(.*\) - [.0-9]*/\1/g' aggregated-status/${{ runner.os }}-failures > failure-list
+      - name: Clean Up failures list
+        run: |
+          sed 's/.*\/\(.*\) - [.0-9]*/\1/g' aggregated-status/${{ runner.os }}-failures > failure-list
   
-  #     - name: Install Bevy dependencies
-  #       if: runner.os == 'linux'
-  #       run: |
-  #         sudo apt-get update;
-  #         DEBIAN_FRONTEND=noninteractive sudo apt-get install --no-install-recommends -yq \
-  #           libasound2-dev libudev-dev;
+      - name: Install Bevy dependencies
+        if: runner.os == 'linux'
+        run: |
+          sudo apt-get update;
+          DEBIAN_FRONTEND=noninteractive sudo apt-get install --no-install-recommends -yq \
+            libasound2-dev libudev-dev;
 
-  #     - name: install xvfb, llvmpipe and lavapipe
-  #       if: runner.os == 'linux'
-  #       run: |
-  #         sudo apt-get update -y -qq
-  #         sudo add-apt-repository ppa:oibaf/graphics-drivers -y
-  #         sudo apt-get update
-  #         sudo apt install -y xvfb libegl1-mesa libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers
+      - name: install xvfb, llvmpipe and lavapipe
+        if: runner.os == 'linux'
+        run: |
+          sudo apt-get update -y -qq
+          sudo add-apt-repository ppa:kisak/kisak-mesa -y
+          sudo apt-get update
+          sudo apt install -y xvfb libegl1-mesa libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers
 
-  #     - name: Take Screenshots (Linux)
-  #       if: runner.os == 'linux'
-  #       continue-on-error: true
-  #       run: xvfb-run cargo run -p example-showcase -- run --in-ci --ignore-stress-tests --report-details --example-list failure-list
+      - name: Take Screenshots (Linux)
+        if: runner.os == 'linux'
+        continue-on-error: true
+        run: xvfb-run cargo run -p example-showcase -- run --in-ci --ignore-stress-tests --report-details --example-list failure-list
 
-  #     - name: Take Screenshots (Windows)
-  #       if: runner.os == 'windows'
-  #       continue-on-error: true
-  #       run: cargo run -p example-showcase -- run --in-ci --ignore-stress-tests --report-details --example-list failure-list
+      - name: Take Screenshots (Windows)
+        if: runner.os == 'windows'
+        continue-on-error: true
+        run: cargo run -p example-showcase -- run --in-ci --ignore-stress-tests --report-details --example-list failure-list
   
-  #     - name: Upload Rerun Status
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: status-rerun-${{ runner.os }}
-  #         path: |
-  #           successes
-  #           failures
-  #           no_screenshots
-  #           *.log
+      - name: Upload Rerun Status
+        uses: actions/upload-artifact@v3
+        with:
+          name: status-rerun-${{ runner.os }}
+          path: |
+            successes
+            failures
+            no_screenshots
+            *.log
 
-  # update-results-with-rerun:
-  #   name: Update Results with Rerun
-  #   needs: [rerun-failed-examples, get-environment]
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: write
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         ref: 'results'
-  #         path: 'results'
+  update-results-with-rerun:
+    name: Update Results with Rerun
+    needs: [rerun-failed-examples, get-environment]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: 'results'
+          path: 'results'
 
-  #     - name: Download Rerun Status on Linux
-  #       uses: actions/download-artifact@v3
-  #       with:
-  #         name: status-rerun-Linux
-  #         path: status-rerun-Linux
+      - name: Download Rerun Status on Linux
+        uses: actions/download-artifact@v3
+        with:
+          name: status-rerun-Linux
+          path: status-rerun-Linux
 
-  #     - name: Download Rerun Status on Windows
-  #       uses: actions/download-artifact@v3
-  #       with:
-  #         name: status-rerun-Windows
-  #         path: status-rerun-Windows
+      - name: Download Rerun Status on Windows
+        uses: actions/download-artifact@v3
+        with:
+          name: status-rerun-Windows
+          path: status-rerun-Windows
 
-  #     - name: Store results in git
-  #       run: |
-  #         mv status-rerun-Windows results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/
-  #         mv status-rerun-Linux results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/
+      - name: Store results in git
+        run: |
+          mv status-rerun-Windows results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/
+          mv status-rerun-Linux results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/
 
-  #         cd results
+          cd results
 
-  #         git config user.name 'Workflow'
-  #         git config user.email '<>'
+          git config user.name 'Workflow'
+          git config user.email '<>'
 
-  #         git add .
-  #         git commit -m "Update Results"
-  #         git push
+          git add .
+          git commit -m "Update Results"
+          git push
 
   update-website:
     name: Update Website
-    # needs: update-results-with-rerun
-    needs: update-results
+    needs: update-results-with-rerun
     runs-on: ubuntu-latest
     permissions:
       contents: read

@@ -1,0 +1,12 @@
+Application/headless - 9.539356
+ECS (Entity Component System)/custom_query_param - 3.7080946
+Application/custom_loop - 2.2337282
+ECS (Entity Component System)/startup_system - 2.2258534
+ECS (Entity Component System)/system_param - 2.1499233
+Async Tasks/async_compute - 22.810635
+ECS (Entity Component System)/system_piping - 3.248472
+Application/empty - 1.6074317
+Application/without_winit - 10.19346
+Application/no_renderer - 9.215186
+ECS (Entity Component System)/ecs_guide - 38.781067
+ECS (Entity Component System)/system_closure - 2.4621344

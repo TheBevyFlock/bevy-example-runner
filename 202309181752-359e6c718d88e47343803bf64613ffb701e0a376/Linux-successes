@@ -1,0 +1,156 @@
+2D Rendering/mesh2d_manual - 9.964229
+3D Rendering/bloom_3d - 117.67739
+Window/transparent_window - 8.502957
+Application/logs - 1.5248024
+Input/char_input_events - 1.5337523
+Application/return_after_run - 1.5162911
+Transforms/transform - 23.46878
+Reflection/reflection_types - 1.5503807
+UI (User Interface)/font_atlas_debug - 9.295751
+3D Rendering/skybox - 52.111572
+2D Rendering/2d_viewport_to_world - 7.6637793
+Shaders/custom_vertex_attribute - 7.972988
+Diagnostics/custom_diagnostic - 1.6413732
+3D Rendering/tonemapping - 260.09555
+UI (User Interface)/text - 7.9737034
+Tools/scene_viewer - 176.81242
+Audio/audio - 3.7949858
+UI (User Interface)/window_fallthrough - 7.603602
+Input/mouse_input - 1.2923628
+2D Rendering/move_sprite - 8.121665
+Animation/animated_transform - 16.122656
+Shaders/shader_material_screenspace_texture - 23.47625
+ECS (Entity Component System)/hierarchy - 6.6697173
+Animation/animated_fox - 73.2698
+3D Rendering/orthographic - 25.366352
+Async Tasks/external_source_external_thread - 11.137685
+3D Rendering/wireframe - 27.773422
+UI (User Interface)/ui - 9.561394
+UI (User Interface)/ui_scaling - 6.815348
+Input/text_input - 6.1562653
+Shaders/array_texture - 15.780201
+Animation/cubic_curve - 46.242996
+Assets/asset_processing - 1.3171072
+Input/touch_input_events - 1.2854533
+ECS (Entity Component System)/event - 1.3086584
+Input/mouse_grab - 3.9106638
+UI (User Interface)/ui_texture_atlas - 8.805113
+Diagnostics/log_diagnostics - 1.298802
+UI (User Interface)/display_and_visibility - 15.777654
+UI (User Interface)/overflow - 10.859271
+ECS (Entity Component System)/iter_combinations - 30.693895
+ECS (Entity Component System)/apply_deferred - 7.997547
+Shaders/shader_instancing - 13.2655
+Audio/pitch - 1.3754579
+UI (User Interface)/button - 7.1079235
+3D Rendering/spotlight - 196.47758
+3D Rendering/anti_aliasing - 87.14093
+3D Rendering/parallax_mapping - 91.433846
+3D Rendering/two_passes - 45.55002
+Reflection/reflection - 1.2918603
+Assets/custom_asset_reader - 8.629446
+Shaders/shader_defs - 12.953374
+UI (User Interface)/relative_cursor_position - 8.439358
+Application/plugin_group - 1.5231907
+2D Rendering/2d_gizmos - 9.051015
+Input/gamepad_input - 1.4730301
+UI (User Interface)/grid - 8.517517
+3D Rendering/transparency_3d - 48.01351
+Shaders/shader_material_glsl - 13.070828
+2D Rendering/bloom_2d - 50.471794
+3D Rendering/load_gltf - 166.96823
+UI (User Interface)/text_debug - 8.101561
+Input/gamepad_input_events - 1.4492514
+Input/mouse_input_events - 1.5036206
+UI (User Interface)/borders - 11.625956
+UI (User Interface)/viewport_debug - 11.535115
+3D Rendering/pbr - 104.53449
+3D Rendering/fog - 665.2987
+3D Rendering/ssao - 106.81735
+ECS (Entity Component System)/state - 9.334825
+2D Rendering/sprite_flipping - 9.092973
+Window/screenshot - 31.398813
+Transforms/3d_rotation - 10.067239
+Input/keyboard_input_events - 1.4025741
+UI (User Interface)/flex_layout - 15.410527
+ECS (Entity Component System)/component_change_detection - 1.4638554
+Input/keyboard_input - 1.4468067
+Shaders/post_processing - 15.874494
+2D Rendering/mesh2d - 7.051618
+Audio/audio_control - 1.4206672
+Animation/morph_targets - 21.001852
+3D Rendering/blend_modes - 61.95361
+Games/contributors - 7.6994114
+2D Rendering/transparency_2d - 8.896725
+Window/window_resizing - 7.4674945
+Input/keyboard_modifiers - 1.4550619
+Shaders/compute_shader_game_of_life - 20.036703
+2D Rendering/2d_shapes - 7.971902
+ECS (Entity Component System)/fixed_timestep - 3.2095425
+Audio/spatial_audio_3d - 11.297871
+Shaders/shader_prepass - 37.234753
+UI (User Interface)/size_constraints - 14.658286
+Application/empty_defaults - 1.4324738
+3D Rendering/render_to_texture - 24.087063
+3D Rendering/lines - 9.274731
+Animation/custom_skinned_mesh - 22.410616
+Shaders/animate_shader - 7.506051
+Games/breakout - 10.540095
+Transforms/scale - 9.953841
+Reflection/generic_reflection - 1.4977193
+3D Rendering/3d_scene - 39.55334
+3D Rendering/atmospheric_fog - 320.49442
+Audio/decodable - 1.4956921
+ECS (Entity Component System)/removal_detection - 7.884526
+Tools/gamepad_viewer - 10.556689
+Window/scale_factor_override - 2.3201067
+Window/window_settings - 1.069191
+Window/low_power - 11.847681
+2D Rendering/rotation - 8.573996
+Input/touch_input - 1.3499382
+3D Rendering/vertex_colors - 27.237017
+Application/plugin - 1.3752009
+3D Rendering/generate_custom_mesh - 16.666805
+3D Rendering/lighting - 116.23725
+2D Rendering/pixel_perfect - 7.070913
+Application/thread_pool_resources - 1.4469956
+Assets/custom_asset - 1.3440398
+3D Rendering/split_screen - 54.775463
+3D Rendering/shadow_biases - 74.357376
+Reflection/trait_reflection - 1.3640822
+3D Rendering/3d_viewport_to_world - 20.99385
+3D Rendering/texture - 28.23734
+Audio/spatial_audio_2d - 7.1778455
+Animation/gltf_skinned_mesh - 10.2826
+3D Rendering/parenting - 11.118256
+Assets/hot_asset_reloading - 25.97483
+Games/game_menu - 8.401056
+2D Rendering/mesh2d_vertex_color_texture - 8.161685
+Games/alien_cake_addict - 68.70369
+2D Rendering/sprite - 5.6166816
+Window/multiple_windows - 46.01406
+Assets/asset_loading - 20.882048
+3D Rendering/3d_gizmos - 21.35945
+2D Rendering/texture_atlas - 8.369523
+ECS (Entity Component System)/nondeterministic_system_order - 0.98035705
+3D Rendering/spherical_area_lights - 120.331856
+3D Rendering/shadow_caster_receiver - 82.78822
+ECS (Entity Component System)/run_conditions - 1.0026631
+2D Rendering/custom_gltf_vertex_attribute - 5.6278534
+Application/drag_and_drop - 1.0099713
+Transforms/translation - 7.931338
+Input/gamepad_rumble - 0.9732308
+ECS (Entity Component System)/generic_system - 0.9795854
+Scene/scene - 4.9995565
+2D Rendering/sprite_sheet - 6.085373
+ECS (Entity Component System)/timers - 0.9822978
+3D Rendering/update_gltf_scene - 120.24221
+UI (User Interface)/text_wrap_debug - 17.667744
+Shaders/shader_material - 12.780425
+2D Rendering/text2d - 9.200284
+UI (User Interface)/overflow_debug - 8.3255825
+3D Rendering/3d_shapes - 55.12801
+UI (User Interface)/z_index - 7.5597835
+UI (User Interface)/transparency_ui - 7.419706
+Window/clear_color - 6.9081464
+ECS (Entity Component System)/parallel_query - 8.413969

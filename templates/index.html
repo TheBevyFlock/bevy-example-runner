@@ -300,8 +300,12 @@
                     {% endif %}
                     {% endfor %}
                     {% else -%}
+                    {% for mobile in all_mobile_platforms %}
                     -
-                    <hr />-
+                    {% if not loop.last %}
+                    <hr />
+                    {% endif %}
+                    {% endfor %}
                     {% endif -%}
                 </td>
                 {% endfor -%}

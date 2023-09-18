@@ -10,6 +10,8 @@ use std::{
 };
 use tera::{Context, Tera};
 
+use crate::percy::ScreenshotData;
+
 mod percy;
 
 #[derive(Debug, Clone, Serialize)]
@@ -48,6 +50,7 @@ fn main() {
 
     let mut all_examples = HashSet::new();
     let mut runs = vec![];
+    let mut all_mobile_platforms = HashSet::new();
 
     let mut folders = paths
         .filter_map(|dir| dir.map(|d| d.path()).ok())
@@ -108,24 +111,51 @@ fn main() {
                     read_percy_results(fs::read_to_string(file.as_ref().unwrap().path()).unwrap());
                 // sleep to limit how hard Percy API are used
                 thread::sleep(Duration::from_secs(5));
-                for (example, screenshot, changed) in screenshots.into_iter() {
-                    let mut split = example.split('.').next().unwrap().split('/');
+                // thread::sleep(Duration::from_secs(5));
+                for ScreenshotData {
+                    example,
+                    screenshot,
+                    changed,
+                    tag,
+                } in screenshots.into_iter()
+                {
+                    let (category, name) = if platform == "mobile" {
+                        if let Some(tag) = tag.as_ref() {
+                            all_mobile_platforms.insert(tag.clone());
+                        }
+                        ("Mobile".to_string(), example)
+                    } else {
+                        let mut split = example.split('.').next().unwrap().split('/');
+                        (
+                            split.next().unwrap().to_string(),
+                            split.next().unwrap().to_string(),
+                        )
+                    };
                     let example = Example {
-                        category: split.next().unwrap().to_string(),
-                        name: split.next().unwrap().to_string(),
+                        category,
+                        name,
                         flaky: false,
                     };
                     if changed != "no_diffs" {
-                        let previous = all_examples.take(&example).unwrap();
+                        let previous = all_examples.take(&example).unwrap_or(example.clone());
                         all_examples.insert(Example {
                             flaky: true,
                             ..previous
                         });
                     }
+                    // If there is a screenshot but no results, mark as success
+                    run.results
+                        .entry(example.name.clone())
+                        .or_insert_with(HashMap::new)
+                        .entry(tag.clone().unwrap_or_else(|| platform.to_string()))
+                        .or_insert_with(|| "successes".to_string());
                     run.screenshots
                         .entry(example.name)
                         .or_insert_with(HashMap::new)
-                        .insert(platform.to_string(), (screenshot, changed));
+                        .insert(
+                            tag.unwrap_or_else(|| platform.to_string()),
+                            (screenshot, changed),
+                        );
                 }
             }
         }
@@ -199,6 +229,7 @@ fn main() {
     let mut context = Context::new();
     context.insert("runs".to_string(), &runs);
     context.insert("all_examples".to_string(), &all_examples_cleaned);
+    context.insert("all_mobile_platforms".to_string(), &all_mobile_platforms);
 
     let mut tera = Tera::default();
     tera.add_raw_template(

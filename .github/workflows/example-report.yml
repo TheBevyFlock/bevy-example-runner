@@ -21,10 +21,11 @@ jobs:
       date: ${{ steps.env.outputs.date }}
       linux_percy_project: ${{ steps.env.outputs.linux_percy_project }}
       windows_percy_project: ${{ steps.env.outputs.windows_percy_project }}
+      mobile_percy_project: ${{ steps.env.outputs.mobile_percy_project }}
       updated: ${{ steps.version-check.outputs.updated }}
     steps:
       - name: Checkout Bevy main branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: 'bevyengine/bevy'
           ref: 'main'
@@ -38,8 +39,9 @@ jobs:
           echo "date=`date +%Y%m%d%H%M`" >> $GITHUB_OUTPUT
           echo "linux_percy_project=dede4209/Screenshots-Linux-Vulkan" >> $GITHUB_OUTPUT
           echo "windows_percy_project=dede4209/Screenshots-Windows-DX12" >> $GITHUB_OUTPUT
+          echo "mobile_percy_project=dede4209/Bevy-Mobile-Example" >> $GITHUB_OUTPUT
           echo "pages=`python -c \"import json; print(json.dumps([i for i in range($page_count)]))\"`" >> $GITHUB_OUTPUT
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: 'results'
           path: 'results'
@@ -63,14 +65,14 @@ jobs:
     steps:
 
       - name: Checkout Bevy main branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: 'bevyengine/bevy'
           ref: ${{ needs.get-environment.outputs.gitref }}
 
       # temporary: fetch tools from PR
       - name: Checkout Bevy Tools
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: 'mockersf/bevy'
           ref: 'example-showcase-can-remove-desktop-mode'
@@ -102,7 +104,7 @@ jobs:
         id: screenshots-linux
         if: runner.os == 'linux'
         continue-on-error: true
-        run: xvfb-run cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests --report-details
+        run: xvfb-run -s "-screen 0 1280x1024x24" cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests --report-details
 
       - name: Take Screenshots (Windows)
         id: screenshots-windows
@@ -210,12 +212,12 @@ jobs:
   update-results:
     name: Update Results
     runs-on: ubuntu-latest
-    needs: [send-to-percy, get-environment]
+    needs: [send-to-percy, get-environment, mobile-check-result]
     permissions:
       contents: write
     steps:
       
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: 'results'
           path: 'results'
@@ -255,6 +257,7 @@ jobs:
         run: |
           curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.windows_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-percy
           curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.linux_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Linux-percy
+          curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.mobile_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/mobile-percy
 
       - name: Store results in git
         run: |
@@ -284,14 +287,14 @@ jobs:
     steps:
 
       - name: Checkout Bevy main branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: 'bevyengine/bevy'
           ref: ${{ needs.get-environment.outputs.gitref }}
 
       # temporary: fetch tools from PR
       - name: Checkout Bevy Tools
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: 'mockersf/bevy'
           ref: 'example-showcase-can-remove-desktop-mode'
@@ -332,7 +335,7 @@ jobs:
       - name: Take Screenshots (Linux)
         if: runner.os == 'linux'
         continue-on-error: true
-        run: xvfb-run cargo run -p example-showcase -- run --in-ci --ignore-stress-tests --report-details --example-list failure-list
+        run: xvfb-run -s "-screen 0 1280x1024x24" cargo run -p example-showcase -- run --in-ci --ignore-stress-tests --report-details --example-list failure-list
 
       - name: Take Screenshots (Windows)
         if: runner.os == 'windows'
@@ -356,7 +359,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: 'results'
           path: 'results'
@@ -398,8 +401,8 @@ jobs:
     environment:
       name: github-pages
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           ref: "results"
           path: "results"
@@ -415,3 +418,133 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
+
+  build-for-iOS:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    needs: get-environment
+    if: needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: 'bevyengine/bevy'
+          ref: ${{ needs.get-environment.outputs.gitref }}
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Add iOS targets
+        run: rustup target add aarch64-apple-ios x86_64-apple-ios
+
+      - name: Build app for iOS
+        run: |
+          cd examples/mobile
+          make xcodebuild-iphone
+          mkdir Payload
+          mv build/Build/Products/Debug-iphoneos/bevy_mobile_example.app Payload
+          zip -r bevy_mobile_example.zip Payload
+          mv bevy_mobile_example.zip bevy_mobile_example.ipa
+
+      - name: Upload to Browser Stack
+        run: |
+          curl -u "${{ secrets.BROWSERSTACK_USERNAME }}:${{ secrets.BROWSERSTACK_ACCESS_KEY }}" \
+            -X POST "https://api-cloud.browserstack.com/app-automate/upload" \
+            -F "file=@examples/mobile/bevy_mobile_example.ipa" \
+            -F "custom_id=$GITHUB_RUN_ID"
+
+  build-for-Android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: get-environment
+    if: needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: 'bevyengine/bevy'
+          ref: ${{ needs.get-environment.outputs.gitref }}
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Add Android targets
+        run: rustup target add aarch64-linux-android armv7-linux-androideabi
+
+      - name: Install Cargo APK
+        run: cargo install --force cargo-apk
+
+      - name: Build app for Android
+        run: ANDROID_NDK_ROOT=$ANDROID_NDK_LATEST_HOME cargo apk build --package bevy_mobile_example
+        env: 
+          # This will reduce the APK size from 1GB to ~200MB
+          CARGO_PROFILE_DEV_DEBUG: false
+
+      - name: Upload to Browser Stack
+        run: |
+          curl -u "${{ secrets.BROWSERSTACK_USERNAME }}:${{ secrets.BROWSERSTACK_ACCESS_KEY }}" \
+            -X POST "https://api-cloud.browserstack.com/app-automate/upload" \
+            -F "file=@target/debug/apk/bevyexample.apk" \
+            -F "custom_id=$GITHUB_RUN_ID"
+
+  mobile-nonce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      result: ${{ steps.nonce.outputs.result }}
+    steps:
+    - id: nonce
+      run: echo "result=${{ github.run_id }}-$(date +%s)" >> $GITHUB_OUTPUT
+
+  mobile-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [mobile-nonce, build-for-iOS, build-for-Android, get-environment]
+    env: 
+      PERCY_PARALLEL_NONCE: ${{ needs.mobile-nonce.outputs.result }}
+      PERCY_PARALLEL_TOTAL: ${{ strategy.job-total }}
+    strategy:
+      matrix:
+        include:
+          - device: "iPhone 13"
+            os_version: "15"
+          - device: "iPhone 14"
+            os_version: "16"
+          - device: "Samsung Galaxy S23"
+            os_version: "13.0"
+          - device: "Google Pixel 7"
+            os_version: "13.0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: 'bevyengine/bevy'
+          ref: ${{ needs.get-environment.outputs.gitref }}
+
+      - name: Run Example
+        run: |
+          cd .github/start-mobile-example
+          npm install
+          npm install -g @percy/cli@latest
+          npx percy app:exec --parallel -- npm run mobile
+        env:
+          BROWSERSTACK_APP_ID: ${{ github.run_id }}
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN_MOBILE }}
+          DEVICE: ${{ matrix.device }}
+          OS_VERSION: ${{ matrix.os_version }}
+
+      - name: Save screenshots
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshots-${{ matrix.device }}-${{ matrix.os_version }}
+          path: .github/start-mobile-example/*.png
+
+  mobile-check-result:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [mobile-run, get-environment]
+    steps:
+      - name: Wait for screenshots comparison
+        run: |
+          npm install -g @percy/cli@latest
+          npx percy build:wait --project ${{ needs.get-environment.outputs.mobile_percy_project }} --commit ${{ github.sha }} --fail-on-changes --pass-if-approved
+        env:
+          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN_MOBILE }}

@@ -38,7 +38,7 @@ fn get_snapshots_with_retry(build_id: &str) -> SnapshotsData {
     }
 }
 
-pub fn read_percy_results(results: String) -> Vec<(String, String, String)> {
+pub fn read_percy_results(results: String) -> Vec<ScreenshotData> {
     let Ok(main) = serde_json::from_str::<Main>(&results) else {
         return vec![];
     };
@@ -48,7 +48,7 @@ pub fn read_percy_results(results: String) -> Vec<(String, String, String)> {
     snapshots_to_images(data)
 }
 
-fn snapshots_to_images(snapshots: SnapshotsData) -> Vec<(String, String, String)> {
+fn snapshots_to_images(snapshots: SnapshotsData) -> Vec<ScreenshotData> {
     let mut images = Vec::new();
     for snapshot in snapshots.data {
         match snapshot {
@@ -57,67 +57,97 @@ fn snapshots_to_images(snapshots: SnapshotsData) -> Vec<(String, String, String)
                 relationships,
                 ..
             } => {
-                let comparison_id = relationships.comparisons.data[0].id.clone();
-                let comparison = snapshots
-                    .included
+                let attributes = &attributes;
+                for comparison_id in relationships
+                    .comparisons
+                    .data
                     .iter()
-                    .find_map(|included| match included {
-                        Snapshot::Comparisons { id, relationships } if id == &comparison_id => {
-                            Some(relationships)
-                        }
-                        _ => None,
-                    })
-                    .unwrap();
-                let image_id = if attributes.review_state_reason == "no_diffs" {
-                    let base_screenshot_id =
-                        comparison.base_screenshot.data.as_ref().unwrap().id.clone();
-                    let base_screenshot = snapshots
-                        .included
-                        .iter()
-                        .find_map(|included| match included {
-                            Snapshot::Screenshots { id, relationships }
-                                if id == &base_screenshot_id =>
-                            {
-                                Some(relationships)
-                            }
-                            _ => None,
-                        })
-                        .unwrap();
-                    base_screenshot.image.data.as_ref().unwrap().id.clone()
-                } else if ["unreviewed_comparisons", "user_approved"]
-                    .contains(&attributes.review_state_reason.as_str())
+                    .map(|comp| comp.id.clone())
                 {
-                    let head_screenshot_id =
-                        comparison.head_screenshot.data.as_ref().unwrap().id.clone();
-                    let head_screenshot = snapshots
+                    let mut tag = None;
+                    let comparison = snapshots
                         .included
                         .iter()
                         .find_map(|included| match included {
-                            Snapshot::Screenshots { id, relationships }
-                                if id == &head_screenshot_id =>
-                            {
+                            Snapshot::Comparisons { id, relationships } if id == &comparison_id => {
                                 Some(relationships)
                             }
                             _ => None,
                         })
                         .unwrap();
-                    head_screenshot.image.data.as_ref().unwrap().id.clone()
-                } else {
-                    "".to_string()
-                };
-                let image = snapshots
-                    .included
-                    .iter()
-                    .find_map(|included| match included {
-                        Snapshot::Images { id, attributes } if id == &image_id => Some(attributes),
-                        _ => None,
-                    })
-                    .unwrap();
-                images.push((
-                    attributes.name,
-                    image.url.clone(),
-                    attributes.review_state_reason,
-                ));
+                    if let Some(comparison_tag) = comparison.comparison_tag.data.as_ref() {
+                        let comparison_tag_id = comparison_tag.id.clone();
+                        let comparison_tag = snapshots
+                            .included
+                            .iter()
+                            .find_map(|included| match included {
+                                Snapshot::ComparisonTags { id, attributes }
+                                    if id == &comparison_tag_id =>
+                                {
+                                    Some(attributes)
+                                }
+                                _ => None,
+                            })
+                            .unwrap();
+                        tag = Some(format!(
+                            "{} {} / {}",
+                            comparison_tag.os_name, comparison_tag.os_version, comparison_tag.name
+                        ))
+                    }
+                    let image_id = if attributes.review_state_reason == "no_diffs" {
+                        let base_screenshot_id =
+                            comparison.base_screenshot.data.as_ref().unwrap().id.clone();
+                        let base_screenshot = snapshots
+                            .included
+                            .iter()
+                            .find_map(|included| match included {
+                                Snapshot::Screenshots { id, relationships }
+                                    if id == &base_screenshot_id =>
+                                {
+                                    Some(relationships)
+                                }
+                                _ => None,
+                            })
+                            .unwrap();
+                        base_screenshot.image.data.as_ref().unwrap().id.clone()
+                    } else if ["unreviewed_comparisons", "user_approved"]
+                        .contains(&attributes.review_state_reason.as_str())
+                    {
+                        let head_screenshot_id =
+                            comparison.head_screenshot.data.as_ref().unwrap().id.clone();
+                        let head_screenshot = snapshots
+                            .included
+                            .iter()
+                            .find_map(|included| match included {
+                                Snapshot::Screenshots { id, relationships }
+                                    if id == &head_screenshot_id =>
+                                {
+                                    Some(relationships)
+                                }
+                                _ => None,
+                            })
+                            .unwrap();
+                        head_screenshot.image.data.as_ref().unwrap().id.clone()
+                    } else {
+                        "".to_string()
+                    };
+                    let image = snapshots
+                        .included
+                        .iter()
+                        .find_map(|included| match included {
+                            Snapshot::Images { id, attributes } if id == &image_id => {
+                                Some(attributes)
+                            }
+                            _ => None,
+                        })
+                        .unwrap();
+                    images.push(ScreenshotData {
+                        example: attributes.name.clone(),
+                        screenshot: image.url.clone(),
+                        changed: attributes.review_state_reason.clone(),
+                        tag,
+                    });
+                }
             }
             _ => {}
         }
@@ -154,6 +184,13 @@ enum Snapshot {
     Builds,
     Browsers,
     BrowserFamilies,
+    ComparisonTags {
+        id: String,
+        attributes: ComparisonTagAttributes,
+    },
+    IgnoredRegions,
+    Projects,
+    Users,
 }
 
 #[derive(Deserialize, Debug)]
@@ -201,6 +238,15 @@ struct ScreenshotRelationship {
 struct ComparisonRelationship {
     base_screenshot: RelationshipSingleData,
     head_screenshot: RelationshipSingleData,
+    comparison_tag: RelationshipSingleData,
+}
+
+#[derive(Deserialize, Debug)]
+#[serde(rename_all = "kebab-case")]
+struct ComparisonTagAttributes {
+    name: String,
+    os_name: String,
+    os_version: String,
 }
 
 #[cfg(test)]
@@ -210,8 +256,20 @@ mod tests {
     use crate::percy::{snapshots_to_images, SnapshotsData};
 
     #[test]
-    fn read_file() {
+    fn read_file_native() {
         let file = fs::read_to_string("src/test-percy.json").unwrap();
+        // dbg!(read_percy_results(file));
+        let read = serde_json::from_str::<SnapshotsData>(&file).unwrap();
+        dbg!(read.data.len());
+        dbg!(read.included.len());
+        dbg!(&read.data[0]);
+        dbg!(snapshots_to_images(read));
+        // assert!(false);
+    }
+
+    #[test]
+    fn read_file_mobile() {
+        let file = fs::read_to_string("src/test-percy-mobile.json").unwrap();
         // dbg!(read_percy_results(file));
         let read = serde_json::from_str::<SnapshotsData>(&file).unwrap();
         dbg!(read.data.len());
@@ -220,4 +278,12 @@ mod tests {
         dbg!(snapshots_to_images(read));
         assert!(false);
     }
+}
+
+#[derive(Debug)]
+pub struct ScreenshotData {
+    pub example: String,
+    pub screenshot: String,
+    pub changed: String,
+    pub tag: Option<String>,
 }

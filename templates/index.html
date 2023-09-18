@@ -73,6 +73,16 @@
             font: var(--fa-font-brands);
         }
 
+        .android::before {
+            content: '\f17b';
+            font: var(--fa-font-brands);
+        }
+
+        .ios::before {
+            content: '\f179';
+            font: var(--fa-font-brands);
+        }
+
         .success::before {
             content: '\f00c';
             font: var(--fa-font-solid);
@@ -179,6 +189,46 @@
                 box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.8);
             }
         }
+
+        .platform-tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .platform-tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            padding: 5px 0;
+            border-radius: 6px;
+
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .platform-tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+
+        .platform-tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 
@@ -225,6 +275,41 @@
         </thead>
         <tbody>
             {% for example in all_examples -%}
+            {% if example.category == "Mobile" %}
+            <tr {% if example.flaky -%}class="flaky" {% else -%}class="all-good" style="display: none;" {% endif -%}>
+                <td style="border-right: none;">{{ example.category }} / {{ example.name }}</td>
+                <td style="border-left: none;">
+                    {% for mobile in all_mobile_platforms %}
+                    {% if mobile is starting_with("Android") %}
+                    <span class="android platform-tooltip"><span class="tooltiptext">{{ mobile }}</span></span>
+                    {% elif mobile is starting_with("iOS") %}
+                    <span class="ios platform-tooltip"><span class="tooltiptext">{{ mobile }}</span></span>
+                    {% endif %}
+                    {% if not loop.last %}
+                    <hr />
+                    {% endif %}
+                    {% endfor %}
+                </td>
+                {% for run in runs -%}
+                <td style="text-align: center;">
+                    {% if run.results[example.name] -%}
+                    {% for mobile in all_mobile_platforms %}
+                    {{ macros::status(example_name=example.name, platform=mobile, run=run) }}
+                    {% if not loop.last %}
+                    <hr />
+                    {% endif %}
+                    {% endfor %}
+                    {% else -%}
+                    -
+                    <hr />-
+                    {% endif -%}
+                </td>
+                {% endfor -%}
+            </tr>
+            {% endif -%}
+            {% endfor -%}
+            {% for example in all_examples -%}
+            {% if example.category != "Mobile" %}
             <tr {% if example.flaky -%}class="flaky" {% else -%}class="all-good" style="display: none;" {% endif -%}>
                 <td style="border-right: none;">{{ example.category }} / {{ example.name }}</td>
                 <td style="border-left: none;">
@@ -245,6 +330,7 @@
                 </td>
                 {% endfor -%}
             </tr>
+            {% endif -%}
             {% endfor -%}
         </tbody>
     </table>

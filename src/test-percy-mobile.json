@@ -1,0 +1,936 @@
+{
+    "data": [
+        {
+            "type": "snapshots",
+            "id": "1670625676",
+            "attributes": {
+                "name": "Bevy Mobile Example",
+                "review-state": "unreviewed",
+                "review-state-reason": "unreviewed_comparisons",
+                "fingerprint": "29d4b239a14f64c4b4ee682f05d4a0807436d6b7",
+                "total-open-comments": 0,
+                "is-reintroduced": false,
+                "enable-javascript": false,
+                "scope-selector": null
+            },
+            "links": {
+                "self": "/api/v1/snapshots/1670625676"
+            },
+            "relationships": {
+                "build": {
+                    "data": {
+                        "type": "builds",
+                        "id": "30194036"
+                    }
+                },
+                "latest-changed-ancestor": {
+                    "links": {
+                        "related": "/api/v1/snapshots/1670625676/latest-changed-ancestor"
+                    }
+                },
+                "screenshots": {},
+                "comparisons": {
+                    "data": [
+                        {
+                            "type": "comparisons",
+                            "id": "2802273346"
+                        },
+                        {
+                            "type": "comparisons",
+                            "id": "2802273344"
+                        }
+                    ]
+                },
+                "ignored-regions": {
+                    "data": [
+                        {
+                            "type": "ignored-regions",
+                            "id": "15843"
+                        },
+                        {
+                            "type": "ignored-regions",
+                            "id": "15844"
+                        },
+                        {
+                            "type": "ignored-regions",
+                            "id": "15845"
+                        }
+                    ]
+                },
+                "missing-resources": {
+                    "links": {
+                        "self": "/api/v1/snapshots/1670625676/relationships/missing-resources",
+                        "related": "/api/v1/snapshots/1670625676/missing-resources"
+                    }
+                }
+            }
+        }
+    ],
+    "included": [
+        {
+            "type": "comparisons",
+            "id": "2802273346",
+            "attributes": {
+                "state": "finished",
+                "width": 1080,
+                "diff-ratio": 0.0,
+                "ignored-top": 72,
+                "ignored-bottom": 1260,
+                "external-debug-url": "https://app-automate.browserstack.com/dashboard/v2/builds/089b4e320aa44949fc793706276024ecf5fdf93b/sessions/d70605a4a165fbeba00108efc4ac159983b2a772",
+                "new-and-unchanged-with-reviewed-baseline": false
+            },
+            "links": {
+                "self": "/api/v1/comparisons/2802273346"
+            },
+            "relationships": {
+                "head-snapshot": {
+                    "links": {
+                        "related": "/api/v1/snapshots/1670625676"
+                    }
+                },
+                "base-snapshot": {
+                    "links": {
+                        "related": "/api/v1/snapshots/1670556542"
+                    },
+                    "data": {
+                        "type": "snapshots",
+                        "id": "1670556542"
+                    }
+                },
+                "head-screenshot": {
+                    "data": {
+                        "type": "screenshots",
+                        "id": "2794710079"
+                    }
+                },
+                "head-build": {
+                    "data": {
+                        "type": "builds",
+                        "id": "30194036"
+                    }
+                },
+                "base-screenshot": {
+                    "data": {
+                        "type": "screenshots",
+                        "id": "2794499142"
+                    }
+                },
+                "diff-image": {
+                    "data": null
+                },
+                "browser": {
+                    "data": null
+                },
+                "comparison-tag": {
+                    "data": {
+                        "type": "comparison-tags",
+                        "id": "563"
+                    }
+                }
+            }
+        },
+        {
+            "type": "comparisons",
+            "id": "2802273344",
+            "attributes": {
+                "state": "finished",
+                "width": 2532,
+                "diff-ratio": 0.269802,
+                "ignored-top": 141,
+                "ignored-bottom": 0,
+                "external-debug-url": "https://app-automate.browserstack.com/dashboard/v2/builds/089b4e320aa44949fc793706276024ecf5fdf93b/sessions/da204026b4ca2410204449c94e3bc452e6bb11aa",
+                "new-and-unchanged-with-reviewed-baseline": false
+            },
+            "links": {
+                "self": "/api/v1/comparisons/2802273344"
+            },
+            "relationships": {
+                "head-snapshot": {
+                    "links": {
+                        "related": "/api/v1/snapshots/1670625676"
+                    }
+                },
+                "base-snapshot": {
+                    "links": {
+                        "related": "/api/v1/snapshots/1670556542"
+                    },
+                    "data": {
+                        "type": "snapshots",
+                        "id": "1670556542"
+                    }
+                },
+                "head-screenshot": {
+                    "data": {
+                        "type": "screenshots",
+                        "id": "2794710076"
+                    }
+                },
+                "head-build": {
+                    "data": {
+                        "type": "builds",
+                        "id": "30194036"
+                    }
+                },
+                "base-screenshot": {
+                    "data": {
+                        "type": "screenshots",
+                        "id": "2794499154"
+                    }
+                },
+                "diff-image": {
+                    "data": {
+                        "type": "images",
+                        "id": "159204018"
+                    }
+                },
+                "browser": {
+                    "data": null
+                },
+                "comparison-tag": {
+                    "data": {
+                        "type": "comparison-tags",
+                        "id": "615"
+                    }
+                }
+            }
+        },
+        {
+            "type": "screenshots",
+            "id": "2794710079",
+            "links": {
+                "self": "/api/v1/screenshots/2794710079"
+            },
+            "relationships": {
+                "snapshot": {
+                    "links": {
+                        "self": "/api/v1/screenshots/2794710079/relationships/snapshot",
+                        "related": "/api/v1/screenshots/2794710079/snapshot"
+                    }
+                },
+                "image": {
+                    "links": {
+                        "self": "/api/v1/screenshots/2794710079/relationships/image",
+                        "related": "/api/v1/screenshots/2794710079/image"
+                    },
+                    "data": {
+                        "type": "images",
+                        "id": "159235219"
+                    }
+                }
+            }
+        },
+        {
+            "type": "images",
+            "id": "159235219",
+            "attributes": {
+                "url": "https://images.percy.io/d0db73706f839179bc6582f2a1bdde762d13d74bb5393ba09bcbda3ef8f6df7e",
+                "width": 1080,
+                "height": 2340
+            },
+            "links": {
+                "self": "/api/v1/images/159235219"
+            }
+        },
+        {
+            "type": "screenshots",
+            "id": "2794499142",
+            "links": {
+                "self": "/api/v1/screenshots/2794499142"
+            },
+            "relationships": {
+                "snapshot": {
+                    "links": {
+                        "self": "/api/v1/screenshots/2794499142/relationships/snapshot",
+                        "related": "/api/v1/screenshots/2794499142/snapshot"
+                    }
+                },
+                "image": {
+                    "links": {
+                        "self": "/api/v1/screenshots/2794499142/relationships/image",
+                        "related": "/api/v1/screenshots/2794499142/image"
+                    },
+                    "data": {
+                        "type": "images",
+                        "id": "159204016"
+                    }
+                }
+            }
+        },
+        {
+            "type": "images",
+            "id": "159204016",
+            "attributes": {
+                "url": "https://images.percy.io/e0ce662d159e3caf002d87db22dd6e66017ad4e5aa55705ecd0635a9ba8367fe",
+                "width": 1080,
+                "height": 2340
+            },
+            "links": {
+                "self": "/api/v1/images/159204016"
+            }
+        },
+        {
+            "type": "snapshots",
+            "id": "1670556542",
+            "attributes": {
+                "name": "Bevy Mobile Example",
+                "review-state": "unreviewed",
+                "review-state-reason": "unreviewed_comparisons",
+                "fingerprint": "2bebc119de6979dee990de72090cbb8c35c21a66",
+                "total-open-comments": 0,
+                "is-reintroduced": false,
+                "enable-javascript": false,
+                "scope-selector": null
+            },
+            "links": {
+                "self": "/api/v1/snapshots/1670556542"
+            },
+            "relationships": {
+                "build": {
+                    "data": {
+                        "type": "builds",
+                        "id": "30188922"
+                    }
+                },
+                "latest-changed-ancestor": {
+                    "links": {
+                        "related": "/api/v1/snapshots/1670556542/latest-changed-ancestor"
+                    }
+                },
+                "screenshots": {},
+                "comparisons": {
+                    "data": [
+                        {
+                            "type": "comparisons",
+                            "id": "2802060565"
+                        },
+                        {
+                            "type": "comparisons",
+                            "id": "2802060566"
+                        }
+                    ]
+                },
+                "ignored-regions": {
+                    "data": [
+                        {
+                            "type": "ignored-regions",
+                            "id": "15843"
+                        },
+                        {
+                            "type": "ignored-regions",
+                            "id": "15844"
+                        },
+                        {
+                            "type": "ignored-regions",
+                            "id": "15845"
+                        }
+                    ]
+                },
+                "missing-resources": {
+                    "links": {
+                        "self": "/api/v1/snapshots/1670556542/relationships/missing-resources",
+                        "related": "/api/v1/snapshots/1670556542/missing-resources"
+                    }
+                }
+            }
+        },
+        {
+            "type": "builds",
+            "id": "30188922",
+            "attributes": {
+                "branch": "main",
+                "type": "app",
+                "build-number": 175,
+                "partial": false,
+                "web-url": "https://percy.io/dede4209/Bevy-Mobile-Example/builds/30188922",
+                "commit-html-url": null,
+                "branch-html-url": null,
+                "pull-request-html-url": null,
+                "state": "finished",
+                "review-state": "unreviewed",
+                "review-state-reason": "unreviewed_snapshots",
+                "is-pull-request": false,
+                "pull-request-number": null,
+                "pull-request-title": null,
+                "user-agent": "Percy/v1 @percy/client/1.27.1 @percy/cli-app/1.27.1 @percy/appium-app/0.0.7 (node/v18.17.1; (webdriverio/5.23.0); github)",
+                "total-snapshots": 1,
+                "total-snapshots-requesting-changes": 0,
+                "total-snapshots-unreviewed": 1,
+                "total-comparisons": 2,
+                "total-comparisons-finished": 2,
+                "total-comparisons-diff": 1,
+                "total-open-comments": 0,
+                "failed-snapshots-count": 0,
+                "failure-reason": null,
+                "failure-details": null,
+                "parallel-nonce": "6207204302-1694865871",
+                "parallel-total-shards": 2,
+                "finished-at": "2023-09-16T12:13:18.000Z",
+                "finalized-at": "2023-09-16T12:13:12.000Z",
+                "approved-at": null,
+                "created-at": "2023-09-16T12:12:20.000Z",
+                "updated-at": "2023-09-16T12:13:18.000Z"
+            },
+            "links": {
+                "self": "/api/v1/builds/30188922"
+            },
+            "relationships": {
+                "project": {
+                    "links": {
+                        "self": "/api/v1/builds/30188922/relationships/project",
+                        "related": "/api/v1/builds/30188922/project"
+                    },
+                    "data": {
+                        "type": "projects",
+                        "id": "426563"
+                    }
+                },
+                "commit": {
+                    "links": {
+                        "self": "/api/v1/builds/30188922/relationships/commit",
+                        "related": "/api/v1/builds/30188922/commit"
+                    },
+                    "data": {
+                        "type": "commits",
+                        "id": "24343471"
+                    }
+                },
+                "repo": {
+                    "links": {
+                        "self": "/api/v1/builds/30188922/relationships/repo",
+                        "related": "/api/v1/builds/30188922/repo"
+                    },
+                    "data": null
+                },
+                "base-build": {
+                    "links": {
+                        "self": "/api/v1/builds/30188922/relationships/base-build",
+                        "related": "/api/v1/builds/30188922/base-build"
+                    },
+                    "data": {
+                        "type": "builds",
+                        "id": "30174611"
+                    }
+                },
+                "base-build-strategy": {},
+                "approved-by": {
+                    "links": {
+                        "self": "/api/v1/builds/30188922/relationships/approved-by",
+                        "related": "/api/v1/builds/30188922/approved-by"
+                    },
+                    "data": null
+                },
+                "snapshots": {
+                    "links": {
+                        "self": "/api/v1/builds/30188922/relationships/snapshots",
+                        "related": "/api/v1/builds/30188922/snapshots"
+                    }
+                },
+                "comparisons": {
+                    "links": {
+                        "self": "/api/v1/builds/30188922/relationships/comparisons",
+                        "related": "/api/v1/builds/30188922/comparisons"
+                    }
+                },
+                "browsers": {
+                    "links": {
+                        "self": "/api/v1/builds/30188922/relationships/browsers",
+                        "related": "/api/v1/builds/30188922/browsers"
+                    },
+                    "data": []
+                },
+                "removed-snapshots": {
+                    "links": {
+                        "self": "/api/v1/builds/30188922/relationships/removed-snapshots",
+                        "related": "/api/v1/builds/30188922/removed-snapshots"
+                    }
+                },
+                "failed-snapshots": {
+                    "links": {
+                        "self": "/api/v1/builds/30188922/relationships/failed-snapshots",
+                        "related": "/api/v1/builds/30188922/failed-snapshots"
+                    }
+                },
+                "missing-resources": {
+                    "links": {
+                        "self": "/api/v1/builds/30188922/relationships/missing-resources",
+                        "related": "/api/v1/builds/30188922/missing-resources"
+                    }
+                }
+            },
+            "meta": {
+                "finalize-link": "/api/v1/builds/30188922/finalize",
+                "approve-link": "/api/v1/builds/30188922/approve"
+            }
+        },
+        {
+            "type": "comparison-tags",
+            "id": "563",
+            "attributes": {
+                "name": "Samsung Galaxy S23",
+                "slug": "samsung-galaxy-s23-db969fe31df7",
+                "os-name": "Android",
+                "os-version": "13",
+                "width": 1080,
+                "height": 2340,
+                "orientation": "portrait",
+                "browser-name": null,
+                "browser-version": null,
+                "resolution": null,
+                "serial-number": "XXXXXXXXXX",
+                "purchase-date": "2023-02-17T13:00:00+00:00",
+                "location": "Frankfurt, Germany"
+            }
+        },
+        {
+            "type": "screenshots",
+            "id": "2794710076",
+            "links": {
+                "self": "/api/v1/screenshots/2794710076"
+            },
+            "relationships": {
+                "snapshot": {
+                    "links": {
+                        "self": "/api/v1/screenshots/2794710076/relationships/snapshot",
+                        "related": "/api/v1/screenshots/2794710076/snapshot"
+                    }
+                },
+                "image": {
+                    "links": {
+                        "self": "/api/v1/screenshots/2794710076/relationships/image",
+                        "related": "/api/v1/screenshots/2794710076/image"
+                    },
+                    "data": {
+                        "type": "images",
+                        "id": "157078693"
+                    }
+                }
+            }
+        },
+        {
+            "type": "images",
+            "id": "157078693",
+            "attributes": {
+                "url": "https://images.percy.io/e92b95fac457ef63052827ddbddbe7df68afa6cb56917a999d78b63947d26b02",
+                "width": 2532,
+                "height": 1170
+            },
+            "links": {
+                "self": "/api/v1/images/157078693"
+            }
+        },
+        {
+            "type": "screenshots",
+            "id": "2794499154",
+            "links": {
+                "self": "/api/v1/screenshots/2794499154"
+            },
+            "relationships": {
+                "snapshot": {
+                    "links": {
+                        "self": "/api/v1/screenshots/2794499154/relationships/snapshot",
+                        "related": "/api/v1/screenshots/2794499154/snapshot"
+                    }
+                },
+                "image": {
+                    "links": {
+                        "self": "/api/v1/screenshots/2794499154/relationships/image",
+                        "related": "/api/v1/screenshots/2794499154/image"
+                    },
+                    "data": {
+                        "type": "images",
+                        "id": "159204017"
+                    }
+                }
+            }
+        },
+        {
+            "type": "images",
+            "id": "159204017",
+            "attributes": {
+                "url": "https://images.percy.io/4fce52bf5b59b637d8826dac11ecdee2f1c74a9a64d752354d584234ce43b748",
+                "width": 2532,
+                "height": 1170
+            },
+            "links": {
+                "self": "/api/v1/images/159204017"
+            }
+        },
+        {
+            "type": "images",
+            "id": "159204018",
+            "attributes": {
+                "url": "https://images.percy.io/496efb08a658504266173e02899a0a86ed638f0245ea98665cdbf02952965351",
+                "width": 2532,
+                "height": 1170
+            },
+            "links": {
+                "self": "/api/v1/images/159204018"
+            }
+        },
+        {
+            "type": "comparison-tags",
+            "id": "615",
+            "attributes": {
+                "name": "iPhone 13",
+                "slug": "iphone-13-af4d03deede9",
+                "os-name": "iOS",
+                "os-version": "15",
+                "width": 2532,
+                "height": 1170,
+                "orientation": "landscape",
+                "browser-name": null,
+                "browser-version": null,
+                "resolution": null,
+                "serial-number": "JHJ9XXXXXX",
+                "purchase-date": "2021-09-28T14:41:22+00:00",
+                "location": "Sacramento, USA"
+            }
+        },
+        {
+            "type": "ignored-regions",
+            "id": "15843",
+            "attributes": {
+                "snapshot-name": "Bevy Mobile Example",
+                "width": 1080,
+                "top": 0.0,
+                "bottom": 76.8281,
+                "left": 94.335,
+                "right": 589.803,
+                "branch-strategy": "all_branches",
+                "branch": "main",
+                "deactivated-at": null,
+                "created-at": "2023-03-29T00:18:21.700Z",
+                "updated-at": "2023-03-29T00:18:21.700Z"
+            },
+            "relationships": {
+                "browser-family": {
+                    "data": null
+                },
+                "comparison-tag": {
+                    "data": {
+                        "type": "comparison-tags",
+                        "id": "563"
+                    }
+                },
+                "project": {
+                    "data": {
+                        "type": "projects",
+                        "id": "426563"
+                    }
+                },
+                "first-build": {
+                    "data": {
+                        "type": "builds",
+                        "id": "26257897"
+                    }
+                },
+                "creator": {
+                    "data": {
+                        "type": "users",
+                        "id": "683036"
+                    }
+                }
+            }
+        },
+        {
+            "type": "ignored-regions",
+            "id": "15844",
+            "attributes": {
+                "snapshot-name": "Bevy Mobile Example",
+                "width": 1080,
+                "top": 143.747,
+                "bottom": 933.461,
+                "left": 0.0,
+                "right": 122.956,
+                "branch-strategy": "all_branches",
+                "branch": "main",
+                "deactivated-at": null,
+                "created-at": "2023-03-29T00:18:21.714Z",
+                "updated-at": "2023-03-29T00:18:21.714Z"
+            },
+            "relationships": {
+                "browser-family": {
+                    "data": null
+                },
+                "comparison-tag": {
+                    "data": {
+                        "type": "comparison-tags",
+                        "id": "563"
+                    }
+                },
+                "project": {
+                    "data": {
+                        "type": "projects",
+                        "id": "426563"
+                    }
+                },
+                "first-build": {
+                    "data": {
+                        "type": "builds",
+                        "id": "26257897"
+                    }
+                },
+                "creator": {
+                    "data": {
+                        "type": "users",
+                        "id": "683036"
+                    }
+                }
+            }
+        },
+        {
+            "type": "ignored-regions",
+            "id": "15845",
+            "attributes": {
+                "snapshot-name": "Bevy Mobile Example",
+                "width": 1080,
+                "top": 0.0,
+                "bottom": 71.066,
+                "left": 1882.96,
+                "right": 2340.0,
+                "branch-strategy": "all_branches",
+                "branch": "main",
+                "deactivated-at": null,
+                "created-at": "2023-03-29T00:18:21.726Z",
+                "updated-at": "2023-03-29T00:18:21.726Z"
+            },
+            "relationships": {
+                "browser-family": {
+                    "data": null
+                },
+                "comparison-tag": {
+                    "data": {
+                        "type": "comparison-tags",
+                        "id": "563"
+                    }
+                },
+                "project": {
+                    "data": {
+                        "type": "projects",
+                        "id": "426563"
+                    }
+                },
+                "first-build": {
+                    "data": {
+                        "type": "builds",
+                        "id": "26257897"
+                    }
+                },
+                "creator": {
+                    "data": {
+                        "type": "users",
+                        "id": "683036"
+                    }
+                }
+            }
+        },
+        {
+            "type": "projects",
+            "id": "426563",
+            "attributes": {
+                "name": "Bevy Mobile Example",
+                "slug": "Bevy-Mobile-Example",
+                "type": "app",
+                "full-slug": "dede4209/Bevy-Mobile-Example",
+                "is-enabled": true,
+                "diff-base": "automatic",
+                "auto-approve-branch-filter": "master",
+                "approval-required-branch-filter": null,
+                "default-base-branch": "master",
+                "updated-at": "2023-09-17T12:13:47.000Z",
+                "publicly-readable": true,
+                "is-demo": false,
+                "is-auto-browser-upgrade": true,
+                "wait-for-base-build": false,
+                "current-period-usage": 42,
+                "screenshot-limit": null,
+                "workflow": "git",
+                "diff-sensitivity-level": 0
+            },
+            "links": {
+                "self": "/api/v1/projects/dede4209/Bevy-Mobile-Example"
+            },
+            "relationships": {
+                "organization": {
+                    "links": {
+                        "related": "/api/v1/projects/dede4209/Bevy-Mobile-Example/organization"
+                    },
+                    "data": {
+                        "type": "organizations",
+                        "id": "1839232"
+                    }
+                },
+                "repo": {
+                    "links": {
+                        "related": "/api/v1/projects/dede4209/Bevy-Mobile-Example/repo"
+                    },
+                    "data": null
+                },
+                "builds": {
+                    "links": {
+                        "related": "/api/v1/builds?project_id=426563"
+                    }
+                },
+                "tokens": {
+                    "links": {
+                        "related": "/api/v1/projects/dede4209/Bevy-Mobile-Example/tokens"
+                    }
+                },
+                "browser-targets": {
+                    "data": []
+                },
+                "project-browser-targets": {
+                    "data": []
+                },
+                "webhook-configs": {
+                    "data": []
+                }
+            }
+        },
+        {
+            "type": "users",
+            "id": "683036",
+            "attributes": {
+                "name": "Bevy Engine",
+                "avatar-url": "https://www.gravatar.com/avatar/1957154d754bee0938e29553f2ee162f?r=pg\u0026d=identicon",
+                "web-theme": "system",
+                "diff-color": null
+            },
+            "links": {
+                "self": "/api/v1/user"
+            }
+        },
+        {
+            "type": "builds",
+            "id": "26257897",
+            "attributes": {
+                "branch": "main",
+                "type": "app",
+                "build-number": 2,
+                "partial": false,
+                "web-url": "https://percy.io/dede4209/Bevy-Mobile-Example/builds/26257897",
+                "commit-html-url": null,
+                "branch-html-url": null,
+                "pull-request-html-url": null,
+                "state": "finished",
+                "review-state": "approved",
+                "review-state-reason": "all_snapshots_approved",
+                "is-pull-request": false,
+                "pull-request-number": null,
+                "pull-request-title": null,
+                "user-agent": "Percy/v1 @percy/client/1.21.0 @percy/cli-app/1.21.0 @percy/appium-app/0.0.7 (node/v18.15.0; (webdriverio/5.23.0); github)",
+                "total-snapshots": 1,
+                "total-snapshots-requesting-changes": 0,
+                "total-snapshots-unreviewed": 0,
+                "total-comparisons": 2,
+                "total-comparisons-finished": 2,
+                "total-comparisons-diff": 1,
+                "total-open-comments": 0,
+                "failed-snapshots-count": 0,
+                "failure-reason": null,
+                "failure-details": null,
+                "parallel-nonce": "4548799562-1680048396",
+                "parallel-total-shards": 2,
+                "finished-at": "2023-03-29T00:15:53.000Z",
+                "finalized-at": "2023-03-29T00:15:51.000Z",
+                "approved-at": "2023-03-29T00:18:33.000Z",
+                "created-at": "2023-03-29T00:14:50.000Z",
+                "updated-at": "2023-03-29T00:18:33.000Z"
+            },
+            "links": {
+                "self": "/api/v1/builds/26257897"
+            },
+            "relationships": {
+                "project": {
+                    "links": {
+                        "self": "/api/v1/builds/26257897/relationships/project",
+                        "related": "/api/v1/builds/26257897/project"
+                    },
+                    "data": {
+                        "type": "projects",
+                        "id": "426563"
+                    }
+                },
+                "commit": {
+                    "links": {
+                        "self": "/api/v1/builds/26257897/relationships/commit",
+                        "related": "/api/v1/builds/26257897/commit"
+                    },
+                    "data": {
+                        "type": "commits",
+                        "id": "21474389"
+                    }
+                },
+                "repo": {
+                    "links": {
+                        "self": "/api/v1/builds/26257897/relationships/repo",
+                        "related": "/api/v1/builds/26257897/repo"
+                    },
+                    "data": null
+                },
+                "base-build": {
+                    "links": {
+                        "self": "/api/v1/builds/26257897/relationships/base-build",
+                        "related": "/api/v1/builds/26257897/base-build"
+                    },
+                    "data": {
+                        "type": "builds",
+                        "id": "26257450"
+                    }
+                },
+                "base-build-strategy": {},
+                "approved-by": {
+                    "links": {
+                        "self": "/api/v1/builds/26257897/relationships/approved-by",
+                        "related": "/api/v1/builds/26257897/approved-by"
+                    },
+                    "data": {
+                        "type": "users",
+                        "id": "683036"
+                    }
+                },
+                "snapshots": {
+                    "links": {
+                        "self": "/api/v1/builds/26257897/relationships/snapshots",
+                        "related": "/api/v1/builds/26257897/snapshots"
+                    }
+                },
+                "comparisons": {
+                    "links": {
+                        "self": "/api/v1/builds/26257897/relationships/comparisons",
+                        "related": "/api/v1/builds/26257897/comparisons"
+                    }
+                },
+                "browsers": {
+                    "links": {
+                        "self": "/api/v1/builds/26257897/relationships/browsers",
+                        "related": "/api/v1/builds/26257897/browsers"
+                    },
+                    "data": []
+                },
+                "removed-snapshots": {
+                    "links": {
+                        "self": "/api/v1/builds/26257897/relationships/removed-snapshots",
+                        "related": "/api/v1/builds/26257897/removed-snapshots"
+                    }
+                },
+                "failed-snapshots": {
+                    "links": {
+                        "self": "/api/v1/builds/26257897/relationships/failed-snapshots",
+                        "related": "/api/v1/builds/26257897/failed-snapshots"
+                    }
+                },
+                "missing-resources": {
+                    "links": {
+                        "self": "/api/v1/builds/26257897/relationships/missing-resources",
+                        "related": "/api/v1/builds/26257897/missing-resources"
+                    }
+                }
+            },
+            "meta": {
+                "finalize-link": "/api/v1/builds/26257897/finalize",
+                "approve-link": "/api/v1/builds/26257897/approve"
+            }
+        }
+    ]
+}

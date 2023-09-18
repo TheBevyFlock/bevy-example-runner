@@ -529,6 +529,7 @@ jobs:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN_MOBILE }}
           DEVICE: ${{ matrix.device }}
           OS_VERSION: ${{ matrix.os_version }}
+          PERCY_COMMIT: ${{ needs.get-environment.outputs.gitref }}
 
       - name: Save screenshots
         if: ${{ always() }}

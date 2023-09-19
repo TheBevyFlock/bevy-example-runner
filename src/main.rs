@@ -115,8 +115,9 @@ fn main() {
                 for ScreenshotData {
                     example,
                     screenshot,
-                    changed,
+                    mut changed,
                     tag,
+                    diff_ratio,
                 } in screenshots.into_iter()
                 {
                     let (category, name) = if platform == "mobile" {
@@ -142,6 +143,13 @@ fn main() {
                             flaky: true,
                             ..previous
                         });
+                    }
+                    if diff_ratio == 0.0 && changed != "no_diffs" {
+                        println!(
+                            "    - setting {} / {} ({:?}) as unchanged",
+                            example.category, example.name, tag
+                        );
+                        changed = "no_diffs".to_string();
                     }
                     // If there is a screenshot but no results, mark as success
                     run.results

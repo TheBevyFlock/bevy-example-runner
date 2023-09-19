@@ -65,17 +65,21 @@ fn snapshots_to_images(snapshots: SnapshotsData) -> Vec<ScreenshotData> {
                     .map(|comp| comp.id.clone())
                 {
                     let mut tag = None;
-                    let comparison = snapshots
+                    let (comparison_attributes, comparison_relationship) = snapshots
                         .included
                         .iter()
                         .find_map(|included| match included {
-                            Snapshot::Comparisons { id, relationships } if id == &comparison_id => {
-                                Some(relationships)
-                            }
+                            Snapshot::Comparisons {
+                                id,
+                                attributes,
+                                relationships,
+                            } if id == &comparison_id => Some((attributes, relationships)),
                             _ => None,
                         })
                         .unwrap();
-                    if let Some(comparison_tag) = comparison.comparison_tag.data.as_ref() {
+                    if let Some(comparison_tag) =
+                        comparison_relationship.comparison_tag.data.as_ref()
+                    {
                         let comparison_tag_id = comparison_tag.id.clone();
                         let comparison_tag = snapshots
                             .included
@@ -95,8 +99,13 @@ fn snapshots_to_images(snapshots: SnapshotsData) -> Vec<ScreenshotData> {
                         ))
                     }
                     let image_id = if attributes.review_state_reason == "no_diffs" {
-                        let base_screenshot_id =
-                            comparison.base_screenshot.data.as_ref().unwrap().id.clone();
+                        let base_screenshot_id = comparison_relationship
+                            .base_screenshot
+                            .data
+                            .as_ref()
+                            .unwrap()
+                            .id
+                            .clone();
                         let base_screenshot = snapshots
                             .included
                             .iter()
@@ -113,8 +122,13 @@ fn snapshots_to_images(snapshots: SnapshotsData) -> Vec<ScreenshotData> {
                     } else if ["unreviewed_comparisons", "user_approved"]
                         .contains(&attributes.review_state_reason.as_str())
                     {
-                        let head_screenshot_id =
-                            comparison.head_screenshot.data.as_ref().unwrap().id.clone();
+                        let head_screenshot_id = comparison_relationship
+                            .head_screenshot
+                            .data
+                            .as_ref()
+                            .unwrap()
+                            .id
+                            .clone();
                         let head_screenshot = snapshots
                             .included
                             .iter()
@@ -145,6 +159,7 @@ fn snapshots_to_images(snapshots: SnapshotsData) -> Vec<ScreenshotData> {
                         example: attributes.name.clone(),
                         screenshot: image.url.clone(),
                         changed: attributes.review_state_reason.clone(),
+                        diff_ratio: comparison_attributes.diff_ratio.unwrap_or(9999.99),
                         tag,
                     });
                 }
@@ -175,6 +190,7 @@ enum Snapshot {
     },
     Comparisons {
         id: String,
+        attributes: ComparisonAttributes,
         relationships: ComparisonRelationship,
     },
     Screenshots {
@@ -243,6 +259,11 @@ struct ComparisonRelationship {
 
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "kebab-case")]
+struct ComparisonAttributes {
+    diff_ratio: Option<f32>,
+}
+#[derive(Deserialize, Debug)]
+#[serde(rename_all = "kebab-case")]
 struct ComparisonTagAttributes {
     name: String,
     os_name: String,
@@ -286,4 +307,5 @@ pub struct ScreenshotData {
     pub screenshot: String,
     pub changed: String,
     pub tag: Option<String>,
+    pub diff_ratio: f32,
 }

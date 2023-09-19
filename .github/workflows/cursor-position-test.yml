@@ -1,0 +1,28 @@
+name: (test) Cursor position - windows
+
+on:
+  workflow_dispatch:
+  
+jobs:
+  take-screenshots:
+    name: Take Screenshots
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest]
+
+    steps:
+
+      - name: Run Examples (Windows)
+        shell: pwsh
+        run: |
+          Add-Type -AssemblyName System.Windows.Forms
+          $screen = [System.Windows.Forms.SystemInformation]::VirtualScreen
+          Write-Host "$($screen.Width)"
+          Write-Host "$($screen.Width / 2)"
+          Write-Host "$($screen.Height)"
+          Write-Host "$($screen.Height / 2)"
+          Write-Host "$($screen.Width),$($screen.Height)"
+          Write-Host "$($screen.Width / 2),$($screen.Height / 2)"
+          [Windows.Forms.Cursor]::Position = "$($screen.Width / 2),$($screen.Height / 2)"
+

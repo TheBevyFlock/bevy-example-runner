@@ -110,7 +110,13 @@ jobs:
         id: screenshots-windows
         if: runner.os == 'windows'
         continue-on-error: true
-        run: cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests --report-details
+        shell: pwsh
+        run: |
+          Add-Type -AssemblyName System.Windows.Forms
+          $screen = [System.Windows.Forms.SystemInformation]::VirtualScreen
+          [Windows.Forms.Cursor]::Position = "$($screen.Width / 2),$($screen.Height / 2)"
+
+          cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests --report-details
 
       - name: Log errors
         shell: pwsh
@@ -187,7 +193,6 @@ jobs:
       - name: Remove example known to be random (Windows)
         if: steps.gather-examples.outcome == 'success' && matrix.os == 'Windows'
         run: |
-          rm "screenshots-${{ matrix.os }}/UI (User Interface)/relative_cursor_position.png" || true
           rm "screenshots-${{ matrix.os }}/Shaders/compute_shader_game_of_life.png" || true
           rm "screenshots-${{ matrix.os }}/ECS (Entity Component System)/apply_deferred.png" || true
 

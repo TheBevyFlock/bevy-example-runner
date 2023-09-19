@@ -279,7 +279,7 @@
             <tr {% if example.flaky -%}class="flaky" {% else -%}class="all-good" style="display: none;" {% endif -%}>
                 <td style="border-right: none;">{{ example.category }} / {{ example.name }}</td>
                 <td style="border-left: none;">
-                    {% for mobile in all_mobile_platforms %}
+                    {% for mobile in all_mobile_platforms | sort %}
                     {% if mobile is starting_with("Android") %}
                     <span class="android platform-tooltip"><span class="tooltiptext">{{ mobile }}</span></span>
                     {% elif mobile is starting_with("iOS") %}
@@ -293,7 +293,7 @@
                 {% for run in runs -%}
                 <td style="text-align: center;">
                     {% if run.results[example.name] -%}
-                    {% for mobile in all_mobile_platforms %}
+                    {% for mobile in all_mobile_platforms | sort %}
                     {{ macros::status(example_name=example.name, platform=mobile, run=run) }}
                     {% if not loop.last %}
                     <hr />

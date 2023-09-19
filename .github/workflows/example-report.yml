@@ -186,7 +186,7 @@ jobs:
           do
             mean=`convert $image -format "%[mean]" info:`
             if [ "$mean" = 0 ]; then
-              echo "$image totally black image"
+              echo "$image"
               rm $image
             fi
           done

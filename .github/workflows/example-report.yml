@@ -22,6 +22,7 @@ jobs:
       linux_percy_project: ${{ steps.env.outputs.linux_percy_project }}
       windows_percy_project: ${{ steps.env.outputs.windows_percy_project }}
       mobile_percy_project: ${{ steps.env.outputs.mobile_percy_project }}
+      mobile_nonce: ${{ steps.env.outputs.mobile_nonce }}
       updated: ${{ steps.version-check.outputs.updated }}
     steps:
       - name: Checkout Bevy main branch
@@ -41,6 +42,7 @@ jobs:
           echo "windows_percy_project=dede4209/Screenshots-Windows-DX12" >> $GITHUB_OUTPUT
           echo "mobile_percy_project=dede4209/Bevy-Mobile-Example" >> $GITHUB_OUTPUT
           echo "pages=`python -c \"import json; print(json.dumps([i for i in range($page_count)]))\"`" >> $GITHUB_OUTPUT
+          echo "mobile_nonce=${{ github.run_id }}-$(date +%s)" >> $GITHUB_OUTPUT
       - uses: actions/checkout@v4
         with:
           ref: 'results'
@@ -499,21 +501,12 @@ jobs:
             -F "file=@target/debug/apk/bevyexample.apk" \
             -F "custom_id=$GITHUB_RUN_ID"
 
-  mobile-nonce:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    outputs:
-      result: ${{ steps.nonce.outputs.result }}
-    steps:
-    - id: nonce
-      run: echo "result=${{ github.run_id }}-$(date +%s)" >> $GITHUB_OUTPUT
-
   mobile-run:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: [mobile-nonce, build-for-iOS, build-for-Android, get-environment]
+    needs: [build-for-iOS, build-for-Android, get-environment]
     env: 
-      PERCY_PARALLEL_NONCE: ${{ needs.mobile-nonce.outputs.result }}
+      PERCY_PARALLEL_NONCE: ${{ needs.get-environment.outputs.mobile_nonce }}
       PERCY_PARALLEL_TOTAL: ${{ strategy.job-total }}
     strategy:
       matrix:

@@ -189,7 +189,7 @@ jobs:
             mean=`convert "$image" -format "%[mean]" info:`
             if [ "$mean" = 0 ]; then
               echo "$image"
-              rm $image
+              rm "$image"
             fi
           done
 

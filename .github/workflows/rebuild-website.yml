@@ -1,10 +1,9 @@
-name: (test) Deploy website
+name: Example report - Rebuild Website
 
 on:
   workflow_dispatch:
 
 jobs:
-
   update-website:
     name: Update Website
     runs-on: ubuntu-latest
@@ -15,8 +14,8 @@ jobs:
     environment:
       name: github-pages
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           ref: "results"
           path: "results"

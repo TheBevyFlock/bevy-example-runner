@@ -61,8 +61,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        page: ${{ fromJSON(needs.get-environment.outputs.pages) }}
         os: [ubuntu-latest, windows-latest]
+        page: ${{ fromJSON(needs.get-environment.outputs.pages) }}
 
     steps:
 

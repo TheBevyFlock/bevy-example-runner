@@ -110,8 +110,7 @@ fn main() {
                 let screenshots =
                     read_percy_results(fs::read_to_string(file.as_ref().unwrap().path()).unwrap());
                 // sleep to limit how hard Percy API are used
-                thread::sleep(Duration::from_secs(5));
-                // thread::sleep(Duration::from_secs(5));
+                thread::sleep(Duration::from_secs(3));
                 for ScreenshotData {
                     example,
                     screenshot,

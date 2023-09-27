@@ -102,6 +102,18 @@ jobs:
           sudo apt-get update
           sudo apt install -y xvfb libegl1-mesa libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers
 
+      - uses: actions/cache/restore@v3
+        id: restore-cache
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-
+
       - name: Take Screenshots (Linux)
         id: screenshots-linux
         if: runner.os == 'linux'
@@ -134,6 +146,11 @@ jobs:
             echo "::error title=Failed To Run ${{ runner.os }}/${{ matrix.page }}::$failures"
           }
 
+      - name: Outputs run results
+        id: run-results
+        run: |
+          echo "has_success=if [ -s successes ]; then echo 'true'; else echo 'false'; fi" >> $GITHUB_OUTPUT
+
       - name: Upload Screenshots
         uses: actions/upload-artifact@v3
         with:
@@ -148,6 +165,18 @@ jobs:
             successes
             failures
             no_screenshots
+
+      - uses: actions/cache/save@v3
+        if: steps.run-results.outputs.has_success == 'true'
+        id: save-cache
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
 
   send-to-percy:
     name: Send screenshots to Percy
@@ -349,6 +378,18 @@ jobs:
           sudo add-apt-repository ppa:kisak/kisak-mesa -y
           sudo apt-get update
           sudo apt install -y xvfb libegl1-mesa libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers
+
+      - uses: actions/cache/restore@v3
+        id: restore-cache
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-
 
       - name: Take Screenshots (Linux)
         if: runner.os == 'linux'

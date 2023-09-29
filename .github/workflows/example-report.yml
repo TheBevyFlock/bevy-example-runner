@@ -148,9 +148,9 @@ jobs:
 
       - name: Outputs run results
         id: run-results
+        shell: pwsh
         run: |
-          # echo "has_success=`if [ -s successes ]; then echo 'true'; else echo 'false'; fi`" >> $GITHUB_OUTPUT
-          echo "has_success=false" >> $GITHUB_OUTPUT
+          echo "has_success=$(![String]::IsNullOrWhiteSpace((Get-content successes)))" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
       - name: Upload Screenshots
         uses: actions/upload-artifact@v3
@@ -168,7 +168,7 @@ jobs:
             no_screenshots
 
       - uses: actions/cache/save@v3
-        if: steps.run-results.outputs.has_success == 'true'
+        if: steps.run-results.outputs.has_success == 'True'
         id: save-cache
         with:
           path: |

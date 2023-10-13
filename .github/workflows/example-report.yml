@@ -72,18 +72,6 @@ jobs:
           repository: 'bevyengine/bevy'
           ref: ${{ needs.get-environment.outputs.gitref }}
 
-      # temporary: fetch tools from PR
-      - name: Checkout Bevy Tools
-        uses: actions/checkout@v4
-        with:
-          repository: 'mockersf/bevy'
-          ref: 'example-showcase-can-remove-desktop-mode'
-          path: 'bevy-tools'
-      - name: Copy Bevy tools to main
-        run: |
-          rm -r tools
-          cp -r bevy-tools/tools/ tools
-
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
@@ -339,18 +327,6 @@ jobs:
         with:
           repository: 'bevyengine/bevy'
           ref: ${{ needs.get-environment.outputs.gitref }}
-
-      # temporary: fetch tools from PR
-      - name: Checkout Bevy Tools
-        uses: actions/checkout@v4
-        with:
-          repository: 'mockersf/bevy'
-          ref: 'example-showcase-can-remove-desktop-mode'
-          path: 'bevy-tools'
-      - name: Copy Bevy tools to main
-        run: |
-          rm -r tools
-          cp -r bevy-tools/tools/ tools
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable

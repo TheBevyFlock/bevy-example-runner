@@ -317,6 +317,7 @@ jobs:
   rerun-failed-examples:
     name: Rerun Failed Examples (without screenshot)
     needs: [get-environment, update-results]
+    if: always() && (needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch')
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -392,6 +393,7 @@ jobs:
   update-results-with-rerun:
     name: Update Results with Rerun
     needs: [rerun-failed-examples, get-environment]
+    if: always() && (needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -429,7 +431,8 @@ jobs:
 
   update-website:
     name: Update Website
-    needs: update-results-with-rerun
+    needs: [update-results-with-rerun, get-environment]
+    if: always() && (needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     permissions:
       contents: read

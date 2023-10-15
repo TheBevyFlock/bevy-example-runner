@@ -249,7 +249,7 @@ jobs:
     name: Update Results
     runs-on: ubuntu-latest
     needs: [send-to-percy, get-environment, mobile-check-result]
-    if: ${{ always() }}
+    if: always() && (needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch')
     permissions:
       contents: write
     steps:
@@ -574,7 +574,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: [mobile-run, get-environment]
-    if: ${{ always() }}
+    if: always() && (needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch')
     steps:
       - name: Wait for screenshots comparison
         run: |

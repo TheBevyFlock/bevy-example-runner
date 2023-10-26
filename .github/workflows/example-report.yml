@@ -3,7 +3,7 @@ name: Example report - Status and Screenshots
 on:
   workflow_dispatch:
   schedule:
-    - cron:  '*/15 * * * *'
+    - cron:  '0 */3 * * *'
 
 concurrency:
   group: ${{ github.repository }}-example-report

@@ -1,0 +1,33 @@
+==== stdout ====
+
+==== stderr ====
+[0m[1m[38;5;11mwarning[0m[0m[1m[38;5;15m: unused import: `BindingType`[0m
+[0m  [0m[0m[1m[38;5;14m--> [0m[0mcrates\bevy_pbr\src\render\mesh_view_bindings.rs:23:88[0m
+[0m   [0m[0m[1m[38;5;14m|[0m
+[0m[1m[38;5;14m23[0m[0m [0m[0m[1m[38;5;14m|[0m[0m [0m[0m        BindGroup, BindGroupLayout, BindGroupLayoutEntry, BindGroupLayoutEntryBuilder, BindingType,[0m
+[0m   [0m[0m[1m[38;5;14m| [0m[0m                                                                                       [0m[0m[1m[38;5;11m^^^^^^^^^^^[0m
+[0m   [0m[0m[1m[38;5;14m|[0m
+[0m   [0m[0m[1m[38;5;14m= [0m[0m[1m[38;5;15mnote[0m[0m: `#[warn(unused_imports)]` on by default[0m
+
+[1m[33mwarning[0m[1m:[0m `bevy_pbr` (lib) generated 1 warning (run `cargo fix --lib -p bevy_pbr` to apply 1 suggestion)
+[1m[32m    Finished[0m release [optimized] target(s) in 0.36s
+[1m[32m     Running[0m `target\release\examples\deferred_rendering.exe`
+[2m2023-11-28T18:55:42.592916Z[0m [32m INFO[0m [2mbevy_winit::system[0m[2m:[0m Creating new window "App" (0v0)
+[2m2023-11-28T18:55:42.683275Z[0m [32m INFO[0m [2mbevy_render::renderer[0m[2m:[0m AdapterInfo { name: "Microsoft Basic Render Driver", vendor: 5140, device: 140, device_type: IntegratedGpu, driver: "", driver_info: "", backend: Dx12 }
+[2m2023-11-28T18:55:42.782361Z[0m [33m WARN[0m [2mbevy_audio::audio_output[0m[2m:[0m No audio device found.
+[2m2023-11-28T18:55:43.031402Z[0m [32m INFO[0m [2mbevy_diagnostic::system_information_diagnostics_plugin::internal[0m[2m:[0m SystemInfo { os: "Windows Server 2022 Datacenter", kernel: "20348", cpu: "AMD EPYC 7763 64-Core Processor", core_count: "2", memory: "16.0 GiB" }
+[2m2023-11-28T18:55:43.343599Z[0m [31mERROR[0m [2mlog[0m[2m:[0m Handling wgpu errors as fatal by default    
+thread 'main' panicked at C:\Users\runneradmin\.cargo\registry\src\index.crates.io-6f17d22bba15001f\wgpu-0.17.2\src\backend\direct.rs:3056:5:
+wgpu error: Validation Error
+
+Caused by:
+    In Device::create_bind_group
+      note: label = `mesh_view_bind_group`
+    Texture binding 19 expects sample type = Uint, but given a view with format = Rg16Float
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Encountered a panic in system `bevy_pbr::render::mesh_view_bindings::prepare_mesh_view_bind_groups`!
+thread 'main' panicked at crates\bevy_render\src\pipelined_rendering.rs:145:45:
+called `Result::unwrap()` on an `Err` value: RecvError
+[1m[31merror[0m[1m:[0m process didn't exit successfully: `target\release\examples\deferred_rendering.exe` (exit code: 101)

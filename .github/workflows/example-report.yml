@@ -221,11 +221,6 @@ jobs:
           rm "screenshots-${{ matrix.os }}/Games/alien_cake_addict.png" || true
           rm "screenshots-${{ matrix.os }}/Games/contributors.png" || true
           rm "screenshots-${{ matrix.os }}/UI (User Interface)/font_atlas_debug.png" || true
-
-      # Windows only
-      - name: Remove example known to be random (Windows)
-        if: steps.gather-examples.outcome == 'success' && matrix.os == 'Windows'
-        run: |
           rm "screenshots-${{ matrix.os }}/Shaders/compute_shader_game_of_life.png" || true
           rm "screenshots-${{ matrix.os }}/ECS (Entity Component System)/apply_deferred.png" || true
 

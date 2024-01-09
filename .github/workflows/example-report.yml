@@ -74,7 +74,7 @@ jobs:
 
       - name: Remove timeing out examples
         run: |
-          git apply --ignore-whitespace ../removed-examples.patch
+          git apply --ignore-whitespace removed-examples.patch
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable

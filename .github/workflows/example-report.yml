@@ -74,7 +74,6 @@ jobs:
 
       - name: Remove timeing out examples
         run: |
-          cd bevy
           git apply --ignore-whitespace ../removed-examples.patch
 
       - name: Setup Rust

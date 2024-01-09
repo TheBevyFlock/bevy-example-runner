@@ -222,7 +222,6 @@ jobs:
           rm "screenshots-${{ matrix.os }}/Games/contributors.png" || true
           rm "screenshots-${{ matrix.os }}/UI (User Interface)/font_atlas_debug.png" || true
           rm "screenshots-${{ matrix.os }}/Shaders/compute_shader_game_of_life.png" || true
-          rm "screenshots-${{ matrix.os }}/ECS (Entity Component System)/apply_deferred.png" || true
 
       - name: Send to Percy
         if: steps.gather-examples.outcome == 'success'        

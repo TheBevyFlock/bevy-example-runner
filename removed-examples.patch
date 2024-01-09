@@ -1,0 +1,22 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index d53117723..4680ccd68 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -2358,17 +2358,6 @@ description = "Creates a solid color window"
+ category = "Window"
+ wasm = true
+ 
+-[[example]]
+-name = "low_power"
+-path = "examples/window/low_power.rs"
+-doc-scrape-examples = true
+-
+-[package.metadata.example.low_power]
+-name = "Low Power"
+-description = "Demonstrates settings to reduce power use for bevy applications"
+-category = "Window"
+-wasm = true
+-
+ [[example]]
+ name = "multiple_windows"
+ path = "examples/window/multiple_windows.rs"

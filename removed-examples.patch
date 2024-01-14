@@ -1,8 +1,8 @@
 diff --git a/Cargo.toml b/Cargo.toml
-index d53117723..4680ccd68 100644
+index ab7541514..b7b7bb14b 100644
 --- a/Cargo.toml
 +++ b/Cargo.toml
-@@ -2358,17 +2358,6 @@ description = "Creates a solid color window"
+@@ -2364,17 +2364,6 @@ description = "Creates a solid color window"
  category = "Window"
  wasm = true
  
@@ -20,3 +20,21 @@ index d53117723..4680ccd68 100644
  [[example]]
  name = "multiple_windows"
  path = "examples/window/multiple_windows.rs"
+@@ -2419,17 +2408,6 @@ description = "Illustrates making the window transparent and hiding the window d
+ category = "Window"
+ wasm = false
+ 
+-[[example]]
+-name = "window_settings"
+-path = "examples/window/window_settings.rs"
+-doc-scrape-examples = true
+-
+-[package.metadata.example.window_settings]
+-name = "Window Settings"
+-description = "Demonstrates customizing default window settings"
+-category = "Window"
+-wasm = true
+-
+ [[example]]
+ name = "resizing"
+ path = "tests/window/resizing.rs"

@@ -72,10 +72,14 @@ jobs:
           repository: 'bevyengine/bevy'
           ref: ${{ needs.get-environment.outputs.gitref }}
 
+      - name: Checkout patches
+        uses: actions/checkout@v4
+        with:
+          path: 'patches'
+  
       - name: Remove timeing out examples
         run: |
-          cd bevy
-          git apply --ignore-whitespace ../removed-examples.patch
+          git apply --ignore-whitespace patches/removed-examples.patch
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable

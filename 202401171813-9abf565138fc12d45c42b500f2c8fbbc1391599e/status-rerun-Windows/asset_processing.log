@@ -1,0 +1,10 @@
+==== stdout ====
+
+==== stderr ====
+[1m[32m    Finished[0m release [optimized] target(s) in 0.37s
+[1m[32m     Running[0m `target\release\examples\asset_processing.exe`
+[2m2024-01-17T19:10:44.165118Z[0m [33m WARN[0m [2mbevy_asset::io::source[0m[2m:[0m AssetSourceId::Name(embedded) does not have a processed AssetWatcher configured. Consider enabling the `embedded_watcher` cargo feature.
+thread 'main' panicked at crates\bevy_asset\src\io\source.rs:489:18:
+Failed to create file watcher: Error { kind: Generic("Input watch path is neither a file nor a directory."), paths: [] }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+[1m[31merror[0m[1m:[0m process didn't exit successfully: `target\release\examples\asset_processing.exe` (exit code: 101)

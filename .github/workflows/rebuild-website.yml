@@ -2,6 +2,7 @@ name: Example report - Rebuild Website
 
 on:
   workflow_dispatch:
+  workflow_call:
 
 jobs:
   update-website:

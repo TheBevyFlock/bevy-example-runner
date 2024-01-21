@@ -415,31 +415,11 @@ jobs:
     name: Update Website
     needs: [update-results-with-rerun, get-environment]
     if: always() && (needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch')
-    runs-on: ubuntu-latest
+    uses: ./.github/workflows/rebuild-website.yml
     permissions:
       contents: read
       pages: write
       id-token: write
-    environment:
-      name: github-pages
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
-        with:
-          ref: "results"
-          path: "results"
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-      - name: Build website
-        run: |
-          cargo run -- results
-      - name: Store generated html
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: ./site
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v1
 
   mobile-run:
     needs: [get-environment]

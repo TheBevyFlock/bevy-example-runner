@@ -157,7 +157,7 @@ fn snapshots_to_images(snapshots: SnapshotsData, build_url: &str) -> Vec<Screens
                         })
                         .unwrap();
 
-                    let build_url = format!(
+                    let snapshot_url = format!(
                         "{}/{}/{}",
                         build_url,
                         if attributes.review_state_reason == "no_diffs" {
@@ -174,7 +174,7 @@ fn snapshots_to_images(snapshots: SnapshotsData, build_url: &str) -> Vec<Screens
                         changed: attributes.review_state_reason.clone(),
                         diff_ratio: comparison_attributes.diff_ratio.unwrap_or(9999.99),
                         tag,
-                        snapshot_url: build_url.to_owned(),
+                        snapshot_url: snapshot_url.to_owned(),
                     });
                 }
             }

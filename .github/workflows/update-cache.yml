@@ -1,0 +1,59 @@
+name: Update Cache
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron:  '0 0 * * *'
+
+jobs:
+  build-cache:
+    name: Build Cache
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+
+      - name: Checkout Bevy main branch
+        uses: actions/checkout@v4
+        with:
+          repository: 'bevyengine/bevy'
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Bevy dependencies
+        if: runner.os == 'linux'
+        run: |
+          sudo apt-get update;
+          DEBIAN_FRONTEND=noninteractive sudo apt-get install --no-install-recommends -yq \
+            libasound2-dev libudev-dev libxkbcommon-x11-0;
+
+      - name: Install xvfb, llvmpipe and lavapipe
+        if: runner.os == 'linux'
+        run: |
+          sudo apt-get update -y -qq
+          sudo add-apt-repository ppa:kisak/turtle -y
+          sudo apt-get update
+          sudo apt install -y xvfb libegl1-mesa libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers
+
+      - name: Build an example (Linux)
+        if: runner.os == 'linux'
+        run: xvfb-run -s "-screen 0 1280x1024x24" cargo run -p example-showcase -- --page 1 --per-page 1 run --in-ci --ignore-stress-tests
+
+      - name: Build an example (Windows)
+        if: runner.os == 'windows'
+        shell: pwsh
+        run: cargo run -p example-showcase -- --page 1 --per-page 1 run --in-ci --ignore-stress-tests
+
+      - name: Save cache
+        uses: actions/cache/save@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}

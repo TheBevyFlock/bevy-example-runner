@@ -155,18 +155,6 @@ jobs:
             failures
             no_screenshots
 
-      - uses: actions/cache/save@v3
-        if: steps.run-results.outputs.has_success == 'True'
-        id: save-cache
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
-
   send-to-percy:
     name: Send screenshots to Percy
     runs-on: ubuntu-latest

@@ -425,7 +425,7 @@ jobs:
     needs: [get-environment]
     uses: ./.github/workflows/workflow-mobile.yml
     with:
-      gitref: get-environment.outputs.gitref
-      nonce: get-environment.outputs.mobile_nonce
-      mobile_percy_project: get-environment.outputs.mobile_percy_project
+      gitref: ${{ needs.get-environment.outputs.gitref }}
+      nonce: ${{ needs.get-environment.outputs.mobile_nonce }}
+      mobile_percy_project: ${{ needs.get-environment.outputs.mobile_percy_project }}
     secrets: inherit

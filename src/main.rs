@@ -39,7 +39,7 @@ struct Run {
     date: String,
     commit: String,
     results: HashMap<String, HashMap<String, String>>,
-    screenshots: HashMap<String, HashMap<String, (String, String)>>,
+    screenshots: HashMap<String, HashMap<String, (String, String, String)>>,
     logs: HashMap<String, HashMap<String, String>>,
 }
 
@@ -117,6 +117,7 @@ fn main() {
                     mut changed,
                     tag,
                     diff_ratio,
+                    snapshot_url,
                 } in screenshots.into_iter()
                 {
                     let (category, name) = if platform == "mobile" {
@@ -161,7 +162,7 @@ fn main() {
                         .or_insert_with(HashMap::new)
                         .insert(
                             tag.unwrap_or_else(|| platform.to_string()),
-                            (screenshot, changed),
+                            (screenshot, changed, snapshot_url),
                         );
                 }
             }

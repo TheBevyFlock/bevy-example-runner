@@ -45,14 +45,15 @@ pub fn read_percy_results(results: String) -> Vec<ScreenshotData> {
     let build_id = main.web_url.split('/').last().unwrap();
     let data = get_snapshots_with_retry(build_id);
 
-    snapshots_to_images(data)
+    snapshots_to_images(data, &main.web_url)
 }
 
-fn snapshots_to_images(snapshots: SnapshotsData) -> Vec<ScreenshotData> {
+fn snapshots_to_images(snapshots: SnapshotsData, build_url: &str) -> Vec<ScreenshotData> {
     let mut images = Vec::new();
     for snapshot in snapshots.data {
         match snapshot {
             Snapshot::Snapshots {
+                id,
                 attributes,
                 relationships,
                 ..
@@ -155,12 +156,25 @@ fn snapshots_to_images(snapshots: SnapshotsData) -> Vec<ScreenshotData> {
                             _ => None,
                         })
                         .unwrap();
+
+                    let snapshot_url = format!(
+                        "{}/{}/{}",
+                        build_url,
+                        if attributes.review_state_reason == "no_diffs" {
+                            "unchanged"
+                        } else {
+                            "changed"
+                        },
+                        id
+                    );
+
                     images.push(ScreenshotData {
                         example: attributes.name.clone(),
                         screenshot: image.url.clone(),
                         changed: attributes.review_state_reason.clone(),
                         diff_ratio: comparison_attributes.diff_ratio.unwrap_or(9999.99),
                         tag,
+                        snapshot_url: snapshot_url.to_owned(),
                     });
                 }
             }
@@ -181,6 +195,7 @@ struct SnapshotsData {
 #[serde(rename_all = "kebab-case")]
 enum Snapshot {
     Snapshots {
+        id: String,
         attributes: SnapshotAttributes,
         relationships: SnapshotRelationship,
     },
@@ -284,7 +299,7 @@ mod tests {
         dbg!(read.data.len());
         dbg!(read.included.len());
         dbg!(&read.data[0]);
-        dbg!(snapshots_to_images(read));
+        dbg!(snapshots_to_images(read, ""));
         // assert!(false);
     }
 
@@ -296,7 +311,7 @@ mod tests {
         dbg!(read.data.len());
         dbg!(read.included.len());
         dbg!(&read.data[0]);
-        dbg!(snapshots_to_images(read));
+        dbg!(snapshots_to_images(read, ""));
         assert!(false);
     }
 }
@@ -308,4 +323,5 @@ pub struct ScreenshotData {
     pub changed: String,
     pub tag: Option<String>,
     pub diff_ratio: f32,
+    pub snapshot_url: String,
 }

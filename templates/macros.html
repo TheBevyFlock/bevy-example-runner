@@ -4,12 +4,14 @@
 {% if run.screenshots[example_name][platform] -%}
 <div data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html=true data-bs-custom-class="image-popover"
     data-bs-content='<img class="img-fluid" src="{{ run.screenshots[example_name][platform].0 }}" />'>
-    <span class="success"></span>
-    {% if run.screenshots[example_name][platform].1 == "user_approved" -%}
-    <span class="changed-approved"></span>
-    {% elif run.screenshots[example_name][platform].1 == "unreviewed_comparisons" -%}
-    <span class="changed-new"></span>
-    {% endif -%}
+    <a href="{{ run.screenshots[example_name][platform].2 }}" target="_blank">
+        <span class="success"></span>
+        {% if run.screenshots[example_name][platform].1 == "user_approved" -%}
+        <span class="changed-approved"></span>
+        {% elif run.screenshots[example_name][platform].1 == "unreviewed_comparisons" -%}
+        <span class="changed-new"></span>
+        {% endif -%}
+    </a>
 </div>
 {% else -%}
 <span class="missing-screenshot" style="font-size: 1rem;"></span>

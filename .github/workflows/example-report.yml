@@ -423,6 +423,7 @@ jobs:
 
   mobile-run:
     needs: [get-environment]
+    if: needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch'
     uses: ./.github/workflows/workflow-mobile.yml
     with:
       gitref: ${{ needs.get-environment.outputs.gitref }}

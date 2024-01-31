@@ -106,7 +106,7 @@ jobs:
           sudo apt-get update
           sudo apt install -y xvfb libegl1-mesa libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers
 
-      - uses: actions/cache/restore@v3
+      - uses: actions/cache/restore@v4
         id: restore-cache
         with:
           path: |
@@ -163,13 +163,13 @@ jobs:
           echo "has_success=$(![String]::IsNullOrWhiteSpace((Get-content successes)))" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
       - name: Upload Screenshots
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: screenshots-${{ runner.os }}-${{ matrix.page }}
           path: screenshots
 
       - name: Upload Status
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: status-${{ runner.os }}-${{ matrix.page }}
           path: |
@@ -197,7 +197,9 @@ jobs:
     steps:
       
       - name: Download all artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
+        with:
+          pattern: screenshots-${{ matrix.os }}-*
 
       - name: Move examples to the correct folder
         id: gather-examples
@@ -267,7 +269,9 @@ jobs:
           path: 'results'
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
+        with:
+          pattern: status-*
 
       - name: Concatenate status
         run: |
@@ -327,7 +331,7 @@ jobs:
           git push
 
       - name: Upload Aggregated Status
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: aggregated-status
           path: |
@@ -367,7 +371,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Download Aggregated Status
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: aggregated-status
           path: aggregated-status
@@ -391,7 +395,7 @@ jobs:
           sudo apt-get update
           sudo apt install -y xvfb libegl1-mesa libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers
 
-      - uses: actions/cache/restore@v3
+      - uses: actions/cache/restore@v4
         id: restore-cache
         with:
           path: |
@@ -419,7 +423,7 @@ jobs:
         run: cargo run -p example-showcase -- run --in-ci --ignore-stress-tests --report-details --example-list failure-list
   
       - name: Upload Rerun Status
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: status-rerun-${{ runner.os }}
           path: |
@@ -442,19 +446,19 @@ jobs:
           path: 'results'
 
       - name: Download Rerun Status on Linux
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: status-rerun-Linux
           path: status-rerun-Linux
 
       - name: Download Rerun Status on Windows
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: status-rerun-Windows
           path: status-rerun-Windows
 
       - name: Download Rerun Status on macOS
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: status-rerun-macOS
           path: status-rerun-macOS

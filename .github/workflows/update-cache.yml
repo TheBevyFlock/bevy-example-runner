@@ -52,7 +52,7 @@ jobs:
         run: cargo run -p example-showcase -- --page 1 --per-page 1 run --in-ci --ignore-stress-tests
 
       - name: Save cache
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: |
             ~/.cargo/bin/

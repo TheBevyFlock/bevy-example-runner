@@ -352,11 +352,15 @@ jobs:
           path: 'runner-patches'  
   
       - name: Apply patches
-        shell: bash
+        shell: pwsh
         run: |
-          for patch in runner-patches/patches/*.patch; do
-            git apply --ignore-whitespace $patch
-          done
+          Get-ChildItem "runner-patches/patches" -Filter *.patch | 
+          Foreach-Object {
+              $content = Get-Content $_.FullName
+          
+              Write-Output "Processing $($_.FullName)"
+              git apply --ignore-whitespace $patch
+          }
   
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable

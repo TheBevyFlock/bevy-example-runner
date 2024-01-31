@@ -81,7 +81,7 @@ jobs:
   
       - name: Apply patches
         run: |
-          for patch in runner-patches/*.patch; do
+          for patch in runner-patches/patches/*.patch; do
             git apply --ignore-whitespace $patch
           done
 
@@ -353,7 +353,7 @@ jobs:
   
       - name: Apply patches
         run: |
-          for patch in runner-patches/*.patch; do
+          for patch in runner-patches/patches/*.patch; do
             git apply --ignore-whitespace $patch
           done
   

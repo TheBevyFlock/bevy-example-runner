@@ -6,18 +6,18 @@ index 3e8082e23..624769443 100644
  
  impl Default for AudioOutput {
      fn default() -> Self {
--        // if let Ok((stream, stream_handle)) = OutputStream::try_default() {
--        //     // We leak `OutputStream` to prevent the audio from stopping.
--        //     std::mem::forget(stream);
--        //     Self {
--        //         stream_handle: Some(stream_handle),
--        //     }
--        // } else {
+-        if let Ok((stream, stream_handle)) = OutputStream::try_default() {
+-            // We leak `OutputStream` to prevent the audio from stopping.
+-            std::mem::forget(stream);
+-            Self {
+-                stream_handle: Some(stream_handle),
+-            }
+-        } else {
          warn!("No audio device found.");
          Self {
              stream_handle: None,
          }
--        // }
+-        }
      }
  }
  

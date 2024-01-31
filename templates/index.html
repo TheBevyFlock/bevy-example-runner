@@ -73,6 +73,11 @@
             font: var(--fa-font-brands);
         }
 
+        .macos::before {
+            content: '\f179';
+            font: var(--fa-font-brands);
+        }
+
         .android::before {
             content: '\f17b';
             font: var(--fa-font-brands);
@@ -320,6 +325,8 @@
                     <span class="windows"></span>
                     <hr>
                     <span class="linux"></span>
+                    <hr>
+                    <span class="macos"></span>
                 </td>
                 {% for run in runs -%}
                 <td style="text-align: center;">
@@ -327,8 +334,11 @@
                     {{ macros::status(example_name=example.name, platform="Windows", run=run) }}
                     <hr />
                     {{ macros::status(example_name=example.name, platform="Linux", run=run) }}
+                    <hr />
+                    {{ macros::status(example_name=example.name, platform="macOS", run=run) }}
                     {% else -%}
                     -
+                    <hr />-
                     <hr />-
                     {% endif -%}
                 </td>

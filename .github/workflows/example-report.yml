@@ -84,10 +84,8 @@ jobs:
         run: |
           Get-ChildItem "runner-patches/patches" -Filter *.patch | 
           Foreach-Object {
-              $content = Get-Content $_.FullName
-          
               Write-Output "Processing $($_.FullName)"
-              git apply --ignore-whitespace $patch
+              git apply --ignore-whitespace $($_.FullName)
           }
 
       - name: Setup Rust
@@ -361,10 +359,8 @@ jobs:
         run: |
           Get-ChildItem "runner-patches/patches" -Filter *.patch | 
           Foreach-Object {
-              $content = Get-Content $_.FullName
-          
               Write-Output "Processing $($_.FullName)"
-              git apply --ignore-whitespace $patch
+              git apply --ignore-whitespace $($_.FullName)
           }
   
       - name: Setup Rust

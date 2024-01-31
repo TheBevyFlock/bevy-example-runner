@@ -1,0 +1,8 @@
+==== stdout ====
+
+==== stderr ====
+[1m[32m    Finished[0m release [optimized] target(s) in 0.50s
+[1m[32m     Running[0m `target/release/examples/shader_instancing`
+thread 'main' panicked at crates/bevy_render/src/renderer/mod.rs:141:10:
+Unable to find a GPU! Make sure you have installed required drivers!
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

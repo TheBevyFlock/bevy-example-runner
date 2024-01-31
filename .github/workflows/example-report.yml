@@ -352,6 +352,7 @@ jobs:
           path: 'runner-patches'  
   
       - name: Apply patches
+        shell: bash
         run: |
           for patch in runner-patches/patches/*.patch; do
             git apply --ignore-whitespace $patch

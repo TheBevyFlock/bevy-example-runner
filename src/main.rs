@@ -167,7 +167,7 @@ fn main() {
                 }
             }
         }
-        for platform in ["Windows", "Linux"] {
+        for platform in ["Windows", "Linux", "macOS"] {
             let rerun = run_path.join(format!("status-rerun-{}", platform));
             if rerun.exists() {
                 println!("  - rerun {}", platform);

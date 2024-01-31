@@ -21,6 +21,7 @@ jobs:
       date: ${{ steps.env.outputs.date }}
       linux_percy_project: ${{ steps.env.outputs.linux_percy_project }}
       windows_percy_project: ${{ steps.env.outputs.windows_percy_project }}
+      macos_percy_project: ${{ steps.env.outputs.macos_percy_project }}
       mobile_percy_project: ${{ steps.env.outputs.mobile_percy_project }}
       mobile_nonce: ${{ steps.env.outputs.mobile_nonce }}
       updated: ${{ steps.version-check.outputs.updated }}
@@ -40,6 +41,7 @@ jobs:
           echo "date=`date +%Y%m%d%H%M`" >> $GITHUB_OUTPUT
           echo "linux_percy_project=dede4209/Screenshots-Linux-Vulkan" >> $GITHUB_OUTPUT
           echo "windows_percy_project=dede4209/Screenshots-Windows-DX12" >> $GITHUB_OUTPUT
+          echo "macos_percy_project=dede4209/Screenshots-macOS-Metal" >> $GITHUB_OUTPUT
           echo "mobile_percy_project=dede4209/Bevy-Mobile-Example" >> $GITHUB_OUTPUT
           echo "pages=`python -c \"import json; print(json.dumps([i for i in range($page_count)]))\"`" >> $GITHUB_OUTPUT
           echo "mobile_nonce=${{ github.run_id }}-$(date +%s)" >> $GITHUB_OUTPUT
@@ -61,7 +63,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-14]
         page: ${{ fromJSON(needs.get-environment.outputs.pages) }}
 
     steps:
@@ -71,6 +73,20 @@ jobs:
         with:
           repository: 'bevyengine/bevy'
           ref: ${{ needs.get-environment.outputs.gitref }}
+
+      - name: Checkout patches
+        uses: actions/checkout@v4
+        with:
+          path: 'runner-patches'  
+  
+      - name: Apply patches
+        shell: pwsh
+        run: |
+          Get-ChildItem "runner-patches/patches" -Filter *.patch | 
+          Foreach-Object {
+              Write-Output "Processing $($_.FullName)"
+              git apply --ignore-whitespace $($_.FullName)
+          }
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -120,6 +136,12 @@ jobs:
 
           cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests --report-details
 
+      - name: Take Screenshots (macOS)
+        id: screenshots-macos
+        if: runner.os == 'macos'
+        continue-on-error: true
+        run: cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests --report-details
+  
       - name: Log errors
         shell: pwsh
         run: |
@@ -169,6 +191,9 @@ jobs:
           - os: Windows
             percy_key: PERCY_TOKEN_WINDOWS_DX12
             percy_project: ${{ needs.get-environment.outputs.windows_percy_project }}
+          - os: macOS
+            percy_key: PERCY_TOKEN_MACOS_METAL
+            percy_project: ${{ needs.get-environment.outputs.macos_percy_project }}
     steps:
       
       - name: Download all artifacts
@@ -272,10 +297,22 @@ jobs:
           grep . Windows-failures-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-failures || true
           grep . Windows-no_screenshots-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-no_screenshots || true
 
+          for report in status-macOS-*
+          do
+            (cat $report/successes; echo) >> macOS-successes-concat
+            (cat $report/failures; echo) >> macOS-failures-concat
+            (cat $report/no_screenshots; echo) >> macOS-no_screenshots-concat
+          done
+          # remove empty lines
+          grep . macOS-successes-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/macOS-successes || true
+          grep . macOS-failures-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/macOS-failures || true
+          grep . macOS-no_screenshots-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/macOS-no_screenshots || true
+
       - name: Save Percy results
         run: |
           curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.windows_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-percy
           curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.linux_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Linux-percy
+          curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.macos_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/macOS-percy
           curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.mobile_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/mobile-percy
 
       - name: Store results in git
@@ -303,7 +340,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-14]
     steps:
 
       - name: Checkout Bevy main branch
@@ -312,6 +349,20 @@ jobs:
           repository: 'bevyengine/bevy'
           ref: ${{ needs.get-environment.outputs.gitref }}
 
+      - name: Checkout patches
+        uses: actions/checkout@v4
+        with:
+          path: 'runner-patches'  
+  
+      - name: Apply patches
+        shell: pwsh
+        run: |
+          Get-ChildItem "runner-patches/patches" -Filter *.patch | 
+          Foreach-Object {
+              Write-Output "Processing $($_.FullName)"
+              git apply --ignore-whitespace $($_.FullName)
+          }
+  
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
@@ -362,6 +413,11 @@ jobs:
         continue-on-error: true
         run: cargo run -p example-showcase -- run --in-ci --ignore-stress-tests --report-details --example-list failure-list
   
+      - name: Take Screenshots (macOS)
+        if: runner.os == 'macos'
+        continue-on-error: true
+        run: cargo run -p example-showcase -- run --in-ci --ignore-stress-tests --report-details --example-list failure-list
+  
       - name: Upload Rerun Status
         uses: actions/upload-artifact@v3
         with:
@@ -397,10 +453,17 @@ jobs:
           name: status-rerun-Windows
           path: status-rerun-Windows
 
+      - name: Download Rerun Status on macOS
+        uses: actions/download-artifact@v3
+        with:
+          name: status-rerun-macOS
+          path: status-rerun-macOS
+
       - name: Store results in git
         run: |
           mv status-rerun-Windows results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/
           mv status-rerun-Linux results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/
+          mv status-rerun-macOS results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/
 
           cd results
 

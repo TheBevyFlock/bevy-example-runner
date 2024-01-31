@@ -11,7 +11,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-14]
 
     steps:
 
@@ -45,6 +45,10 @@ jobs:
       - name: Build an example (Windows)
         if: runner.os == 'windows'
         shell: pwsh
+        run: cargo run -p example-showcase -- --page 1 --per-page 1 run --in-ci --ignore-stress-tests
+
+      - name: Build an example (macOS)
+        if: runner.os == 'macos'
         run: cargo run -p example-showcase -- --page 1 --per-page 1 run --in-ci --ignore-stress-tests
 
       - name: Save cache

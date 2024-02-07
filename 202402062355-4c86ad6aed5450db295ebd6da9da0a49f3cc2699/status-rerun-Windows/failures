@@ -1,0 +1,41 @@
+Assets/asset_processing - 1.6053714
+Input/char_input_events - 0.8713416
+Application/return_after_run - 0.8007558
+Reflection/reflection_types - 0.794007
+Application/log_layers - 0.7888356
+Diagnostics/custom_diagnostic - 0.7929504
+Tools/scene_viewer - 0.9975609
+Audio/audio - 0.7991036
+Input/mouse_input - 0.7813336
+Input/touch_input_events - 0.8074028
+ECS (Entity Component System)/event - 0.8070096
+Input/mouse_grab - 0.795147
+Diagnostics/log_diagnostics - 0.8081392
+Audio/pitch - 0.7973252
+Reflection/reflection - 0.8002838
+Application/plugin_group - 0.8203084
+Input/gamepad_input - 0.8230879
+Input/gamepad_input_events - 0.79226184
+Input/mouse_input_events - 0.9624412
+Input/keyboard_input_events - 0.9140297
+ECS (Entity Component System)/component_change_detection - 0.9460706
+Input/keyboard_input - 0.81379414
+Audio/audio_control - 0.8208764
+Input/keyboard_modifiers - 0.81034136
+ECS (Entity Component System)/fixed_timestep - 0.80878645
+Time/timers - 0.8034345
+Application/empty_defaults - 0.82922316
+Reflection/generic_reflection - 0.8159556
+Audio/decodable - 0.8094241
+Window/window_settings - 361.4806
+Input/touch_input - 0.85423666
+Application/plugin - 0.7967411
+Application/thread_pool_resources - 0.792251
+Assets/custom_asset - 0.7944504
+Reflection/trait_reflection - 0.8339016
+2D Rendering/texture_atlas - 0.8343433
+ECS (Entity Component System)/nondeterministic_system_order - 0.8318084
+ECS (Entity Component System)/run_conditions - 0.8359746
+Application/drag_and_drop - 0.8247708
+Input/gamepad_rumble - 0.83595186
+ECS (Entity Component System)/generic_system - 0.81859714

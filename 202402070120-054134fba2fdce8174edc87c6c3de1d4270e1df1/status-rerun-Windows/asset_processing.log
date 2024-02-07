@@ -1,0 +1,33 @@
+==== stdout ====
+Current Values:
+  a: Some(Text("aX"))
+  b: Some(Text("b"))
+  c: Some(Text("caXb"))
+  d: Some(Text("dcaXbe"))
+  e: Some(Text("e"))
+(You can modify source assets and their .meta files to hot-reload changes!)
+
+Current Values:
+  a: Some(Text("aX"))
+  b: Some(Text("b"))
+  c: Some(Text("caXb"))
+  d: Some(Text("dcaXbe"))
+  e: Some(Text("e"))
+(You can modify source assets and their .meta files to hot-reload changes!)
+
+
+==== stderr ====
+[1m[32m    Finished[0m release [optimized] target(s) in 0.37s
+[1m[32m     Running[0m `target\release\examples\asset_processing.exe`
+[2m2024-02-07T02:17:33.389303Z[0m [33m WARN[0m [2mbevy_asset::io::source[0m[2m:[0m AssetSourceId::Name(embedded) does not have a processed AssetWatcher configured. Consider enabling the `embedded_watcher` cargo feature.
+[2m2024-02-07T02:17:33.392882Z[0m [32m INFO[0m [2mbevy_winit::system[0m[2m:[0m Creating new window "App" (0v1)
+[2m2024-02-07T02:17:33.973009Z[0m [32m INFO[0m [2mbevy_render::renderer[0m[2m:[0m AdapterInfo { name: "Microsoft Basic Render Driver", vendor: 5140, device: 140, device_type: Cpu, driver: "", driver_info: "", backend: Dx12 }
+[2m2024-02-07T02:17:34.118851Z[0m [33m WARN[0m [2mbevy_audio::audio_output[0m[2m:[0m No audio device found.
+[2m2024-02-07T02:17:34.413126Z[0m [32m INFO[0m [2mbevy_diagnostic::system_information_diagnostics_plugin::internal[0m[2m:[0m SystemInfo { os: "Windows Server 2022 Datacenter", kernel: "20348", cpu: "", core_count: "2", memory: "16.0 GiB" }
+thread 'Compute Task Pool (0)' panicked at crates\bevy_pbr\src\light_probe\mod.rs:417:10:
+called `Option::unwrap()` on a `None` value
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Encountered a panic in system `bevy_pbr::light_probe::upload_light_probes`!
+thread 'Compute Task Pool (1)' panicked at crates\bevy_render\src\pipelined_rendering.rs:145:45:
+called `Result::unwrap()` on an `Err` value: RecvError
+[1m[31merror[0m[1m:[0m process didn't exit successfully: `target\release\examples\asset_processing.exe` (exit code: 101)

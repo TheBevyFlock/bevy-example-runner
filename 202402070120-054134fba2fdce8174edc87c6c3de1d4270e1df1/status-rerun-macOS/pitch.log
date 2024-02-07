@@ -1,0 +1,17 @@
+==== stdout ====
+
+==== stderr ====
+[1m[32m    Finished[0m release [optimized] target(s) in 0.13s
+[1m[32m     Running[0m `target/release/examples/pitch`
+[2m2024-02-07T02:13:51.623731Z[0m [32m INFO[0m [2mbevy_render::renderer[0m[2m:[0m AdapterInfo { name: "Apple Paravirtual device", vendor: 0, device: 0, device_type: IntegratedGpu, driver: "", driver_info: "", backend: Metal }
+[2m2024-02-07T02:13:51.662829Z[0m [33m WARN[0m [2mbevy_audio::audio_output[0m[2m:[0m No audio device found.
+[2m2024-02-07T02:13:51.686858Z[0m [32m INFO[0m [2mbevy_winit::system[0m[2m:[0m Creating new window "App" (0v1)
+[2m2024-02-07T02:13:51.711497Z[0m [32m INFO[0m [2mbevy_diagnostic::system_information_diagnostics_plugin::internal[0m[2m:[0m SystemInfo { os: "MacOS 14.2.1 ", kernel: "23.2.0", cpu: "", core_count: "3", memory: "7.0 GiB" }
+thread 'Compute Task Pool (0)' panicked at crates/bevy_pbr/src/light_probe/mod.rs:417:10:
+called `Option::unwrap()` on a `None` value
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Encountered a panic in system `bevy_pbr::light_probe::upload_light_probes`!
+thread 'Compute Task Pool (0)' panicked at crates/bevy_render/src/pipelined_rendering.rs:145:45:
+called `Result::unwrap()` on an `Err` value: RecvError
+thread 'main' panicked at /Users/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/winit-0.29.10/src/platform_impl/macos/app_state.rs:387:33:
+called `Result::unwrap()` on an `Err` value: PoisonError { .. }

@@ -1,0 +1,10 @@
+==== stdout ====
+
+==== stderr ====
+[1m[32m    Finished[0m release [optimized] target(s) in 0.17s
+[1m[32m     Running[0m `target/release/examples/keyboard_input`
+[2m2024-02-07T02:17:50.076591Z[0m [32m INFO[0m [2mlog[0m[2m:[0m Failed loading `libxkbcommon-x11.so.0`. Error: CantOpen(DlOpen { desc: "libxkbcommon-x11.so.0: cannot open shared object file: No such file or directory" })    
+[2m2024-02-07T02:17:50.076662Z[0m [32m INFO[0m [2mlog[0m[2m:[0m Failed loading `libxkbcommon-x11.so`. Error: CantOpen(DlOpen { desc: "libxkbcommon-x11.so: cannot open shared object file: No such file or directory" })    
+thread 'main' panicked at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/xkbcommon-dl-0.4.1/src/x11.rs:59:28:
+Library libxkbcommon-x11.so could not be loaded.
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

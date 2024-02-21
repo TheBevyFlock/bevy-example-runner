@@ -221,8 +221,12 @@ jobs:
           for image in screenshots-${{ matrix.os }}/*/*.png
           do
             mean=`convert "$image" -format "%[mean]" info:`
+            if [[ "$?" = "1" ]]; then
+              echo "Error reading $image"
+              rm "$image"
+            fi
             if [ "$mean" = 0 ]; then
-              echo "$image"
+              echo "$image is all black"
               rm "$image"
             fi
           done

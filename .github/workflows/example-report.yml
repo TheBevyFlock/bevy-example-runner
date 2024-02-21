@@ -122,7 +122,7 @@ jobs:
         id: screenshots-linux
         if: runner.os == 'linux'
         continue-on-error: true
-        run: xvfb-run -s "-screen 0 1280x1024x24" cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests --report-details
+        run: xvfb-run -s "-screen 0 1280x1024x24" cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot-at 200 --frame-duration 0.025 --stop-at 300 --ignore-stress-tests --report-details
 
       - name: Take Screenshots (Windows)
         id: screenshots-windows
@@ -134,13 +134,13 @@ jobs:
           $screen = [System.Windows.Forms.SystemInformation]::VirtualScreen
           [Windows.Forms.Cursor]::Position = "$($screen.Width / 2),$($screen.Height / 2)"
 
-          cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests --report-details
+          cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot-at 200 --frame-duration 0.025 --stop-at 300 --ignore-stress-tests --report-details
 
       - name: Take Screenshots (macOS)
         id: screenshots-macos
         if: runner.os == 'macos'
         continue-on-error: true
-        run: cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests --report-details
+        run: cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot-at 200 --frame-duration 0.025 --stop-at 300 --ignore-stress-tests --report-details
   
       - name: Log errors
         shell: pwsh

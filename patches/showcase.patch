@@ -1,0 +1,111 @@
+diff --git a/tools/example-showcase/src/main.rs b/tools/example-showcase/src/main.rs
+index 16c1c9b93..23e8cdd27 100644
+--- a/tools/example-showcase/src/main.rs
++++ b/tools/example-showcase/src/main.rs
+@@ -41,12 +41,16 @@ enum Action {
+         wgpu_backend: Option<String>,
+ 
+         #[arg(long)]
+-        /// Don't stop automatically
+-        manual_stop: bool,
++        /// Stop at frame
++        stop_at: u32,
+ 
+         #[arg(long)]
+-        /// Take a screenshot
+-        screenshot: bool,
++        /// Take a screenshot at frame
++        screenshot_at: u32,
++
++        #[arg(long)]
++        /// Take a screenshot at frame
++        frame_duration: f32,
+ 
+         #[arg(long)]
+         /// Running in CI (some adaptation to the code)
+@@ -130,8 +134,9 @@ fn main() {
+     match cli.action {
+         Action::Run {
+             wgpu_backend,
+-            manual_stop,
+-            screenshot,
++            stop_at,
++            screenshot_at,
++            frame_duration,
+             in_ci,
+             ignore_stress_tests,
+             report_details,
+@@ -162,8 +167,9 @@ fn main() {
+ 
+             let mut extra_parameters = vec![];
+ 
+-            match (manual_stop, screenshot) {
+-                (true, true) => {
++            match (stop_at, screenshot_at) {
++                (0, 0) => (),
++                (0, screenshot_at) if screenshot_at > 0 => {
+                     let mut file = File::create("example_showcase_config.ron").unwrap();
+                     file.write_all(
+                         b"(exit_after: None, frame_time: Some(0.05), screenshot_frames: [100])",
+@@ -172,19 +178,22 @@ fn main() {
+                     extra_parameters.push("--features");
+                     extra_parameters.push("bevy_ci_testing");
+                 }
+-                (true, false) => (),
+-                (false, true) => {
++                (stop_at, 0) if stop_at > 0 => {
+                     let mut file = File::create("example_showcase_config.ron").unwrap();
+-                    file.write_all(
+-                        b"(exit_after: Some(250), frame_time: Some(0.05), screenshot_frames: [100])",
+-                    )
+-                    .unwrap();
++                    file.write_all(b"(exit_after: Some(250))").unwrap();
+                     extra_parameters.push("--features");
+                     extra_parameters.push("bevy_ci_testing");
+                 }
+-                (false, false) => {
++                (stop_at, screenshot_at) => {
+                     let mut file = File::create("example_showcase_config.ron").unwrap();
+-                    file.write_all(b"(exit_after: Some(250))").unwrap();
++                    file.write_all(
++                        format!(
++                            "(exit_after: Some({}), frame_time: Some({}), screenshot_frames: [{}])",
++                            stop_at, frame_duration, screenshot_at
++                        )
++                        .as_bytes(),
++                    )
++                    .unwrap();
+                     extra_parameters.push("--features");
+                     extra_parameters.push("bevy_ci_testing");
+                 }
+@@ -292,7 +301,7 @@ fn main() {
+                     cmd = cmd.env("WGPU_BACKEND", backend);
+                 }
+ 
+-                if !manual_stop || screenshot {
++                if stop_at > 0 || screenshot_at > 0 {
+                     cmd = cmd.env("CI_TESTING_CONFIG", "example_showcase_config.ron");
+                 }
+ 
+@@ -307,10 +316,10 @@ fn main() {
+                 if (!report_details && result.is_ok())
+                     || (report_details && result.as_ref().unwrap().status.success())
+                 {
+-                    if screenshot {
++                    if screenshot_at > 0 {
+                         let _ = fs::create_dir_all(Path::new("screenshots").join(&to_run.category));
+                         let renamed_screenshot = fs::rename(
+-                            "screenshot-100.png",
++                            format!("screenshot-{}.png", screenshot_at),
+                             Path::new("screenshots")
+                                 .join(&to_run.category)
+                                 .join(format!("{}.png", to_run.technical_name)),
+@@ -377,7 +386,7 @@ fn main() {
+                         .collect::<Vec<_>>()
+                         .join("\n"),
+                 );
+-                if screenshot {
++                if screenshot_at > 0 {
+                     let _ = fs::write(
+                         "no_screenshots",
+                         no_screenshot_examples

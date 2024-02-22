@@ -415,17 +415,17 @@ jobs:
       - name: Take Screenshots (Linux)
         if: runner.os == 'linux'
         continue-on-error: true
-        run: xvfb-run -s "-screen 0 1280x1024x24" cargo run -p example-showcase -- run --in-ci --ignore-stress-tests --report-details --example-list failure-list
+        run: xvfb-run -s "-screen 0 1280x1024x24" cargo run -p example-showcase -- run --screenshot-at 0 --frame-duration 0.025 --stop-at 200 --in-ci --ignore-stress-tests --report-details --example-list failure-list
 
       - name: Take Screenshots (Windows)
         if: runner.os == 'windows'
         continue-on-error: true
-        run: cargo run -p example-showcase -- run --in-ci --ignore-stress-tests --report-details --example-list failure-list
+        run: cargo run -p example-showcase -- run --screenshot-at 0 --frame-duration 0.025 --stop-at 200 --in-ci --ignore-stress-tests --report-details --example-list failure-list
   
       - name: Take Screenshots (macOS)
         if: runner.os == 'macos'
         continue-on-error: true
-        run: cargo run -p example-showcase -- run --in-ci --ignore-stress-tests --report-details --example-list failure-list
+        run: cargo run -p example-showcase -- run --screenshot-at 0 --frame-duration 0.025 --stop-at 200 --in-ci --ignore-stress-tests --report-details --example-list failure-list
   
       - name: Upload Rerun Status
         uses: actions/upload-artifact@v4

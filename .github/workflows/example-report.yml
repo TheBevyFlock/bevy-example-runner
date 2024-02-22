@@ -122,7 +122,7 @@ jobs:
         id: screenshots-linux
         if: runner.os == 'linux'
         continue-on-error: true
-        run: xvfb-run -s "-screen 0 1280x1024x24" cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests --report-details
+        run: xvfb-run -s "-screen 0 1280x1024x24" cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot-at 200 --frame-duration 0.025 --stop-at 300 --in-ci --ignore-stress-tests --report-details
 
       - name: Take Screenshots (Windows)
         id: screenshots-windows
@@ -134,13 +134,13 @@ jobs:
           $screen = [System.Windows.Forms.SystemInformation]::VirtualScreen
           [Windows.Forms.Cursor]::Position = "$($screen.Width / 2),$($screen.Height / 2)"
 
-          cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests --report-details
+          cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot-at 200 --frame-duration 0.025 --stop-at 300 --in-ci --ignore-stress-tests --report-details
 
       - name: Take Screenshots (macOS)
         id: screenshots-macos
         if: runner.os == 'macos'
         continue-on-error: true
-        run: cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot --in-ci --ignore-stress-tests --report-details
+        run: cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot-at 200 --frame-duration 0.025 --stop-at 300 --in-ci --ignore-stress-tests --report-details
   
       - name: Log errors
         shell: pwsh
@@ -216,12 +216,17 @@ jobs:
       - name: Remove images that are all black
         if: steps.gather-examples.outcome == 'success'
         run: |
+          set +e
           sudo apt install -y imagemagick
           for image in screenshots-${{ matrix.os }}/*/*.png
           do
             mean=`convert "$image" -format "%[mean]" info:`
+            if [[ "$?" = "1" ]]; then
+              echo "Error reading $image"
+              rm "$image"
+            fi
             if [ "$mean" = 0 ]; then
-              echo "$image"
+              echo "$image is all black"
               rm "$image"
             fi
           done
@@ -410,17 +415,17 @@ jobs:
       - name: Take Screenshots (Linux)
         if: runner.os == 'linux'
         continue-on-error: true
-        run: xvfb-run -s "-screen 0 1280x1024x24" cargo run -p example-showcase -- run --in-ci --ignore-stress-tests --report-details --example-list failure-list
+        run: xvfb-run -s "-screen 0 1280x1024x24" cargo run -p example-showcase -- run --screenshot-at 0 --frame-duration 0.025 --stop-at 200 --in-ci --ignore-stress-tests --report-details --example-list failure-list
 
       - name: Take Screenshots (Windows)
         if: runner.os == 'windows'
         continue-on-error: true
-        run: cargo run -p example-showcase -- run --in-ci --ignore-stress-tests --report-details --example-list failure-list
+        run: cargo run -p example-showcase -- run --screenshot-at 0 --frame-duration 0.025 --stop-at 200 --in-ci --ignore-stress-tests --report-details --example-list failure-list
   
       - name: Take Screenshots (macOS)
         if: runner.os == 'macos'
         continue-on-error: true
-        run: cargo run -p example-showcase -- run --in-ci --ignore-stress-tests --report-details --example-list failure-list
+        run: cargo run -p example-showcase -- run --screenshot-at 0 --frame-duration 0.025 --stop-at 200 --in-ci --ignore-stress-tests --report-details --example-list failure-list
   
       - name: Upload Rerun Status
         uses: actions/upload-artifact@v4

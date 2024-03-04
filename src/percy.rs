@@ -1,6 +1,6 @@
 use std::{thread, time::Duration};
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "kebab-case")]
@@ -99,7 +99,7 @@ fn snapshots_to_images(snapshots: SnapshotsData, build_url: &str) -> Vec<Screens
                             comparison_tag.os_name, comparison_tag.os_version, comparison_tag.name
                         ))
                     }
-                    let image_id = if attributes.review_state_reason == "no_diffs" {
+                    let image_id = if attributes.review_state_reason == ReviewStateReason::NoDiffs {
                         let base_screenshot_id = comparison_relationship
                             .base_screenshot
                             .data
@@ -120,8 +120,11 @@ fn snapshots_to_images(snapshots: SnapshotsData, build_url: &str) -> Vec<Screens
                             })
                             .unwrap();
                         base_screenshot.image.data.as_ref().unwrap().id.clone()
-                    } else if ["unreviewed_comparisons", "user_approved"]
-                        .contains(&attributes.review_state_reason.as_str())
+                    } else if [
+                        ReviewStateReason::UnreviewedComparisons,
+                        ReviewStateReason::UserApproved,
+                    ]
+                    .contains(&attributes.review_state_reason)
                     {
                         let head_screenshot_id = comparison_relationship
                             .head_screenshot
@@ -160,7 +163,7 @@ fn snapshots_to_images(snapshots: SnapshotsData, build_url: &str) -> Vec<Screens
                     let snapshot_url = format!(
                         "{}/{}/{}",
                         build_url,
-                        if attributes.review_state_reason == "no_diffs" {
+                        if attributes.review_state_reason == ReviewStateReason::NoDiffs {
                             "unchanged"
                         } else {
                             "changed"
@@ -171,7 +174,7 @@ fn snapshots_to_images(snapshots: SnapshotsData, build_url: &str) -> Vec<Screens
                     images.push(ScreenshotData {
                         example: attributes.name.clone(),
                         screenshot: image.url.clone(),
-                        changed: attributes.review_state_reason.clone(),
+                        changed: (&attributes.review_state_reason).into(),
                         diff_ratio: comparison_attributes.diff_ratio.unwrap_or(9999.99),
                         tag,
                         snapshot_url: snapshot_url.to_owned(),
@@ -244,8 +247,17 @@ struct RelationshipData {
 #[serde(rename_all = "kebab-case")]
 struct SnapshotAttributes {
     name: String,
-    review_state_reason: String,
+    review_state_reason: ReviewStateReason,
 }
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum ReviewStateReason {
+    NoDiffs,
+    UnreviewedComparisons,
+    UserApproved,
+}
+
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "kebab-case")]
 struct SnapshotRelationship {
@@ -312,7 +324,7 @@ mod tests {
         dbg!(read.included.len());
         dbg!(&read.data[0]);
         dbg!(snapshots_to_images(read, ""));
-        assert!(false);
+        // assert!(false);
     }
 }
 
@@ -320,8 +332,23 @@ mod tests {
 pub struct ScreenshotData {
     pub example: String,
     pub screenshot: String,
-    pub changed: String,
+    pub changed: ScreenshotState,
     pub tag: Option<String>,
     pub diff_ratio: f32,
     pub snapshot_url: String,
+}
+
+impl From<&ReviewStateReason> for ScreenshotState {
+    fn from(reason: &ReviewStateReason) -> Self {
+        match reason {
+            ReviewStateReason::NoDiffs => ScreenshotState::Similar,
+            _ => ScreenshotState::Changed,
+        }
+    }
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq, Clone, Copy, Serialize)]
+pub enum ScreenshotState {
+    Similar,
+    Changed,
 }

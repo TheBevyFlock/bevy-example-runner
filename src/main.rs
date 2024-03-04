@@ -10,7 +10,7 @@ use std::{
 };
 use tera::{Context, Tera};
 
-use crate::percy::ScreenshotData;
+use crate::percy::{ScreenshotData, ScreenshotState};
 
 mod percy;
 
@@ -39,7 +39,7 @@ struct Run {
     date: String,
     commit: String,
     results: HashMap<String, HashMap<String, String>>,
-    screenshots: HashMap<String, HashMap<String, (String, String, String)>>,
+    screenshots: HashMap<String, HashMap<String, (String, ScreenshotState, String)>>,
     logs: HashMap<String, HashMap<String, String>>,
 }
 
@@ -58,7 +58,7 @@ fn main() {
     folders.sort();
     folders.reverse();
 
-    for (i, run_path) in folders.iter().take(40).enumerate() {
+    for (i, run_path) in folders.iter().take(30).enumerate() {
         let file_name = run_path.file_name().unwrap().to_str().unwrap();
         if file_name.starts_with(".") {
             continue;
@@ -110,7 +110,7 @@ fn main() {
                 let screenshots =
                     read_percy_results(fs::read_to_string(file.as_ref().unwrap().path()).unwrap());
                 // sleep to limit how hard Percy API are used
-                thread::sleep(Duration::from_secs(3));
+                thread::sleep(Duration::from_secs(1));
                 for ScreenshotData {
                     example,
                     screenshot,
@@ -137,19 +137,19 @@ fn main() {
                         name,
                         flaky: false,
                     };
-                    if changed != "no_diffs" {
+                    if changed == ScreenshotState::Changed {
                         let previous = all_examples.take(&example).unwrap_or(example.clone());
                         all_examples.insert(Example {
                             flaky: true,
                             ..previous
                         });
                     }
-                    if diff_ratio == 0.0 && changed != "no_diffs" {
+                    if diff_ratio == 0.0 && changed == ScreenshotState::Changed {
                         println!(
                             "    - setting {} / {} ({:?}) as unchanged",
                             example.category, example.name, tag
                         );
-                        changed = "no_diffs".to_string();
+                        changed = ScreenshotState::Similar;
                     }
                     // If there is a screenshot but no results, mark as success
                     run.results

@@ -5,11 +5,10 @@
 <div data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html=true data-bs-custom-class="image-popover"
     data-bs-content='<img class="img-fluid" src="{{ run.screenshots[example_name][platform].0 }}" />'>
     <a href="{{ run.screenshots[example_name][platform].2 }}" target="_blank">
+        {% if run.screenshots[example_name][platform].1 == "Similar" -%}
         <span class="success"></span>
-        {% if run.screenshots[example_name][platform].1 == "user_approved" -%}
-        <span class="changed-approved"></span>
-        {% elif run.screenshots[example_name][platform].1 == "unreviewed_comparisons" -%}
-        <span class="changed-new"></span>
+        {% else -%}
+        <span class="changed"></span>
         {% endif -%}
     </a>
 </div>

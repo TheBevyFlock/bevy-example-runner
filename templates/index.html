@@ -94,13 +94,7 @@
             color: var(--bs-success-text-emphasis);
         }
 
-        .changed-approved::before {
-            content: '\f005';
-            font: var(--fa-font-regular);
-            color: var(--bs-info-text-emphasis);
-        }
-
-        .changed-new::before {
+        .changed::before {
             content: '\f005';
             font: var(--fa-font-solid);
             color: var(--bs-warning-text-emphasis);
@@ -244,20 +238,17 @@
             <tr>
                 <th class="no-border" style="min-width: 35em;">
                     <div style="padding: 3px;">
-                        <span class="success"></span> Example ran successfully, screenshot available
-                    </div>
-                    <div style="padding: 3px;">
-                        <span class="fail"></span> Error running the example
+                        <span class="success"></span> Example ran successfully, screenshot didn't change
                     </div>
                     <div style="padding: 3px;">
                         <span class="missing-screenshot"></span> Example ran successfully, but couldn't capture a
                         screenshot
                     </div>
                     <div style="padding: 3px;">
-                        <span class="changed-approved"></span> Screenshot changed and has been approved
+                        <span class="changed"></span> Example ran successfully, screenshot changed
                     </div>
                     <div style="padding: 3px;">
-                        <span class="changed-new"></span> Screenshot changed and has not been approved yet
+                        <span class="fail"></span> Error running the example
                     </div>
                     <br />
                     <div class="form-check form-switch form-check-reverse">

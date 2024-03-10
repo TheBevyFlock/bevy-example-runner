@@ -227,6 +227,7 @@ jobs:
           cd screenshots-${{ matrix.os }}
           for screenshot in $(find ./ -type f -name "*.png");
           do
+              screenshot=${screenshot:2}
               echo $screenshot
               sha=`shasum -a 256 $screenshot | awk '{print $1}'`
               to_upload=`curl https://pixel-eagle.vleue.com/$uuid/runs/$id/hashes --json "[ [\"$screenshot\", \"$sha\"] ]" | jq '. | length'`

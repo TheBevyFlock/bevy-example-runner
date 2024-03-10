@@ -233,9 +233,14 @@ jobs:
               to_upload=`curl https://pixel-eagle.vleue.com/$uuid/runs/$id/hashes --json "[ [\"$screenshot\", \"$sha\"] ]" | jq '. | length'`
           
               if [ $to_upload -eq 1 ]; then
-                  curl https://pixel-eagle.vleue.com/$uuid/runs/$id/screenshots -F "data=@$screenshot" -F "screenshot=$screenshot" | jq
+                  echo "  uploading $screenshot"
+                  curl https://pixel-eagle.vleue.com/$uuid/runs/$id/screenshots -F "data=@$screenshot" -F "screenshot=$screenshot"
+              else
+                  echo "  skipping $screenshot"
               fi
           
           done
-          
+
+          echo "created run $id"
+
           IFS=$SAVEIFS

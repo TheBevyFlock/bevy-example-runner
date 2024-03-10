@@ -196,24 +196,6 @@ jobs:
             rm -rf $screenshotfolder
           done
       
-      - name: Remove images that are all black
-        if: steps.gather-examples.outcome == 'success'
-        run: |
-          set +e
-          sudo apt install -y imagemagick
-          for image in screenshots-${{ matrix.os }}/*/*.png
-          do
-            mean=`convert "$image" -format "%[mean]" info:`
-            if [[ "$?" = "1" ]]; then
-              echo "Error reading $image"
-              rm "$image"
-            fi
-            if [ "$mean" = 0 ]; then
-              echo "$image is all black"
-              rm "$image"
-            fi
-          done
-
       - name: Send to Pixel Eagle
         if: steps.gather-examples.outcome == 'success'        
         run: |

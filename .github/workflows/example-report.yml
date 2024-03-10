@@ -502,6 +502,7 @@ jobs:
       nonce: ${{ needs.get-environment.outputs.mobile_nonce }}
       mobile_percy_project: ${{ needs.get-environment.outputs.mobile_percy_project }}
     secrets: inherit
+
   send-to-pixel-eagle:
     name: Send screenshots to Pixel Eagle
     runs-on: macos-14

@@ -502,3 +502,64 @@ jobs:
       nonce: ${{ needs.get-environment.outputs.mobile_nonce }}
       mobile_percy_project: ${{ needs.get-environment.outputs.mobile_percy_project }}
     secrets: inherit
+
+  send-to-pixel-eagle:
+    name: Send screenshots to Pixel Eagle
+    runs-on: macos-14
+    needs: [take-screenshots, get-environment]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: Linux
+          - os: macOS
+          - os: Windows
+    steps:
+      
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: screenshots-${{ matrix.os }}-*
+
+      - name: Move examples to the correct folder
+        id: gather-examples
+        continue-on-error: true
+        run: |
+          mkdir screenshots-${{ matrix.os }}
+          for screenshotfolder in screenshots-${{ matrix.os }}-*
+          do
+            echo $screenshotfolder
+            rsync --verbose --archive $screenshotfolder/* screenshots-${{ matrix.os }}/
+            rm -rf $screenshotfolder
+          done
+      
+      - name: Send to Pixel Eagle
+        if: steps.gather-examples.outcome == 'success'        
+        run: |
+          uuid="B25A040A-A980-4602-B90C-D480AB84076D"
+
+          id=`curl https://pixel-eagle.vleue.com/$uuid/runs --json '{"os":"${{ matrix.os }}", "gitref": "${{ needs.get-environment.outputs.gitref }}"}' | jq '.id'`
+          
+          SAVEIFS=$IFS
+          IFS=$'\n'
+          
+          cd screenshots-${{ matrix.os }}
+          for screenshot in $(find . -type f -name "*.png");
+          do
+              name=${screenshot:2}
+              echo $name
+              sha=`shasum -a 256 $screenshot | awk '{print $1}'`
+              to_upload=`curl https://pixel-eagle.vleue.com/$uuid/runs/$id/hashes --json "[ [\"$name\", \"$sha\"] ]" | jq '. | length'`
+          
+              if [ $to_upload -eq 1 ]; then
+                  echo "  uploading $screenshot"
+                  curl https://pixel-eagle.vleue.com/$uuid/runs/$id/screenshots -F "data=@$screenshot" -F "screenshot=$name"
+              else
+                  echo "  skipping $screenshot"
+              fi
+          
+          done
+
+          echo "created run $id"
+
+          IFS=$SAVEIFS

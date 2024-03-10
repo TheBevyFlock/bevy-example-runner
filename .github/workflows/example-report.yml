@@ -513,6 +513,7 @@ jobs:
         include:
           - os: Linux
           - os: macOS
+          - os: Windows
     steps:
       
       - name: Download all artifacts

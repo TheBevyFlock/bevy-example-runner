@@ -224,7 +224,8 @@ jobs:
           SAVEIFS=$IFS
           IFS=$'\n'
           
-          for screenshot in $(find ./screenshots -type f -name "*.png");
+          cd screenshots-${{ matrix.os }}
+          for screenshot in $(find ./ -type f -name "*.png");
           do
               echo $screenshot
               sha=`shasum -a 256 $screenshot | awk '{print $1}'`

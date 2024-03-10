@@ -54,7 +54,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-14]
-        page: [1]
+        page: [1, 2]
 
     steps:
 

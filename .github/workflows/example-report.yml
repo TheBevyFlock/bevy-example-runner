@@ -207,7 +207,7 @@ jobs:
           IFS=$'\n'
           
           cd screenshots-${{ matrix.os }}
-          for screenshot in $(find ./ -type f -name "*.png");
+          for screenshot in $(find . -type f -name "*.png");
           do
               name=${screenshot:2}
               echo $name

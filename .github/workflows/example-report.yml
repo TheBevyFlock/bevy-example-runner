@@ -536,30 +536,39 @@ jobs:
       - name: Send to Pixel Eagle
         if: steps.gather-examples.outcome == 'success'        
         run: |
-          uuid="B25A040A-A980-4602-B90C-D480AB84076D"
+          project="B25A040A-A980-4602-B90C-D480AB84076D"
 
-          id=`curl https://pixel-eagle.vleue.com/$uuid/runs --json '{"os":"${{ matrix.os }}", "gitref": "${{ needs.get-environment.outputs.gitref }}"}' | jq '.id'`
+          run=`curl https://pixel-eagle.vleue.com/$project/runs --json '{"os":"${{ matrix.os }}", "gitref": "${{ needs.get-environment.outputs.gitref }}"}' | jq '.id'`
           
           SAVEIFS=$IFS
-          IFS=$'\n'
           
           cd screenshots-${{ matrix.os }}
+          
+          IFS=$'\n'
+
+          # Build a json array of screenshots and their hashes
+          hashes='[';
           for screenshot in $(find . -type f -name "*.png");
           do
-              name=${screenshot:2}
-              echo $name
-              sha=`shasum -a 256 $screenshot | awk '{print $1}'`
-              to_upload=`curl https://pixel-eagle.vleue.com/$uuid/runs/$id/hashes --json "[ [\"$name\", \"$sha\"] ]" | jq '. | length'`
-          
-              if [ $to_upload -eq 1 ]; then
-                  echo "  uploading $screenshot"
-                  curl https://pixel-eagle.vleue.com/$uuid/runs/$id/screenshots -F "data=@$screenshot" -F "screenshot=$name"
-              else
-                  echo "  skipping $screenshot"
-              fi
-          
+            name=${screenshot:2}
+            echo $name
+            hash=`shasum -a 256 $screenshot | awk '{print $1}'`
+            hashes="$hashes [\"$name\",\"$hash\"],"
           done
+          hashes=`echo $hashes | rev | cut -c 2- | rev`
+          hashes="$hashes]"
+          
+          IFS=$SAVEIFS          
 
-          echo "created run $id"
-
+          # Upload screenshots with unknown hashes
+          curl https://pixel-eagle.vleue.com/$project/runs/$run/hashes --json "$hashes" | jq '.[]|[.name] | @tsv' |
+            while IFS=$'\t' read -r name; do
+              name=`echo $name | tr -d '"'`
+              echo "Uploading $name"
+              curl https://pixel-eagle.vleue.com/$project/runs/$run/screenshots -F "data=@./$name" -F "screenshot=$name"
+              echo
+            done
+          
           IFS=$SAVEIFS
+          
+          echo "created run $run"

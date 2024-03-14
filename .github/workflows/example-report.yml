@@ -570,5 +570,7 @@ jobs:
             done
           
           IFS=$SAVEIFS
+
+          curl https://pixel-eagle.vleue.com/$project/runs/$run/compare/auto --json '{"os":"<equal>"}'
           
           echo "created run $run"

@@ -262,7 +262,7 @@ jobs:
   update-results:
     name: Update Results
     runs-on: ubuntu-latest
-    needs: [send-to-percy, get-environment, mobile-run]
+    needs: [send-to-percy, send-to-pixel-eagle, get-environment, mobile-run]
     if: always() && (needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch')
     permissions:
       contents: write
@@ -273,7 +273,7 @@ jobs:
           ref: 'results'
           path: 'results'
 
-      - name: Download all artifacts
+      - name: Download all status artifacts
         uses: actions/download-artifact@v4
         with:
           pattern: status-*
@@ -323,6 +323,17 @@ jobs:
           curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.linux_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Linux-percy
           curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.macos_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/macOS-percy
           curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.mobile_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/mobile-percy
+
+      - name: Download all Pixel Eagle artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: pixel-eagle-*
+
+      - name: Save Percy results
+        run: |
+          mv pixel-eagle-Linux.json results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Linux-pixel-eagle
+          mv pixel-eagle-Windows.json results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-pixel-eagle
+          mv pixel-eagle-macOS.json results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/macOS-pixel-eagle
 
       - name: Store results in git
         run: |
@@ -571,6 +582,12 @@ jobs:
           
           IFS=$SAVEIFS
 
-          curl https://pixel-eagle.vleue.com/$project/runs/$run/compare/auto --json '{"os":"<equal>"}'
+          curl https://pixel-eagle.vleue.com/$project/runs/$run/compare/auto --json '{"os":"<equal>"}' | jq '{from: .from, to: .to}' > pixel-eagle-${{ matrix.os }}.json
           
           echo "created run $run"
+
+      - name: Upload Pixel Eagle status
+        uses: actions/upload-artifact@v4
+        with:
+          name: pixel-eagle-${{ matrix.os }}.json
+          path: pixel-eagle-${{ matrix.os }}.json

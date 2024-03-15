@@ -582,7 +582,10 @@ jobs:
           
           IFS=$SAVEIFS
 
+          cd ..
+
           curl https://pixel-eagle.vleue.com/$project/runs/$run/compare/auto --json '{"os":"<equal>"}' | jq '{from: .from, to: .to}' > pixel-eagle-${{ matrix.os }}.json
+          cat pixel-eagle-${{ matrix.os }}.json
           
           echo "created run $run"
 

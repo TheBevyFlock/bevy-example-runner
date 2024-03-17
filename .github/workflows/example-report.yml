@@ -584,7 +584,7 @@ jobs:
 
           cd ..
 
-          curl https://pixel-eagle.vleue.com/$project/runs/$run/compare/auto --json '{"os":"<equal>"}' | jq '{from: .from, to: .to}' > pixeleagle-${{ matrix.os }}.json
+          curl https://pixel-eagle.vleue.com/$project/runs/$run/compare/auto --json '{"os":"<equal>"}' | jq '{project_id: .project_id, from: .from, to: .to}' > pixeleagle-${{ matrix.os }}.json
           cat pixeleagle-${{ matrix.os }}.json
 
           echo "created run $run"

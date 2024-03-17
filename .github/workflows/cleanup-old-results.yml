@@ -1,0 +1,35 @@
+name: Cleanup old results
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron:  '0 0 * * 0'
+
+jobs:
+  cleanup-results:
+    name: Cleanup Results
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v4
+        with:
+          ref: "results"
+
+      - name: Delete old results
+        run: |
+          date=`date -d "3 months ago"`
+          git ls-files | while read file                                                   
+          do                                                                               
+            if [ "$(git log --since \"$date\" -- $file)" == "" ]; then                     
+              rm "$file"                                                                   
+            fi                                                                                                                                                                                                        
+          done 
+
+      - name: Store results in git
+        run: |
+          git config user.name 'Workflow'
+          git config user.email '<>'         
+          git add .
+          git commit -m "Results Cleanup"
+          git push

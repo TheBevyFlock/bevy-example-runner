@@ -17,10 +17,14 @@
 {% endif -%}
 {% elif run.results[example_name][platform] == "Failures" -%}
 {% if run.logs[example_name] -%}
+{% if run.logs[example_name][platform] -%}
 <div data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html=true data-bs-custom-class="log-popover"
     data-bs-content='<pre>{{ run.logs[example_name][platform] }}</pre>'>
     <span class="fail" style="font-size: 1.5rem;"></span>
 </div>
+{% else -%}
+<span class="fail" style="font-size: 1.5rem;"></span>
+{% endif -%}
 {% else -%}
 <span class="fail" style="font-size: 1.5rem;"></span>
 {% endif -%}

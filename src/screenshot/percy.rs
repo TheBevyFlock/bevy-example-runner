@@ -1,6 +1,10 @@
 use std::{thread, time::Duration};
 
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+
+use crate::{ImageUrl, SnapshotViewerUrl};
+
+use super::{ScreenshotData, ScreenshotState};
 
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "kebab-case")]
@@ -38,7 +42,10 @@ fn get_snapshots_with_retry(build_id: &str) -> SnapshotsData {
     }
 }
 
-pub fn read_percy_results(results: String) -> Vec<ScreenshotData> {
+pub fn read_results(results: String) -> Vec<ScreenshotData> {
+    // sleep to limit how hard Percy API are used
+    thread::sleep(Duration::from_secs(1));
+
     let Ok(main) = serde_json::from_str::<Main>(&results) else {
         return vec![];
     };
@@ -173,11 +180,11 @@ fn snapshots_to_images(snapshots: SnapshotsData, build_url: &str) -> Vec<Screens
 
                     images.push(ScreenshotData {
                         example: attributes.name.clone(),
-                        screenshot: image.url.clone(),
+                        screenshot: ImageUrl(image.url.clone()),
                         changed: (&attributes.review_state_reason).into(),
                         diff_ratio: comparison_attributes.diff_ratio.unwrap_or(9999.99),
                         tag,
-                        snapshot_url: snapshot_url.to_owned(),
+                        snapshot_url: SnapshotViewerUrl(snapshot_url.to_owned()),
                     });
                 }
             }
@@ -258,6 +265,15 @@ pub enum ReviewStateReason {
     UserApproved,
 }
 
+impl From<&ReviewStateReason> for ScreenshotState {
+    fn from(reason: &ReviewStateReason) -> Self {
+        match reason {
+            ReviewStateReason::NoDiffs => ScreenshotState::Similar,
+            _ => ScreenshotState::Changed,
+        }
+    }
+}
+
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "kebab-case")]
 struct SnapshotRelationship {
@@ -301,11 +317,13 @@ struct ComparisonTagAttributes {
 mod tests {
     use std::fs;
 
-    use crate::percy::{snapshots_to_images, SnapshotsData};
+    use crate::screenshot::percy::SnapshotsData;
+
+    use super::*;
 
     #[test]
     fn read_file_native() {
-        let file = fs::read_to_string("src/test-percy.json").unwrap();
+        let file = fs::read_to_string("src/screenshot/test-percy.json").unwrap();
         // dbg!(read_percy_results(file));
         let read = serde_json::from_str::<SnapshotsData>(&file).unwrap();
         dbg!(read.data.len());
@@ -317,7 +335,7 @@ mod tests {
 
     #[test]
     fn read_file_mobile() {
-        let file = fs::read_to_string("src/test-percy-mobile.json").unwrap();
+        let file = fs::read_to_string("src/screenshot/test-percy-mobile.json").unwrap();
         // dbg!(read_percy_results(file));
         let read = serde_json::from_str::<SnapshotsData>(&file).unwrap();
         dbg!(read.data.len());
@@ -326,29 +344,4 @@ mod tests {
         dbg!(snapshots_to_images(read, ""));
         // assert!(false);
     }
-}
-
-#[derive(Debug)]
-pub struct ScreenshotData {
-    pub example: String,
-    pub screenshot: String,
-    pub changed: ScreenshotState,
-    pub tag: Option<String>,
-    pub diff_ratio: f32,
-    pub snapshot_url: String,
-}
-
-impl From<&ReviewStateReason> for ScreenshotState {
-    fn from(reason: &ReviewStateReason) -> Self {
-        match reason {
-            ReviewStateReason::NoDiffs => ScreenshotState::Similar,
-            _ => ScreenshotState::Changed,
-        }
-    }
-}
-
-#[derive(Debug, Deserialize, PartialEq, Eq, Clone, Copy, Serialize)]
-pub enum ScreenshotState {
-    Similar,
-    Changed,
 }

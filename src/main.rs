@@ -1,23 +1,21 @@
 use chrono::NaiveDateTime;
-use percy::read_percy_results;
 use serde::Serialize;
 use std::{
     collections::{HashMap, HashSet},
     fs,
     hash::Hash,
-    thread,
-    time::Duration,
+    str::FromStr,
 };
-use tera::{Context, Tera};
 
-use crate::percy::{ScreenshotData, ScreenshotState};
+use crate::screenshot::{percy, pixeleagle, ScreenshotData, ScreenshotState};
 
-mod percy;
+mod screenshot;
+mod template;
 
 #[derive(Debug, Clone, Serialize)]
 struct Example {
     name: String,
-    category: String,
+    category: ExampleCategory,
     flaky: bool,
 }
 
@@ -38,9 +36,77 @@ impl Hash for Example {
 struct Run {
     date: String,
     commit: String,
-    results: HashMap<String, HashMap<String, String>>,
-    screenshots: HashMap<String, HashMap<String, (String, ScreenshotState, String)>>,
+    results: HashMap<String, HashMap<String, Kind>>,
+    screenshots: HashMap<String, HashMap<String, (ImageUrl, ScreenshotState, SnapshotViewerUrl)>>,
     logs: HashMap<String, HashMap<String, String>>,
+}
+
+#[derive(Debug, Serialize, Clone, PartialEq, Eq, Hash)]
+struct ExampleCategory(String);
+
+#[derive(Debug, Serialize, Clone, PartialEq, Eq, Hash)]
+struct ImageUrl(String);
+
+#[derive(Debug, Serialize, Clone, PartialEq, Eq, Hash)]
+struct SnapshotViewerUrl(String);
+
+#[derive(Debug, Serialize, PartialEq, Eq, Hash, Clone)]
+enum Platform {
+    Linux,
+    Macos,
+    Windows,
+    Mobile,
+    Tag(String),
+}
+
+impl ToString for Platform {
+    fn to_string(&self) -> String {
+        match self {
+            Platform::Linux => String::from("Linux"),
+            Platform::Macos => String::from("macOS"),
+            Platform::Windows => String::from("Windows"),
+            Platform::Mobile => String::from("Mobile"),
+            Platform::Tag(tag) => tag.clone(),
+        }
+    }
+}
+
+impl FromStr for Platform {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "Linux" => Ok(Platform::Linux),
+            "macOS" => Ok(Platform::Macos),
+            "Windows" => Ok(Platform::Windows),
+            "mobile" => Ok(Platform::Mobile),
+            _ => Err(s.to_string()),
+        }
+    }
+}
+
+#[derive(Debug, Serialize, PartialEq, Eq, Hash, Clone)]
+enum Kind {
+    Successes,
+    Failures,
+    NoScreenshots,
+    Percy,
+    PixelEagle,
+}
+
+impl FromStr for Kind {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "successes" => Ok(Kind::Successes),
+            "failures" => Ok(Kind::Failures),
+            "no_screenshots" => Ok(Kind::NoScreenshots),
+            "percy" => Ok(Kind::Percy),
+            "pixeleagle" => Ok(Kind::PixelEagle),
+            _ => Err(s.to_string()),
+        }
+    }
 }
 
 fn main() {
@@ -58,7 +124,7 @@ fn main() {
     folders.sort();
     folders.reverse();
 
-    for (i, run_path) in folders.iter().take(30).enumerate() {
+    for (i, run_path) in folders.iter().take(15).enumerate() {
         let file_name = run_path.file_name().unwrap().to_str().unwrap();
         if file_name.starts_with(".") {
             continue;
@@ -75,42 +141,45 @@ fn main() {
         };
 
         for file in fs::read_dir(run_path).unwrap() {
-            let path = file.as_ref().unwrap().path();
-            let mut name = path.file_name().unwrap().to_str().unwrap().split('-');
-            let platform = name.next().unwrap();
-            let kind = name.next().unwrap();
-
-            if ["successes", "failures", "no_screenshots"].contains(&kind) {
-                println!("  - {} / {}", kind, platform);
-                fs::read_to_string(file.as_ref().unwrap().path())
-                    .unwrap()
-                    .lines()
-                    .for_each(|line| {
-                        let mut line = line.split(" - ");
-                        let mut details = line.next().unwrap().split('/');
-                        let example = Example {
-                            category: details.next().unwrap().to_string(),
-                            name: details.next().unwrap().to_string(),
-                            flaky: kind != "successes",
-                        };
-                        let previous = all_examples.take(&example);
-                        all_examples.insert(Example {
-                            flaky: previous.map(|ex: Example| ex.flaky).unwrap_or(false)
-                                || example.flaky,
-                            ..example.clone()
-                        });
-                        run.results
-                            .entry(example.name)
-                            .or_insert_with(HashMap::new)
-                            .insert(platform.to_string(), kind.to_string());
-                    });
+            let file = file.as_ref().unwrap();
+            if file.file_type().unwrap().is_dir() {
+                continue;
             }
-            if kind == "percy" {
-                println!("  - {} / {}", kind, platform);
-                let screenshots =
-                    read_percy_results(fs::read_to_string(file.as_ref().unwrap().path()).unwrap());
-                // sleep to limit how hard Percy API are used
-                thread::sleep(Duration::from_secs(1));
+            let path = file.path();
+            let mut name = path.file_name().unwrap().to_str().unwrap().split('-');
+            let platform = Platform::from_str(name.next().unwrap()).unwrap();
+            let kind = Kind::from_str(name.next().unwrap()).unwrap();
+
+            if [Kind::Successes, Kind::Failures, Kind::NoScreenshots].contains(&kind) {
+                println!("  - {:?} / {:?}", kind, platform);
+                fs::read_to_string(&path).unwrap().lines().for_each(|line| {
+                    let mut line = line.split(" - ");
+                    let mut details = line.next().unwrap().split('/');
+                    let example = Example {
+                        category: ExampleCategory(details.next().unwrap().to_string()),
+                        name: details.next().unwrap().to_string(),
+                        flaky: kind != Kind::Successes,
+                    };
+                    let previous = all_examples.take(&example);
+                    all_examples.insert(Example {
+                        flaky: previous.map(|ex: Example| ex.flaky).unwrap_or(false)
+                            || example.flaky,
+                        ..example.clone()
+                    });
+                    run.results
+                        .entry(example.name)
+                        .or_insert_with(HashMap::new)
+                        .insert(platform.to_string().clone(), kind.clone());
+                });
+            }
+            if [Kind::Percy, Kind::PixelEagle].contains(&kind) {
+                println!("  - {:?} / {:?}", kind, platform);
+                let content = fs::read_to_string(&path).unwrap();
+                let screenshots = match kind {
+                    Kind::Percy => percy::read_results(content),
+                    Kind::PixelEagle => pixeleagle::read_results(content),
+                    _ => unreachable!(),
+                };
                 for ScreenshotData {
                     example,
                     screenshot,
@@ -120,15 +189,15 @@ fn main() {
                     snapshot_url,
                 } in screenshots.into_iter()
                 {
-                    let (category, name) = if platform == "mobile" {
+                    let (category, name) = if platform == Platform::Mobile {
                         if let Some(tag) = tag.as_ref() {
                             all_mobile_platforms.insert(tag.clone());
                         }
-                        ("Mobile".to_string(), example)
+                        (ExampleCategory("Mobile".to_string()), example)
                     } else {
                         let mut split = example.split('.').next().unwrap().split('/');
                         (
-                            split.next().unwrap().to_string(),
+                            ExampleCategory(split.next().unwrap().to_string()),
                             split.next().unwrap().to_string(),
                         )
                     };
@@ -147,35 +216,46 @@ fn main() {
                     if diff_ratio == 0.0 && changed == ScreenshotState::Changed {
                         println!(
                             "    - setting {} / {} ({:?}) as unchanged",
-                            example.category, example.name, tag
+                            example.category.0, example.name, tag
                         );
                         changed = ScreenshotState::Similar;
                     }
+                    let platform = tag
+                        .clone()
+                        .map(|tag| Platform::Tag(tag.clone()))
+                        .unwrap_or_else(|| platform.clone())
+                        .to_string();
                     // If there is a screenshot but no results, mark as success
                     run.results
                         .entry(example.name.clone())
                         .or_insert_with(HashMap::new)
-                        .entry(tag.clone().unwrap_or_else(|| platform.to_string()))
-                        .or_insert_with(|| "successes".to_string());
+                        .entry(platform.clone())
+                        .or_insert_with(|| Kind::Successes);
+                    // Keeping Percy results over PixelEagle for now
+                    // TODO: remove
+                    if let Some(existing_screenshots) = run.screenshots.get(&example.name) {
+                        if existing_screenshots.contains_key(&platform) {
+                            if kind == Kind::PixelEagle {
+                                continue;
+                            }
+                        }
+                    }
                     run.screenshots
                         .entry(example.name)
                         .or_insert_with(HashMap::new)
-                        .insert(
-                            tag.unwrap_or_else(|| platform.to_string()),
-                            (screenshot, changed, snapshot_url),
-                        );
+                        .insert(platform.clone(), (screenshot, changed, snapshot_url));
                 }
             }
         }
-        for platform in ["Windows", "Linux", "macOS"] {
-            let rerun = run_path.join(format!("status-rerun-{}", platform));
+        for rerun_platform in [Platform::Linux, Platform::Windows, Platform::Macos] {
+            let rerun = run_path.join(format!("status-rerun-{:?}", rerun_platform));
             if rerun.exists() {
-                println!("  - rerun {}", platform);
+                println!("  - rerun {:?}", rerun_platform);
                 for file in fs::read_dir(rerun.as_path()).unwrap() {
                     let path = file.as_ref().unwrap().path();
                     let kind = path.file_name().unwrap().to_str().unwrap();
                     if kind == "successes" {
-                        println!("    - {} / {}", kind, platform);
+                        println!("    - {} / {:?}", kind, rerun_platform);
                         fs::read_to_string(file.as_ref().unwrap().path())
                             .unwrap()
                             .lines()
@@ -183,19 +263,19 @@ fn main() {
                                 let mut line = line.split(" - ");
                                 let mut details = line.next().unwrap().split('/');
                                 let example = Example {
-                                    category: details.next().unwrap().to_string(),
+                                    category: ExampleCategory(details.next().unwrap().to_string()),
                                     name: details.next().unwrap().to_string(),
                                     flaky: false,
                                 };
                                 run.results
                                     .entry(example.name)
                                     .or_insert_with(HashMap::new)
-                                    .insert(platform.to_string(), "no_screenshots".to_string());
+                                    .insert(rerun_platform.to_string(), Kind::NoScreenshots);
                             });
                     }
                     if kind.ends_with(".log") {
                         let example_name = kind.strip_suffix(".log").unwrap();
-                        println!("    - log / {} ({})", platform, example_name);
+                        println!("    - log / {:?} ({})", rerun_platform, example_name);
                         let mut log = fs::read_to_string(file.as_ref().unwrap().path()).unwrap();
                         log = log.replace("[0m", "");
                         log = log.replace("[1m", "");
@@ -206,7 +286,7 @@ fn main() {
                         run.logs
                             .entry(example_name.to_string())
                             .or_insert_with(HashMap::new)
-                            .insert(platform.to_string(), log);
+                            .insert(rerun_platform.to_string(), log);
                     }
                 }
             }
@@ -223,7 +303,7 @@ fn main() {
         let has_failures = runs.iter().any(|run| {
             run.results
                 .get(&example.name)
-                .map(|platforms| platforms.values().any(|v| v == "failures"))
+                .map(|platforms| platforms.values().any(|v| v == &Kind::Failures))
                 .unwrap_or(false)
         });
         if !has_screenshot && !has_failures {
@@ -232,33 +312,7 @@ fn main() {
         all_examples_cleaned.push(example);
     }
 
-    all_examples_cleaned.sort_by_key(|a| format!("{}/{}", a.category, a.name));
+    all_examples_cleaned.sort_by_key(|a| format!("{}/{}", a.category.0, a.name));
 
-    let mut context = Context::new();
-    context.insert("runs".to_string(), &runs);
-    context.insert("all_examples".to_string(), &all_examples_cleaned);
-    context.insert("all_mobile_platforms".to_string(), &all_mobile_platforms);
-
-    let mut tera = Tera::default();
-    tera.add_raw_template(
-        "macros.html",
-        &std::fs::read_to_string("./templates/macros.html").unwrap(),
-    )
-    .unwrap();
-    tera.add_raw_template(
-        "index.html",
-        &std::fs::read_to_string("./templates/index.html").unwrap(),
-    )
-    .unwrap();
-    tera.add_raw_template(
-        "about.html",
-        &std::fs::read_to_string("./templates/about.html").unwrap(),
-    )
-    .unwrap();
-
-    let rendered = tera.render("index.html", &context).unwrap();
-    std::fs::write("./site/index.html", &rendered).unwrap();
-
-    let rendered = tera.render("about.html", &context).unwrap();
-    std::fs::write("./site/about.html", &rendered).unwrap();
+    template::build_site(runs, all_examples_cleaned, all_mobile_platforms)
 }

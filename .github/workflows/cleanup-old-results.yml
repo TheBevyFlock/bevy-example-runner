@@ -9,27 +9,31 @@ jobs:
   cleanup-results:
     name: Cleanup Results
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
 
       - uses: actions/checkout@v4
         with:
           ref: "results"
+          fetch-depth: 0
 
       - name: Delete old results
         run: |
-          date=`date -d "3 months ago"`
-          git ls-files | while read file                                                   
-          do                                                                               
-            if [ "$(git log --since \"$date\" -- $file)" == "" ]; then                     
-              rm "$file"                                                                   
-            fi                                                                                                                                                                                                        
-          done 
+          date=`date "+%Y-%m-%d" -d "3 months ago"`
+          echo $date
+          git ls-files | while read file
+          do
+            if [ "$(git log --since \"$date\" -- $file)" == "" ]; then
+              rm "$file"
+            fi
+          done
 
       - name: Store results in git
         run: |
           git config user.name 'Workflow'
-          git config user.email '<>'         
+          git config user.email '<>'
           git add .
           git commit -m "Results Cleanup"
           git push

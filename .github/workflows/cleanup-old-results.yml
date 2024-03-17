@@ -18,7 +18,7 @@ jobs:
 
       - name: Delete old results
         run: |
-          date=`date -d "3 months ago"`
+          date=`date "+%Y-%m-%d" -d "3 months ago"`
           echo $date
           git ls-files | while read file
           do

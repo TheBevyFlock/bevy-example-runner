@@ -15,6 +15,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: "results"
+          fetch-depth: 0
 
       - name: Delete old results
         run: |

@@ -9,6 +9,8 @@ jobs:
   cleanup-results:
     name: Cleanup Results
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
 

@@ -25,7 +25,6 @@ jobs:
             if [ "$(git log --since \"$date\" -- $file)" == "" ]; then
               rm "$file"
             fi
-            break
           done
 
       - name: Store results in git

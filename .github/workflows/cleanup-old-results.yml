@@ -19,11 +19,13 @@ jobs:
       - name: Delete old results
         run: |
           date=`date -d "3 months ago"`
+          echo $date
           git ls-files | while read file
           do
             if [ "$(git log --since \"$date\" -- $file)" == "" ]; then
               rm "$file"
             fi
+            break
           done
 
       - name: Store results in git

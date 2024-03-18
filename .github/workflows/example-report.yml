@@ -549,7 +549,7 @@ jobs:
         run: |
           project="B25A040A-A980-4602-B90C-D480AB84076D"
 
-          run=`curl https://pixel-eagle.vleue.com/$project/runs --json '{"os":"${{ matrix.os }}", "gitref": "${{ needs.get-environment.outputs.gitref }}"}' | jq '.id'`
+          run=`curl https://pixel-eagle.vleue.com/$project/runs --json '{"os":"${{ matrix.os }}", "gitref": "${{ needs.get-environment.outputs.gitref }}", "branch": "main"}' | jq '.id'`
           
           SAVEIFS=$IFS
           
@@ -584,7 +584,7 @@ jobs:
 
           cd ..
 
-          curl https://pixel-eagle.vleue.com/$project/runs/$run/compare/auto --json '{"os":"<equal>"}' | jq '{project_id: .project_id, from: .from, to: .to}' > pixeleagle-${{ matrix.os }}.json
+          curl https://pixel-eagle.vleue.com/$project/runs/$run/compare/auto --json '{"os":"<equal>", "branch": "main"}' | jq '{project_id: .project_id, from: .from, to: .to}' > pixeleagle-${{ matrix.os }}.json
           cat pixeleagle-${{ matrix.os }}.json
 
           echo "created run $run"

@@ -27,7 +27,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: 'bevyengine/bevy'
-          ref: 'pull/${{ inputs.pr }}/head'
+      - name: Switch to PR
+        run: |
+          git fetch origin pull/${{ inputs.pr }}/head:pr-${{ inputs.pr }}
+          git switch pr-${{ inputs.pr }}
       - name: Get Environment
         id: env
         run: |

@@ -22,8 +22,6 @@ jobs:
       pages: ${{ steps.env.outputs.pages }}
       gitref: ${{ steps.env.outputs.gitref }}
       date: ${{ steps.env.outputs.date }}
-      mobile_percy_project: ${{ steps.env.outputs.mobile_percy_project }}
-      mobile_nonce: ${{ steps.env.outputs.mobile_nonce }}
     steps:
       - name: Checkout Bevy main branch
         uses: actions/checkout@v4
@@ -38,12 +36,7 @@ jobs:
 
           echo "gitref=`git rev-parse HEAD`" >> $GITHUB_OUTPUT
           echo "date=`date +%Y%m%d%H%M`" >> $GITHUB_OUTPUT
-          echo "linux_percy_project=dede4209/Screenshots-Linux-Vulkan" >> $GITHUB_OUTPUT
-          echo "windows_percy_project=dede4209/Screenshots-Windows-DX12" >> $GITHUB_OUTPUT
-          echo "macos_percy_project=dede4209/Screenshots-macOS-Metal" >> $GITHUB_OUTPUT
-          echo "mobile_percy_project=dede4209/Bevy-Mobile-Example" >> $GITHUB_OUTPUT
           echo "pages=`python -c \"import json; print(json.dumps([i for i in range($page_count)]))\"`" >> $GITHUB_OUTPUT
-          echo "mobile_nonce=${{ github.run_id }}-$(date +%s)" >> $GITHUB_OUTPUT
 
   take-screenshots:
     name: Take Screenshots
@@ -164,15 +157,6 @@ jobs:
             successes
             failures
             no_screenshots
-
-  mobile-run:
-    needs: [get-environment]
-    uses: ./.github/workflows/workflow-mobile.yml
-    with:
-      gitref: ${{ needs.get-environment.outputs.gitref }}
-      nonce: ${{ needs.get-environment.outputs.mobile_nonce }}
-      mobile_percy_project: ${{ needs.get-environment.outputs.mobile_percy_project }}
-    secrets: inherit
 
   send-to-pixel-eagle:
     name: Send screenshots to Pixel Eagle

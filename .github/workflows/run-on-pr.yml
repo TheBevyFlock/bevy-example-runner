@@ -187,7 +187,7 @@ jobs:
         run: |
           project="B25A040A-A980-4602-B90C-D480AB84076D"
 
-          run=`curl https://pixel-eagle.vleue.com/$project/runs --json '{"os":"${{ matrix.os }}", "gitref": "${{ needs.get-environment.outputs.gitref }}", "branch": "PR-${{ inputs.pr }}"}' | jq '.id'`
+          run=`curl https://pixel-eagle.vleue.com/$project/runs --json '{"os":"${{ matrix.os }}", "gitref": "${{ needs.get-environment.outputs.gitref }}", "branch": "manual-test"}' | jq '.id'`
           
           SAVEIFS=$IFS
           

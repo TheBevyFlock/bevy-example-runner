@@ -3,8 +3,8 @@ name: Example report - Screenshots on PR
 on:
   workflow_dispatch:
     inputs:
-      pr:
-        description: 'PR to run'
+      gitref:
+        description: 'gitref to run'
         required: true
         type: string
 
@@ -23,10 +23,11 @@ jobs:
       gitref: ${{ steps.env.outputs.gitref }}
       date: ${{ steps.env.outputs.date }}
     steps:
-      - name: Checkout Bevy main branch
+      - name: Checkout Bevy test branch
         uses: actions/checkout@v4
         with:
-          repository: 'bevyengine/bevy'
+          repository: 'mockersf/bevy'
+          ref: ${{ input.gitref }}
       - name: Switch to PR
         run: |
           git fetch origin pull/${{ inputs.pr }}/head:pr-${{ inputs.pr }}
@@ -55,8 +56,8 @@ jobs:
       - name: Checkout Bevy main branch
         uses: actions/checkout@v4
         with:
-          repository: 'bevyengine/bevy'
-          ref: ${{ needs.get-environment.outputs.gitref }}
+          repository: 'mockersf/bevy'
+          ref: ${{ inputs.gitref }}
 
       - name: Checkout patches
         uses: actions/checkout@v4

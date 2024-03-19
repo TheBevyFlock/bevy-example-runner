@@ -23,6 +23,12 @@ jobs:
       gitref: ${{ steps.env.outputs.gitref }}
       date: ${{ steps.env.outputs.date }}
     steps:
+      - name: Checkout Bevy test branch
+        uses: actions/checkout@v4
+        with:
+          repository: 'mockersf/bevy'
+          ref: ${{ inputs.gitref }}
+
       - name: Get Environment
         id: env
         run: |
@@ -43,7 +49,7 @@ jobs:
 
     steps:
 
-      - name: Checkout Bevy main branch
+      - name: Checkout Bevy test branch
         uses: actions/checkout@v4
         with:
           repository: 'mockersf/bevy'

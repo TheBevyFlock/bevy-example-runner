@@ -243,6 +243,20 @@ jobs:
           rm "screenshots-${{ matrix.os }}/UI (User Interface)/font_atlas_debug.png" || true
           rm "screenshots-${{ matrix.os }}/Shaders/compute_shader_game_of_life.png" || true
 
+      - name: Reduce number of examples sent to Percy
+        if: steps.gather-examples.outcome == 'success'
+        run: |
+          rm -rf "screenshots-${{ matrix.os }}/Application
+          rm -rf "screenshots-${{ matrix.os }}/Assets
+          rm -rf "screenshots-${{ matrix.os }}/Audio
+          rm -rf "screenshots-${{ matrix.os }}/Games
+          rm -rf "screenshots-${{ matrix.os }}/Input
+          rm -rf "screenshots-${{ matrix.os }}/Scene
+          rm -rf "screenshots-${{ matrix.os }}/Time
+          rm -rf "screenshots-${{ matrix.os }}/Tools
+          rm -rf "screenshots-${{ matrix.os }}/Transforms
+          rm -rf "screenshots-${{ matrix.os }}/Window
+
       - name: Send to Percy
         if: steps.gather-examples.outcome == 'success'        
         run: |

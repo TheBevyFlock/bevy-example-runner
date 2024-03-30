@@ -3,7 +3,7 @@ name: Example report - Status and Screenshots
 on:
   workflow_dispatch:
   schedule:
-    - cron:  '0 6,18 * * *'
+    - cron:  '0 */6 * * *'
 
 concurrency:
   group: ${{ github.repository }}-example-report
@@ -246,14 +246,18 @@ jobs:
       - name: Reduce number of examples sent to Percy
         if: steps.gather-examples.outcome == 'success'
         run: |
+          rm -rf "screenshots-${{ matrix.os }}/Animation"
           rm -rf "screenshots-${{ matrix.os }}/Application"
           rm -rf "screenshots-${{ matrix.os }}/Assets"
           rm -rf "screenshots-${{ matrix.os }}/Audio"
-          rm -rf "screenshots-${{ matrix.os }}/Dev Tools"
+          rm -rf "screenshots-${{ matrix.os }}/Dev tools"
           rm -rf "screenshots-${{ matrix.os }}/ECS (Entity Component System)"
           rm -rf "screenshots-${{ matrix.os }}/Games"
+          rm -rf "screenshots-${{ matrix.os }}/Gizmos"
           rm -rf "screenshots-${{ matrix.os }}/Input"
+          rm -rf "screenshots-${{ matrix.os }}/Math"
           rm -rf "screenshots-${{ matrix.os }}/Scene"
+          rm -rf "screenshots-${{ matrix.os }}/Shaders"
           rm -rf "screenshots-${{ matrix.os }}/Time"
           rm -rf "screenshots-${{ matrix.os }}/Tools"
           rm -rf "screenshots-${{ matrix.os }}/Transforms"

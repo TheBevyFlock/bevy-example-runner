@@ -253,7 +253,7 @@ jobs:
           rm -rf "screenshots-${{ matrix.os }}/Dev tools"
           rm -rf "screenshots-${{ matrix.os }}/ECS (Entity Component System)"
           rm -rf "screenshots-${{ matrix.os }}/Games"
-          rm -rf "screenshots-${{ matrix.os }}/Gizmo"
+          rm -rf "screenshots-${{ matrix.os }}/Gizmos"
           rm -rf "screenshots-${{ matrix.os }}/Input"
           rm -rf "screenshots-${{ matrix.os }}/Math"
           rm -rf "screenshots-${{ matrix.os }}/Scene"

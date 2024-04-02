@@ -168,9 +168,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: [mobile-run]
-    if: "always() && ${{ inputs.mobile_percy_project != '' }}"
+    if: always()
     steps:
       - name: Wait for screenshots comparison
+        if: ${{ inputs.mobile_percy_project != '' }}
         run: |
           npm install -g @percy/cli@latest
           npx percy build:wait --project ${{ inputs.mobile_percy_project }} --commit ${{ inputs.gitref }}

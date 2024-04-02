@@ -22,6 +22,7 @@ jobs:
       pages: ${{ steps.env.outputs.pages }}
       gitref: ${{ steps.env.outputs.gitref }}
       date: ${{ steps.env.outputs.date }}
+      pixeleagle_project: ${{ steps.env.outputs.pixeleagle_project }}
     steps:
       - name: Checkout Bevy main branch
         uses: actions/checkout@v4
@@ -40,6 +41,7 @@ jobs:
           echo "gitref=`git rev-parse HEAD`" >> $GITHUB_OUTPUT
           echo "date=`date +%Y%m%d%H%M`" >> $GITHUB_OUTPUT
           echo "pages=`python -c \"import json; print(json.dumps([i for i in range($page_count)]))\"`" >> $GITHUB_OUTPUT
+          echo "pixeleagle_project=B25A040A-A980-4602-B90C-D480AB84076D" >> $GITHUB_OUTPUT
 
   take-screenshots:
     name: Take Screenshots
@@ -235,3 +237,12 @@ jobs:
           cat pixeleagle-${{ matrix.os }}.json
 
           echo "created run $run"
+
+  mobile-run:
+    needs: [get-environment]
+    uses: ./.github/workflows/workflow-mobile.yml
+    with:
+      gitref: ${{ needs.get-environment.outputs.gitref }}
+      pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
+      branch: "PR-${{ inputs.pr }}"
+    secrets: inherit

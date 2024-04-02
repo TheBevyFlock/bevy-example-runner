@@ -133,7 +133,7 @@ jobs:
       
       - name: Send to Pixel Eagle
         run: |
-          run=`curl https://pixel-eagle.vleue.com/${{ inputs.pixeleagle_project }}/runs --json '{"device":"${{ matrix.device }}", "os":"${{ matrix.os_version }}", "gitref": "${{ inputs.gitref }}", "branch": "${{ inputs.branch }}"}' | jq '.id'`
+          run=`curl https://pixel-eagle.vleue.com/${{ inputs.pixeleagle_project }}/runs -H 'Content-Type: application/json' -d '{"device":"${{ matrix.device }}", "os":"${{ matrix.os_version }}", "gitref": "${{ inputs.gitref }}", "branch": "${{ inputs.branch }}"}' | jq '.id'`
             
           SAVEIFS=$IFS
           
@@ -154,7 +154,7 @@ jobs:
           IFS=$SAVEIFS          
 
           # Upload screenshots with unknown hashes
-          curl https://pixel-eagle.vleue.com/${{ inputs.pixeleagle_project }}/runs/$run/hashes --json "$hashes" | jq '.[]|[.name] | @tsv' |
+          curl https://pixel-eagle.vleue.com/${{ inputs.pixeleagle_project }}/runs/$run/hashes -H 'Content-Type: application/json' -d "$hashes" | jq '.[]|[.name] | @tsv' |
             while IFS=$'\t' read -r name; do
               name=`echo $name | tr -d '"'`
               echo "Uploading $name"

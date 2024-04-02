@@ -6,10 +6,13 @@ on:
       gitref:
         required: true
         type: string
-      nonce:
+      mobile_percy_project:
+        required: false
+        type: string
+      pixeleagle_project:
         required: true
         type: string
-      mobile_percy_project:
+      branch:
         required: true
         type: string
 
@@ -78,9 +81,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: [build-for-iOS, build-for-Android]
-    env: 
-      PERCY_PARALLEL_NONCE: ${{ inputs.nonce }}
-      PERCY_PARALLEL_TOTAL: ${{ strategy.job-total }}
     strategy:
       matrix:
         include:
@@ -104,6 +104,10 @@ jobs:
           repository: 'bevyengine/bevy'
           ref: ${{ inputs.gitref }}
 
+      - name: Set Percy Token if needed
+        if: "${{ inputs.mobile_percy_project != '' }}"
+        run: echo "PERCY_TOKEN=${{ secrets.PERCY_TOKEN_MOBILE }}" >> $GITHUB_ENV
+
       - name: Run Example
         run: |
           cd .github/start-mobile-example
@@ -114,23 +118,57 @@ jobs:
           BROWSERSTACK_APP_ID: ${{ github.run_id }}
           BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN_MOBILE }}
           DEVICE: ${{ matrix.device }}
           OS_VERSION: ${{ matrix.os_version }}
           PERCY_COMMIT: ${{ inputs.gitref }}
-
+          PERCY_PARALLEL_NONCE: ${{ github.run_id }}
+          PERCY_PARALLEL_TOTAL: ${{ strategy.job-total }}
+    
       - name: Save screenshots
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: screenshots-${{ matrix.device }}-${{ matrix.os_version }}
           path: .github/start-mobile-example/*.png
+      
+      - name: Send to Pixel Eagle
+        run: |
+          run=`curl https://pixel-eagle.vleue.com/${{ inputs.pixeleagle_project }}/runs --json '{"device":"${{ matrix.device }}", "os":"${{ matrix.os_version }}", "gitref": "${{ inputs.gitref }}", "branch": "${{ inputs.branch }}"}' | jq '.id'`
+            
+          SAVEIFS=$IFS
+          
+          IFS=$'\n'
 
+          # Build a json array of screenshots and their hashes
+          hashes='[';
+          for screenshot in $(find . -type f -name "*.png");
+          do
+            name=${screenshot:2}
+            echo $name
+            hash=`shasum -a 256 $screenshot | awk '{print $1}'`
+            hashes="$hashes [\"$name\",\"$hash\"],"
+          done
+          hashes=`echo $hashes | rev | cut -c 2- | rev`
+          hashes="$hashes]"
+          
+          IFS=$SAVEIFS          
+
+          # Upload screenshots with unknown hashes
+          curl https://pixel-eagle.vleue.com/${{ inputs.pixeleagle_project }}/runs/$run/hashes --json "$hashes" | jq '.[]|[.name] | @tsv' |
+            while IFS=$'\t' read -r name; do
+              name=`echo $name | tr -d '"'`
+              echo "Uploading $name"
+              curl https://pixel-eagle.vleue.com/${{ inputs.pixeleagle_project }}/runs/$run/screenshots -F "data=@./$name" -F "screenshot=$name"
+              echo
+            done
+          
+          IFS=$SAVEIFS
+  
   mobile-check-result:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: [mobile-run]
-    if: always()
+    if: "always() && ${{ inputs.mobile_percy_project != '' }}"
     steps:
       - name: Wait for screenshots comparison
         run: |

@@ -173,7 +173,7 @@ jobs:
           
           IFS=$SAVEIFS
 
-          curl https://pixel-eagle.vleue.com/$project/runs/$run/compare/auto -H 'Content-Type: application/json' -d '{"os":"<equal>", "device":"<equal>", "branch": "main"}'
+          curl https://pixel-eagle.vleue.com/${{ inputs.pixeleagle_project }}/runs/$run/compare/auto -H 'Content-Type: application/json' -d '{"os":"<equal>", "device":"<equal>", "branch": "main"}'
   
   mobile-check-result:
     runs-on: ubuntu-latest

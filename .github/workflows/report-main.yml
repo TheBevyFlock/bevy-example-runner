@@ -1,4 +1,4 @@
-name: Example report - Status and Screenshots
+name: Example report - main
 
 on:
   workflow_dispatch:

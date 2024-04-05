@@ -1,4 +1,4 @@
-name: Example report - Screenshots on PR
+name: Example report - PR
 
 on:
   workflow_dispatch:

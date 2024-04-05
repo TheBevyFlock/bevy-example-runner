@@ -37,6 +37,7 @@ jobs:
           target: wasm32-unknown-unknown  
   
       - name: install xvfb, llvmpipe and lavapipe
+        if: runner.os == 'linux'
         run: |
           sudo apt-get update -y -qq
           sudo add-apt-repository ppa:kisak/turtle -y
@@ -54,12 +55,22 @@ jobs:
           cd ../..
 
       - name: Run examples
+        if: runner.os == 'linux'
         shell: bash
         run: |
           # start a webserver
           python3 -m http.server --directory examples/wasm &
 
           xvfb-run cargo run -p build-wasm-example -- --browsers ${{ matrix.browser }} --api ${{ matrix.api }} --frames 25 --test lighting
+
+      - name: Run examples
+        if: runner.os == 'macos'
+        shell: bash
+        run: |
+          # start a webserver
+          python3 -m http.server --directory examples/wasm &
+
+          cargo run -p build-wasm-example -- --browsers ${{ matrix.browser }} --api ${{ matrix.api }} --frames 25 --test lighting
 
       - name: Save screenshots
         uses: actions/upload-artifact@v4

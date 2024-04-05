@@ -76,6 +76,8 @@ jobs:
         run: |
           cd .github/start-wasm-example
           npm install
+          // update playwright
+          npm install -D @playwright/test@latest
           npx playwright install --with-deps
           cd ../..
 

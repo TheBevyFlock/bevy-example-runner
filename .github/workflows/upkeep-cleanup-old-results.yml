@@ -1,4 +1,4 @@
-name: Cleanup old results
+name: Upkeep - Cleanup old results
 
 on:
   workflow_dispatch:

@@ -26,6 +26,18 @@ jobs:
           - runner: "macos-14"
             browser: "chromium"
             api: "webgpu"
+          - runner: "macos-14"
+            browser: "webkit"
+            api: "webgl2"
+          - runner: "macos-14"
+            browser: "webkit"
+            api: "webgpu"
+          - runner: "ubuntu-latest"
+            browser: "firefox"
+            api: "webgl2"
+          - runner: "ubuntu-latest"
+            browser: "firefox"
+            api: "webgpu"
     steps:
       - uses: actions/checkout@v4
         with:

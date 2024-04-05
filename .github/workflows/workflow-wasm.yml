@@ -107,7 +107,7 @@ jobs:
     
       - name: Send to Pixel Eagle
         run: |
-          run=`curl https://pixel-eagle.vleue.com/${{ inputs.pixeleagle_project }}/runs -H 'Content-Type: application/json' -d '{"api":"${{ matrix.api }}", "browser": "${{ matrix.browser }}", "os":"wasm", "gitref": "${{ inputs.gitref }}", "branch": "${{ inputs.branch }}"}' | jq '.id'`
+          run=`curl https://pixel-eagle.vleue.com/${{ inputs.pixeleagle_project }}/runs -H 'Content-Type: application/json' -d '{"api":"${{ matrix.api }}", "browser": "${{ matrix.browser }}", "os":"wasm", "gitref": "${{ inputs.gitref }}", "host-os": "${{ runner.os }}", "branch": "${{ inputs.branch }}"}' | jq '.id'`
             
           SAVEIFS=$IFS
           

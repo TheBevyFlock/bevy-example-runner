@@ -121,9 +121,10 @@ jobs:
           for screenshot in $(find . -type f -maxdepth 1 -name "*.png");
           do
             name=${screenshot:2}
-            echo $name
+            name_as_array=(${name//-/ })
+            echo ${name_as_array[1]}
             hash=`shasum -a 256 $screenshot | awk '{print $1}'`
-            hashes="$hashes [\"$name\",\"$hash\"],"
+            hashes="$hashes [\"${name_as_array[1]}\",\"$hash\"],"
           done
           hashes=`echo $hashes | rev | cut -c 2- | rev`
           hashes="$hashes]"
@@ -135,7 +136,7 @@ jobs:
             while IFS=$'\t' read -r name; do
               name=`echo $name | tr -d '"'`
               echo "Uploading $name"
-              curl https://pixel-eagle.vleue.com/${{ inputs.pixeleagle_project }}/runs/$run/screenshots -F "data=@./$name" -F "screenshot=$name"
+              curl https://pixel-eagle.vleue.com/${{ inputs.pixeleagle_project }}/runs/$run/screenshots -F "data=@./screenshot-$name-${{ matrix.browser }}.png" -F "screenshot=$name"
               echo
             done
           

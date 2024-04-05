@@ -243,3 +243,12 @@ jobs:
       pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
       branch: "PR-${{ inputs.pr }}"
     secrets: inherit
+
+  wasm-run:
+    needs: [get-environment]
+    uses: ./.github/workflows/workflow-wasm.yml
+    with:
+      gitref: ${{ needs.get-environment.outputs.gitref }}
+      pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
+      branch: "PR-${{ inputs.pr }}"
+    secrets: inherit

@@ -535,6 +535,17 @@ jobs:
       branch: "main"
     secrets: inherit
 
+  wasm-run:
+    needs: [get-environment]
+    if: needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/workflow-wasm.yml
+    with:
+      gitref: ${{ needs.get-environment.outputs.gitref }}
+      pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
+      branch: "main"
+    secrets: inherit
+  
+
   send-to-pixel-eagle:
     name: Send screenshots to Pixel Eagle
     runs-on: macos-14

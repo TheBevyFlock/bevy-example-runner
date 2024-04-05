@@ -102,7 +102,7 @@ jobs:
       - name: Save screenshots
         uses: actions/upload-artifact@v4
         with:
-          name: screenshots-wasm-${{ matrix.browser }}-${{ matrix.api }}
+          name: screenshots-wasm-${{ matrix.browser }}-${{ matrix.api }}-${{ runner.os }}
           path: .github/start-wasm-example/screenshot-*.png
     
       - name: Send to Pixel Eagle

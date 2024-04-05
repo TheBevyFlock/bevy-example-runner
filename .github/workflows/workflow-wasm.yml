@@ -18,6 +18,7 @@ jobs:
     runs-on: ${{ matrix.runner}}
     timeout-minutes: 30
     strategy:
+      fail-fast: false
       matrix:
         include:
           - runner: "macos-14"
@@ -32,11 +33,23 @@ jobs:
           - runner: "macos-14"
             browser: "webkit"
             api: "webgpu"
+          - runner: "macos-14"
+            browser: "firefox"
+            api: "webgl2"
+          - runner: "macos-14"
+            browser: "firefox"
+            api: "webgpu"
           - runner: "ubuntu-latest"
             browser: "firefox"
             api: "webgl2"
           - runner: "ubuntu-latest"
             browser: "firefox"
+            api: "webgpu"
+          - runner: "ubuntu-latest"
+            browser: "chromium"
+            api: "webgl2"
+          - runner: "ubuntu-latest"
+            browser: "chromium"
             api: "webgpu"
     steps:
       - uses: actions/checkout@v4

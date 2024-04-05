@@ -121,10 +121,10 @@ jobs:
           for screenshot in $(find . -type f -maxdepth 1 -name "*.png");
           do
             name=${screenshot:2}
-            name_as_array=(${name//-/ })
-            echo ${name_as_array[1]}
+            name=`echo $name | sed 's/.*-\(.*\)-.*/\1/'`
+            echo $name
             hash=`shasum -a 256 $screenshot | awk '{print $1}'`
-            hashes="$hashes [\"${name_as_array[1]}\",\"$hash\"],"
+            hashes="$hashes [\"$name\",\"$hash\"],"
           done
           hashes=`echo $hashes | rev | cut -c 2- | rev`
           hashes="$hashes]"

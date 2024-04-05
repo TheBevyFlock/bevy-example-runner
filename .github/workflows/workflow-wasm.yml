@@ -89,7 +89,7 @@ jobs:
           # start a webserver
           python3 -m http.server --directory examples/wasm &
 
-          xvfb-run cargo run -p build-wasm-example -- --browsers ${{ matrix.browser }} --api ${{ matrix.api }} --frames 25 --test lighting 2d_shape ui
+          xvfb-run cargo run -p build-wasm-example -- --browsers ${{ matrix.browser }} --api ${{ matrix.api }} --frames 25 --test lighting 2d_shapes ui
 
       - name: Run examples
         if: runner.os == 'macos'
@@ -98,7 +98,7 @@ jobs:
           # start a webserver
           python3 -m http.server --directory examples/wasm &
 
-          cargo run -p build-wasm-example -- --browsers ${{ matrix.browser }} --api ${{ matrix.api }} --frames 25 --test lighting 2d_shape ui
+          cargo run -p build-wasm-example -- --browsers ${{ matrix.browser }} --api ${{ matrix.api }} --frames 25 --test lighting 2d_shapes ui
 
       - name: Save screenshots
         uses: actions/upload-artifact@v4

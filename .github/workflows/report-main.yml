@@ -518,7 +518,7 @@ jobs:
     name: Update Website
     needs: [update-results-with-rerun, get-environment]
     if: always() && (needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch')
-    uses: ./.github/workflows/rebuild-website.yml
+    uses: ./.github/workflows/workflow-rebuild-website.yml
     permissions:
       contents: read
       pages: write

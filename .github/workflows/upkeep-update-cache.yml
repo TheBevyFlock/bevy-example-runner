@@ -52,7 +52,11 @@ jobs:
           # retry as it sometimes timeout
           if [ $FAILED ]; then
             sleep 5
-            sudo add-apt-repository ppa:kisak/turtle -y 
+            sudo add-apt-repository ppa:kisak/turtle -y || FAILED=true
+            if [ $FAILED ]; then
+                  sleep 5
+                  sudo add-apt-repository ppa:kisak/turtle -y
+            fi
           fi
           sudo apt-get update
           sudo apt install -y xvfb libegl1-mesa libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers

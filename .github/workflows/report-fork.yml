@@ -1,10 +1,14 @@
-name: Example report - PR
+name: Example report - fork
 
 on:
   workflow_dispatch:
     inputs:
-      pr:
-        description: 'PR to run'
+      fork:
+        description: 'Fork to target'
+        required: true
+        type: string
+      branch:
+        description: 'Branch to target'
         required: true
         type: string
 
@@ -24,11 +28,8 @@ jobs:
       - name: Checkout Bevy main branch
         uses: actions/checkout@v4
         with:
-          repository: 'bevyengine/bevy'
-      - name: Switch to PR
-        run: |
-          git fetch origin pull/${{ inputs.pr }}/head:pr-${{ inputs.pr }}
-          git switch pr-${{ inputs.pr }}
+          repository: ${{ inputs.fork }}
+          ref: ${{ inputs.branch }}
       - name: Get Environment
         id: env
         run: |
@@ -54,7 +55,7 @@ jobs:
       - name: Checkout Bevy main branch
         uses: actions/checkout@v4
         with:
-          repository: 'bevyengine/bevy'
+          repository: ${{ inputs.fork }}
           ref: ${{ needs.get-environment.outputs.gitref }}
 
       - name: Checkout patches
@@ -204,7 +205,7 @@ jobs:
         run: |
           project="B25A040A-A980-4602-B90C-D480AB84076D"
 
-          run=`curl https://pixel-eagle.vleue.com/$project/runs --json '{"os":"${{ matrix.os }}", "gitref": "${{ needs.get-environment.outputs.gitref }}", "branch": "PR-${{ inputs.pr }}"}' | jq '.id'`
+          run=`curl https://pixel-eagle.vleue.com/$project/runs --json '{"os":"${{ matrix.os }}", "gitref": "${{ needs.get-environment.outputs.gitref }}", "branch": "${{ inputs.fork }} - ${{ inputs.branch }}"}' | jq '.id'`
           
           SAVEIFS=$IFS
           
@@ -250,8 +251,8 @@ jobs:
     with:
       gitref: ${{ needs.get-environment.outputs.gitref }}
       pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
-      branch: "PR-${{ inputs.pr }}"
-      repository: "bevyengine/bevy"
+      branch: "${{ inputs.fork }} - ${{ inputs.branch }}"
+      repository: ${{ inputs.fork }}
     secrets: inherit
 
   wasm-run:
@@ -260,6 +261,6 @@ jobs:
     with:
       gitref: ${{ needs.get-environment.outputs.gitref }}
       pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
-      branch: "PR-${{ inputs.pr }}"
-      repository: "bevyengine/bevy"
+      branch: "${{ inputs.fork }} - ${{ inputs.branch }}"
+      repository: ${{ inputs.fork }}
     secrets: inherit

@@ -3,6 +3,9 @@ name: Workflow - Tests on Mobile
 on:
   workflow_call:
     inputs:
+      repository:
+        required: true
+        type: string
       gitref:
         required: true
         type: string
@@ -23,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          repository: 'bevyengine/bevy'
+          repository: ${{ inputs.repository }}
           ref: ${{ inputs.gitref }}
 
       - uses: dtolnay/rust-toolchain@stable
@@ -53,7 +56,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          repository: 'bevyengine/bevy'
+          repository: ${{ inputs.repository }}
           ref: ${{ inputs.gitref }}
 
       - uses: dtolnay/rust-toolchain@stable
@@ -108,7 +111,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          repository: 'bevyengine/bevy'
+          repository: ${{ inputs.repository }}
           ref: ${{ inputs.gitref }}
 
       - name: Set Percy Token if needed

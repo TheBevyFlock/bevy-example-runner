@@ -6,6 +6,7 @@ on:
       repository:
         required: true
         type: string
+        default: 'bevyengine/bevy'
       gitref:
         required: true
         type: string
@@ -15,25 +16,42 @@ on:
       branch:
         required: true
         type: string
-      per-page:
-        required: true
-        type: number
-      pages:
+        default: 'main'
+      per_page:
         required: true
         type: string
 
 jobs:
+  split-pages:
+    name: Prepare pages
+    runs-on: ubuntu-latest
+    outputs:
+      pages: ${{ steps.env.outputs.pages }}
+    steps:
+      - name: Checkout Bevy
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.repository}}
+          ref: ${{ inputs.gitref }}
+      - name: Prepare Pages
+        id: env
+        run: |
+          example_count=`cat Cargo.toml | grep '\[\[example\]\]' | wc -l`
+          page_count=$((example_count / ${{ inputs.per_page }} + 1))
+          echo "pages=`python -c \"import json; print(json.dumps([i for i in range($page_count)]))\"`" >> $GITHUB_OUTPUT
+
   take-screenshots:
     name: Take Screenshots
+    needs: [split-pages]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-14]
-        page: ${{ fromJSON(inputs.pages) }}
+        page: ${{ fromJSON(needs.split-pages.outputs.pages) }}
 
     steps:
 
-      - name: Checkout Bevy main branch
+      - name: Checkout Bevy
         uses: actions/checkout@v4
         with:
           repository: ${{ inputs.repository }}
@@ -96,7 +114,7 @@ jobs:
         id: screenshots-linux
         if: runner.os == 'linux'
         continue-on-error: true
-        run: xvfb-run -s "-screen 0 1280x1024x24" cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ inputs.per-page }} run --screenshot-at 400 --frame-duration 0.0125 --stop-at 450 --in-ci --ignore-stress-tests --report-details
+        run: xvfb-run -s "-screen 0 1280x1024x24" cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ inputs.per_page }} run --screenshot-at 400 --frame-duration 0.0125 --stop-at 450 --in-ci --ignore-stress-tests --report-details
 
       - name: Take Screenshots (Windows)
         id: screenshots-windows
@@ -108,13 +126,13 @@ jobs:
           $screen = [System.Windows.Forms.SystemInformation]::VirtualScreen
           [Windows.Forms.Cursor]::Position = "$($screen.Width / 2),$($screen.Height / 2)"
 
-          cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ inputs.per-page }} run --screenshot-at 400 --frame-duration 0.0125 --stop-at 450 --in-ci --ignore-stress-tests --report-details
+          cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ inputs.per_page }} run --screenshot-at 400 --frame-duration 0.0125 --stop-at 450 --in-ci --ignore-stress-tests --report-details
 
       - name: Take Screenshots (macOS)
         id: screenshots-macos
         if: runner.os == 'macos'
         continue-on-error: true
-        run: cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ inputs.per-page }} run --screenshot-at 400 --frame-duration 0.0125 --stop-at 450 --in-ci --ignore-stress-tests --report-details
+        run: cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ inputs.per_page }} run --screenshot-at 400 --frame-duration 0.0125 --stop-at 450 --in-ci --ignore-stress-tests --report-details
   
       - name: Log errors
         shell: pwsh

@@ -43,7 +43,7 @@ jobs:
     with:
       gitref: ${{ needs.get-environment.outputs.gitref }}
       pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
-      branch: "${{ inputs.fork }} - ${{ inputs.branch }}"
+      branch: "${{ inputs.fork }}:${{ inputs.branch }}"
       repository: ${{ inputs.fork }}
       per_page: "${{ needs.get-environment.outputs.per_page }}"
     secrets: inherit
@@ -54,7 +54,7 @@ jobs:
     with:
       gitref: ${{ needs.get-environment.outputs.gitref }}
       pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
-      branch: "${{ inputs.fork }} - ${{ inputs.branch }}"
+      branch: "${{ inputs.fork }}:${{ inputs.branch }}"
       repository: ${{ inputs.fork }}
     secrets: inherit
 
@@ -64,6 +64,6 @@ jobs:
     with:
       gitref: ${{ needs.get-environment.outputs.gitref }}
       pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
-      branch: "${{ inputs.fork }} - ${{ inputs.branch }}"
+      branch: "${{ inputs.fork }}:${{ inputs.branch }}"
       repository: ${{ inputs.fork }}
     secrets: inherit

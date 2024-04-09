@@ -19,7 +19,7 @@ on:
         default: 'main'
       per_page:
         required: true
-        type: number
+        type: string
 
 jobs:
   split-pages:

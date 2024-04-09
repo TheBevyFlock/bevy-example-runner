@@ -16,8 +16,7 @@ jobs:
     name: Get Environment
     runs-on: ubuntu-latest
     outputs:
-      pages: ${{ steps.env.outputs.pages }}
-      per-pages: ${{ env.PER_PAGE }}
+      per_page: ${{ env.PER_PAGE }}
       gitref: ${{ steps.env.outputs.gitref }}
       date: ${{ steps.env.outputs.date }}
       pixeleagle_project: ${{ steps.env.outputs.pixeleagle_project }}
@@ -33,12 +32,8 @@ jobs:
       - name: Get Environment
         id: env
         run: |
-          example_count=`cat Cargo.toml | grep '\[\[example\]\]' | wc -l`
-          page_count=$((example_count / ${{ env.PER_PAGE }} + 1))
-
           echo "gitref=`git rev-parse HEAD`" >> $GITHUB_OUTPUT
           echo "date=`date +%Y%m%d%H%M`" >> $GITHUB_OUTPUT
-          echo "pages=`python -c \"import json; print(json.dumps([i for i in range($page_count)]))\"`" >> $GITHUB_OUTPUT
           echo "pixeleagle_project=B25A040A-A980-4602-B90C-D480AB84076D" >> $GITHUB_OUTPUT
 
   native-run:
@@ -49,8 +44,7 @@ jobs:
       pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
       branch: "PR-${{ inputs.pr }}"
       repository: "bevyengine/bevy"
-      pages: ${{ needs.get-environment.outputs.pages }}
-      per-page: ${{ needs.get-environment.outputs.per-pages }}
+      per_page: "${{ needs.get-environment.outputs.per_page }}"
     secrets: inherit
         
   mobile-run:

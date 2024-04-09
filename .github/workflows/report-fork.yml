@@ -1,10 +1,14 @@
-name: Example report - PR
+name: Example report - fork
 
 on:
   workflow_dispatch:
     inputs:
-      pr:
-        description: 'PR to run'
+      fork:
+        description: 'Fork to target'
+        required: true
+        type: string
+      branch:
+        description: 'Branch to target'
         required: true
         type: string
 
@@ -24,11 +28,8 @@ jobs:
       - name: Checkout Bevy main branch
         uses: actions/checkout@v4
         with:
-          repository: 'bevyengine/bevy'
-      - name: Switch to PR
-        run: |
-          git fetch origin pull/${{ inputs.pr }}/head:pr-${{ inputs.pr }}
-          git switch pr-${{ inputs.pr }}
+          repository: ${{ inputs.fork }}
+          ref: ${{ inputs.branch }}
       - name: Get Environment
         id: env
         run: |
@@ -46,18 +47,18 @@ jobs:
     with:
       gitref: ${{ needs.get-environment.outputs.gitref }}
       pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
-      branch: "PR-${{ inputs.pr }}"
-      repository: "bevyengine/bevy"
+      branch: "${{ inputs.fork }} - ${{ inputs.branch }}"
+      repository: ${{ inputs.fork }}
     secrets: inherit
-        
+
   mobile-run:
     needs: [get-environment]
     uses: ./.github/workflows/workflow-mobile.yml
     with:
       gitref: ${{ needs.get-environment.outputs.gitref }}
       pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
-      branch: "PR-${{ inputs.pr }}"
-      repository: "bevyengine/bevy"
+      branch: "${{ inputs.fork }} - ${{ inputs.branch }}"
+      repository: ${{ inputs.fork }}
     secrets: inherit
 
   wasm-run:
@@ -66,6 +67,6 @@ jobs:
     with:
       gitref: ${{ needs.get-environment.outputs.gitref }}
       pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
-      branch: "PR-${{ inputs.pr }}"
-      repository: "bevyengine/bevy"
+      branch: "${{ inputs.fork }} - ${{ inputs.branch }}"
+      repository: ${{ inputs.fork }}
     secrets: inherit

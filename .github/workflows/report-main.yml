@@ -551,6 +551,7 @@ jobs:
       mobile_percy_project: ${{ needs.get-environment.outputs.mobile_percy_project }}
       pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
       branch: "main"
+      repository: "bevyengine/bevy"
     secrets: inherit
 
   wasm-run:
@@ -561,6 +562,7 @@ jobs:
       gitref: ${{ needs.get-environment.outputs.gitref }}
       pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
       branch: "main"
+      repository: "bevyengine/bevy"
     secrets: inherit
   
 

@@ -3,6 +3,9 @@ name: Workflow - Tests on wasm
 on:
   workflow_call:
     inputs:
+      repository:
+        required: true
+        type: string
       gitref:
         required: true
         type: string
@@ -15,7 +18,7 @@ on:
 
 jobs:
   wasm-run:
-    runs-on: ${{ matrix.runner}}
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -57,7 +60,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          repository: 'bevyengine/bevy'
+          repository: ${{ inputs.repository }}
           ref: ${{ inputs.gitref }}
 
       - uses: dtolnay/rust-toolchain@stable

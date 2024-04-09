@@ -21,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       pages: ${{ steps.env.outputs.pages }}
+      per-pages: ${{ env.PER_PAGE }}
       gitref: ${{ steps.env.outputs.gitref }}
       date: ${{ steps.env.outputs.date }}
       pixeleagle_project: ${{ steps.env.outputs.pixeleagle_project }}
@@ -43,12 +44,14 @@ jobs:
 
   native-run:
     needs: [get-environment]
-    uses: ./.github/workflows/workflow-mobile.yml
+    uses: ./.github/workflows/workflow-native.yml
     with:
       gitref: ${{ needs.get-environment.outputs.gitref }}
       pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
       branch: "${{ inputs.fork }} - ${{ inputs.branch }}"
       repository: ${{ inputs.fork }}
+      pages: ${{ needs.get-environment.outputs.pages }}
+      per-page: ${{ needs.get-environment.outputs.per-pages }}
     secrets: inherit
 
   mobile-run:

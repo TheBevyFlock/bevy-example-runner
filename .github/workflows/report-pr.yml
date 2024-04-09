@@ -1,4 +1,5 @@
 name: Example report - PR
+run-name: ${{ inputs.pr }}
 
 on:
   workflow_dispatch:
@@ -37,6 +38,7 @@ jobs:
           echo "pixeleagle_project=B25A040A-A980-4602-B90C-D480AB84076D" >> $GITHUB_OUTPUT
 
   native-run:
+    name: Native
     needs: [get-environment]
     uses: ./.github/workflows/workflow-native.yml
     with:
@@ -48,6 +50,7 @@ jobs:
     secrets: inherit
         
   mobile-run:
+    name: Mobile
     needs: [get-environment]
     uses: ./.github/workflows/workflow-mobile.yml
     with:
@@ -58,6 +61,7 @@ jobs:
     secrets: inherit
 
   wasm-run:
+    name: wasm
     needs: [get-environment]
     uses: ./.github/workflows/workflow-wasm.yml
     with:

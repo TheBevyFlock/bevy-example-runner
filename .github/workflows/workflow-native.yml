@@ -80,7 +80,7 @@ jobs:
         shell: pwsh
         run: |
           cargo add vleue_sentry --git https://github.com/vleue/vleue_sentry -p bevy_internal
-          git apply --ignore-whitespace add_sentry.patch
+          git apply --ignore-whitespace runner-patches/add_sentry.patch
 
       - name: Install Bevy dependencies
         if: runner.os == 'linux'

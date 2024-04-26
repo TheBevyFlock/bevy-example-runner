@@ -8,7 +8,7 @@ index acfa89d0b6..516a16ca9c 100644
              .add(bevy_app::PanicHandlerPlugin)
 -            .add(bevy_log::LogPlugin::default())
 +            .add(bevy_log::LogPlugin {
-+                update_subscriber: Some(vleue_sentry::sentry_error_reporter),
++                update_subscriber: Some(vleue_sentry::sentry_panic_reporter),
 +                ..Default::default()
 +            })
              .add(bevy_core::TaskPoolPlugin::default())

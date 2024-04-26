@@ -44,8 +44,6 @@ jobs:
     name: Take Screenshots
     needs: [split-pages]
     runs-on: ${{ matrix.os }}
-    env:
-      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-14]
@@ -75,12 +73,6 @@ jobs:
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
-
-      - name: Setup Sentry Reporting
-        shell: pwsh
-        run: |
-          cargo add vleue_sentry --git https://github.com/vleue/vleue_sentry -p bevy_internal --features subcrates --no-default-features
-          git apply --ignore-whitespace runner-patches/add_sentry.patch
 
       - name: Install Bevy dependencies
         if: runner.os == 'linux'

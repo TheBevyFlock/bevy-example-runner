@@ -387,6 +387,8 @@ jobs:
     needs: [get-environment, update-results]
     if: always() && (needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch')
     runs-on: ${{ matrix.os }}
+    env:
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-14]
@@ -449,6 +451,12 @@ jobs:
           sudo apt-get update
           sudo apt install -y xvfb libegl1-mesa libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers
 
+      - name: Setup Sentry Reporting
+        shell: pwsh
+        run: |
+          cargo add vleue_sentry --git https://github.com/vleue/vleue_sentry -p bevy_internal --features subcrates --no-default-features
+          git apply --ignore-whitespace runner-patches/add_sentry.patch
+    
       - uses: actions/cache/restore@v4
         id: restore-cache
         with:

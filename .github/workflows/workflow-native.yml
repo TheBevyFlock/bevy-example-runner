@@ -25,6 +25,8 @@ jobs:
   split-pages:
     name: Prepare pages
     runs-on: ubuntu-latest
+    env:
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
     outputs:
       pages: ${{ steps.env.outputs.pages }}
     steps:
@@ -73,6 +75,12 @@ jobs:
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup Sentry Reporting
+        shell: pwsh
+        run: |
+          cargo add vleue_sentry --git https://github.com/vleue/vleue_sentry -p bevy_internal
+          git apply --ignore-whitespace add_sentry.patch
 
       - name: Install Bevy dependencies
         if: runner.os == 'linux'

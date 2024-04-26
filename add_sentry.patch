@@ -1,0 +1,16 @@
+diff --git a/crates/bevy_internal/src/default_plugins.rs b/crates/bevy_internal/src/default_plugins.rs
+index acfa89d0b6..516a16ca9c 100644
+--- a/crates/bevy_internal/src/default_plugins.rs
++++ b/crates/bevy_internal/src/default_plugins.rs
+@@ -44,7 +44,10 @@ impl PluginGroup for DefaultPlugins {
+         let mut group = PluginGroupBuilder::start::<Self>();
+         group = group
+             .add(bevy_app::PanicHandlerPlugin)
+-            .add(bevy_log::LogPlugin::default())
++            .add(bevy_log::LogPlugin {
++                update_subscriber: Some(vleue_sentry::sentry_error_reporter),
++                ..Default::default()
++            })
+             .add(bevy_core::TaskPoolPlugin::default())
+             .add(bevy_core::TypeRegistrationPlugin)
+             .add(bevy_core::FrameCountPlugin)

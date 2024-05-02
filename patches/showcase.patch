@@ -46,7 +46,7 @@ index 16c1c9b93..23e8cdd27 100644
 +                (0, screenshot_at) if screenshot_at > 0 => {
                      let mut file = File::create("example_showcase_config.ron").unwrap();
                      file.write_all(
-                         b"(exit_after: None, frame_time: Some(0.05), screenshot_frames: [100])",
+                         b"(setup: (fixed_frame_time: Some(0.05)), events: [(100, Screenshot)])",
 @@ -172,19 +178,22 @@ fn main() {
                      extra_parameters.push("--features");
                      extra_parameters.push("bevy_ci_testing");
@@ -56,21 +56,21 @@ index 16c1c9b93..23e8cdd27 100644
 +                (stop_at, 0) if stop_at > 0 => {
                      let mut file = File::create("example_showcase_config.ron").unwrap();
 -                    file.write_all(
--                        b"(exit_after: Some(250), frame_time: Some(0.05), screenshot_frames: [100])",
+-                        b"(setup: (fixed_frame_time: Some(0.05)), events: [(100, Screenshot), (250, AppExit)])",
 -                    )
 -                    .unwrap();
-+                    file.write_all(b"(exit_after: Some(250))").unwrap();
++                    file.write_all(b"(events: [(250, AppExit)])").unwrap();
                      extra_parameters.push("--features");
                      extra_parameters.push("bevy_ci_testing");
                  }
 -                (false, false) => {
 +                (stop_at, screenshot_at) => {
                      let mut file = File::create("example_showcase_config.ron").unwrap();
--                    file.write_all(b"(exit_after: Some(250))").unwrap();
+-                    file.write_all(b"(events: [(250, AppExit)])").unwrap();
 +                    file.write_all(
 +                        format!(
-+                            "(exit_after: Some({}), frame_time: Some({}), screenshot_frames: [{}])",
-+                            stop_at, frame_duration, screenshot_at
++                            "(setup: (fixed_frame_time: Some({})), events: [({}, Screenshot), ({}, AppExit)])",
++                            frame_duration, screenshot_at, stop_at
 +                        )
 +                        .as_bytes(),
 +                    )

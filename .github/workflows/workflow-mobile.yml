@@ -85,6 +85,7 @@ jobs:
     timeout-minutes: 30
     needs: [build-for-iOS, build-for-Android]
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: "iOS"

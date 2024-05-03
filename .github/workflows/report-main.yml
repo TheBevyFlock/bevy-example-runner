@@ -139,7 +139,7 @@ jobs:
         id: screenshots-linux
         if: runner.os == 'linux'
         continue-on-error: true
-        run: xvfb-run -s "-screen 0 1280x1024x24" cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot-at 400 --frame-duration 0.0125 --stop-at 450 --in-ci --ignore-stress-tests --report-details
+        run: xvfb-run -s "-screen 0 1280x1024x24" cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot-frame 400 --fixed-frame-time 0.0125 --stop-frame 450 --in-ci --ignore-stress-tests --report-details
 
       - name: Take Screenshots (Windows)
         id: screenshots-windows
@@ -151,24 +151,24 @@ jobs:
           $screen = [System.Windows.Forms.SystemInformation]::VirtualScreen
           [Windows.Forms.Cursor]::Position = "$($screen.Width / 2),$($screen.Height / 2)"
 
-          cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot-at 400 --frame-duration 0.0125 --stop-at 450 --in-ci --ignore-stress-tests --report-details
+          cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot-frame 400 --fixed-frame-time 0.0125 --stop-frame 450 --in-ci --ignore-stress-tests --report-details
 
       - name: Take Screenshots (macOS)
         id: screenshots-macos
         if: runner.os == 'macos'
         continue-on-error: true
-        run: cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot-at 400 --frame-duration 0.0125 --stop-at 450 --in-ci --ignore-stress-tests --report-details
+        run: cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot-frame 400 --fixed-frame-time 0.0125 --stop-frame 450 --in-ci --ignore-stress-tests --report-details
   
       - name: Log errors
         shell: pwsh
         run: |
-          if (Get-Content no_screenshots) {
-            perl -p -e 's/(.*) - [.0-9]*\n/\1, /g' no_screenshots > cleaned
+          if (Get-Content example-showcase-reports/no_screenshots) {
+            perl -p -e 's/(.*) - [.0-9]*\n/\1, /g' example-showcase-reports/no_screenshots > cleaned
             $no_screenshots = Get-Content .\cleaned -Raw
             echo "::warning title=No Screenshots ${{ runner.os }}/${{ matrix.page }}::$no_screenshots"
           }
-          if (Get-Content failures) {
-            perl -p -e 's/(.*) - [.0-9]*\n/\1, /g' failures > cleaned
+          if (Get-Content example-showcase-reports/failures) {
+            perl -p -e 's/(.*) - [.0-9]*\n/\1, /g' example-showcase-reports/failures > cleaned
             $failures = Get-Content .\cleaned -Raw
             echo "::error title=Failed To Run ${{ runner.os }}/${{ matrix.page }}::$failures"
           }
@@ -177,7 +177,7 @@ jobs:
         id: run-results
         shell: pwsh
         run: |
-          echo "has_success=$(![String]::IsNullOrWhiteSpace((Get-content successes)))" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          echo "has_success=$(![String]::IsNullOrWhiteSpace((Get-content example-showcase-reports/successes)))" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
       - name: Upload Screenshots
         uses: actions/upload-artifact@v4
@@ -190,9 +190,7 @@ jobs:
         with:
           name: status-${{ runner.os }}-${{ matrix.page }}
           path: |
-            successes
-            failures
-            no_screenshots
+            example-showcase-reports
 
   send-to-percy:
     name: Send screenshots to Percy
@@ -323,9 +321,9 @@ jobs:
 
           for report in status-Linux-*
           do
-            (cat $report/successes; echo) >> Linux-successes-concat
-            (cat $report/failures; echo) >> Linux-failures-concat
-            (cat $report/no_screenshots; echo) >> Linux-no_screenshots-concat
+            (cat $report/example-showcase-reports/successes; echo) >> Linux-successes-concat
+            (cat $report/example-showcase-reports/failures; echo) >> Linux-failures-concat
+            (cat $report/example-showcase-reports/no_screenshots; echo) >> Linux-no_screenshots-concat
           done
           # remove empty lines
           grep . Linux-successes-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Linux-successes || true
@@ -334,9 +332,9 @@ jobs:
 
           for report in status-Windows-*
           do
-            (cat $report/successes; echo) >> Windows-successes-concat
-            (cat $report/failures; echo) >> Windows-failures-concat
-            (cat $report/no_screenshots; echo) >> Windows-no_screenshots-concat
+            (cat $report/example-showcase-reports/successes; echo) >> Windows-successes-concat
+            (cat $report/example-showcase-reports/failures; echo) >> Windows-failures-concat
+            (cat $report/example-showcase-reports/no_screenshots; echo) >> Windows-no_screenshots-concat
           done
           # remove empty lines
           grep . Windows-successes-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-successes || true
@@ -345,9 +343,9 @@ jobs:
 
           for report in status-macOS-*
           do
-            (cat $report/successes; echo) >> macOS-successes-concat
-            (cat $report/failures; echo) >> macOS-failures-concat
-            (cat $report/no_screenshots; echo) >> macOS-no_screenshots-concat
+            (cat $report/example-showcase-reports/successes; echo) >> macOS-successes-concat
+            (cat $report/example-showcase-reports/failures; echo) >> macOS-failures-concat
+            (cat $report/example-showcase-reports/no_screenshots; echo) >> macOS-no_screenshots-concat
           done
           # remove empty lines
           grep . macOS-successes-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/macOS-successes || true
@@ -472,27 +470,24 @@ jobs:
       - name: Take Screenshots (Linux)
         if: runner.os == 'linux'
         continue-on-error: true
-        run: xvfb-run -s "-screen 0 1280x1024x24" cargo run -p example-showcase -- run --screenshot-at 0 --frame-duration 0.02 --stop-at 200 --in-ci --ignore-stress-tests --report-details --example-list failure-list
+        run: xvfb-run -s "-screen 0 1280x1024x24" cargo run -p example-showcase -- run --screenshot-frame 0 --fixed-frame-time 0.02 --stop-frame 200 --in-ci --ignore-stress-tests --report-details --example-list failure-list
 
       - name: Take Screenshots (Windows)
         if: runner.os == 'windows'
         continue-on-error: true
-        run: cargo run -p example-showcase -- run --screenshot-at 0 --frame-duration 0.02 --stop-at 200 --in-ci --ignore-stress-tests --report-details --example-list failure-list
+        run: cargo run -p example-showcase -- run --screenshot-frame 0 --fixed-frame-time 0.02 --stop-frame 200 --in-ci --ignore-stress-tests --report-details --example-list failure-list
   
       - name: Take Screenshots (macOS)
         if: runner.os == 'macos'
         continue-on-error: true
-        run: cargo run -p example-showcase -- run --screenshot-at 0 --frame-duration 0.02 --stop-at 200 --in-ci --ignore-stress-tests --report-details --example-list failure-list
+        run: cargo run -p example-showcase -- run --screenshot-frame 0 --fixed-frame-time 0.02 --stop-frame 200 --in-ci --ignore-stress-tests --report-details --example-list failure-list
   
       - name: Upload Rerun Status
         uses: actions/upload-artifact@v4
         with:
           name: status-rerun-${{ runner.os }}
           path: |
-            successes
-            failures
-            no_screenshots
-            *.log
+            example-showcase-reports
 
   update-results-with-rerun:
     name: Update Results with Rerun
@@ -527,9 +522,9 @@ jobs:
 
       - name: Store results in git
         run: |
-          mv status-rerun-Windows results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/
-          mv status-rerun-Linux results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/
-          mv status-rerun-macOS results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/
+          mv status-rerun-Windows/rerun-failed-examples results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/
+          mv status-rerun-Linux/rerun-failed-examples results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/
+          mv status-rerun-macOS/rerun-failed-examples results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/
 
           cd results
 

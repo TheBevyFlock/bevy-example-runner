@@ -114,7 +114,7 @@ jobs:
         id: screenshots-linux
         if: runner.os == 'linux'
         continue-on-error: true
-        run: xvfb-run -s "-screen 0 1280x1024x24" cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ inputs.per_page }} run --screenshot-at 400 --frame-duration 0.0125 --stop-at 450 --in-ci --ignore-stress-tests --report-details
+        run: xvfb-run -s "-screen 0 1280x1024x24" cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ inputs.per_page }} run --screenshot-frame 400 --fixed-frame-time 0.0125 --stop-frame 450 --in-ci --ignore-stress-tests --report-details
 
       - name: Take Screenshots (Windows)
         id: screenshots-windows
@@ -126,24 +126,24 @@ jobs:
           $screen = [System.Windows.Forms.SystemInformation]::VirtualScreen
           [Windows.Forms.Cursor]::Position = "$($screen.Width / 2),$($screen.Height / 2)"
 
-          cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ inputs.per_page }} run --screenshot-at 400 --frame-duration 0.0125 --stop-at 450 --in-ci --ignore-stress-tests --report-details
+          cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ inputs.per_page }} run --screenshot-frame 400 --fixed-frame-time 0.0125 --stop-frame 450 --in-ci --ignore-stress-tests --report-details
 
       - name: Take Screenshots (macOS)
         id: screenshots-macos
         if: runner.os == 'macos'
         continue-on-error: true
-        run: cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ inputs.per_page }} run --screenshot-at 400 --frame-duration 0.0125 --stop-at 450 --in-ci --ignore-stress-tests --report-details
+        run: cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ inputs.per_page }} run --screenshot-frame 400 --fixed-frame-time 0.0125 --stop-frame 450 --in-ci --ignore-stress-tests --report-details
   
       - name: Log errors
         shell: pwsh
         run: |
-          if (Get-Content no_screenshots) {
-            perl -p -e 's/(.*) - [.0-9]*\n/\1, /g' no_screenshots > cleaned
+          if (Get-Content example-showcase-reports/no_screenshots) {
+            perl -p -e 's/(.*) - [.0-9]*\n/\1, /g' example-showcase-reports/no_screenshots > cleaned
             $no_screenshots = Get-Content .\cleaned -Raw
             echo "::warning title=No Screenshots ${{ runner.os }}/${{ matrix.page }}::$no_screenshots"
           }
-          if (Get-Content failures) {
-            perl -p -e 's/(.*) - [.0-9]*\n/\1, /g' failures > cleaned
+          if (Get-Content example-showcase-reports/failures) {
+            perl -p -e 's/(.*) - [.0-9]*\n/\1, /g' example-showcase-reports/failures > cleaned
             $failures = Get-Content .\cleaned -Raw
             echo "::error title=Failed To Run ${{ runner.os }}/${{ matrix.page }}::$failures"
           }
@@ -152,7 +152,7 @@ jobs:
         id: run-results
         shell: pwsh
         run: |
-          echo "has_success=$(![String]::IsNullOrWhiteSpace((Get-content successes)))" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          echo "has_success=$(![String]::IsNullOrWhiteSpace((Get-content example-showcase-reports/successes)))" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
       - name: Upload Screenshots
         uses: actions/upload-artifact@v4
@@ -165,9 +165,7 @@ jobs:
         with:
           name: status-${{ runner.os }}-${{ matrix.page }}
           path: |
-            successes
-            failures
-            no_screenshots
+            example-showcase-reports
 
   send-to-pixel-eagle:
     name: Send screenshots to Pixel Eagle

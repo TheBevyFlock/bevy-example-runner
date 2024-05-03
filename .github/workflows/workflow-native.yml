@@ -152,7 +152,7 @@ jobs:
         id: run-results
         shell: pwsh
         run: |
-          echo "has_success=$(![String]::IsNullOrWhiteSpace((Get-content successes)))" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          echo "has_success=$(![String]::IsNullOrWhiteSpace((Get-content example-showcase-reports/successes)))" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
       - name: Upload Screenshots
         uses: actions/upload-artifact@v4
@@ -165,9 +165,7 @@ jobs:
         with:
           name: status-${{ runner.os }}-${{ matrix.page }}
           path: |
-            successes
-            failures
-            no_screenshots
+            example-showcase-reports
 
   send-to-pixel-eagle:
     name: Send screenshots to Pixel Eagle

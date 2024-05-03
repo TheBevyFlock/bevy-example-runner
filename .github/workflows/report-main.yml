@@ -162,8 +162,8 @@ jobs:
       - name: Log errors
         shell: pwsh
         run: |
-          if (Get-Content no_screenshots) {
-            perl -p -e 's/(.*) - [.0-9]*\n/\1, /g' no_screenshots > cleaned
+          if (Get-Content example-showcase-reports/no_screenshots) {
+            perl -p -e 's/(.*) - [.0-9]*\n/\1, /g' example-showcase-reports/no_screenshots > cleaned
             $no_screenshots = Get-Content .\cleaned -Raw
             echo "::warning title=No Screenshots ${{ runner.os }}/${{ matrix.page }}::$no_screenshots"
           }

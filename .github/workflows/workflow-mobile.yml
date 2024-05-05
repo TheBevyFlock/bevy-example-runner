@@ -171,7 +171,7 @@ jobs:
             while IFS=$'\t' read -r name; do
               name=`echo $name | tr -d '"'`
               echo "Uploading $name"
-              curl https://pixel-eagle.vleue.com/${{ inputs.pixeleagle_project }}/runs/$run/screenshots -F "data=@./$name" -F "screenshot=$name"
+              curl https://pixel-eagle.vleue.com/${{ inputs.pixeleagle_project }}/runs/$run/screenshots -F "data=@./$name" -F "screenshot=$name" -H "Authorization: Bearer ${{ secrets.PIXELEAGLE }}"
               echo
             done
           

@@ -59,10 +59,10 @@ jobs:
           repository: ${{ inputs.repository }}
           ref: ${{ inputs.gitref }}
 
-      - uses: dtolnay/rust-toolchain@stable
-
-      - name: Add Android targets
-        run: rustup target add aarch64-linux-android armv7-linux-androideabi
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.77
+          targets: x86_64-unknown-linux-gnu,aarch64-linux-android,armv7-linux-androideabi
 
       - name: Install Cargo APK
         run: cargo install --force cargo-apk

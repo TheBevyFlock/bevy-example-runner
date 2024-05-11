@@ -183,7 +183,7 @@ jobs:
 
   update-website:
     name: Update Website
-    needs: [get-environment]
+    needs: [get-environment, update-results]
     if: always() && (needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch')
     uses: ./.github/workflows/workflow-rebuild-website.yml
     permissions:

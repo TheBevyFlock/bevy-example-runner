@@ -65,6 +65,7 @@ jobs:
     secrets: inherit
         
   mobile-run:
+    name: Mobile
     needs: [get-environment]
     if: needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch'
     uses: ./.github/workflows/workflow-mobile.yml
@@ -77,6 +78,7 @@ jobs:
     secrets: inherit
 
   wasm-run:
+    name: Wasm
     needs: [get-environment]
     if: needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch'
     uses: ./.github/workflows/workflow-wasm.yml

@@ -1,4 +1,4 @@
-name: Workflow - Tests on wasm
+name: Workflow - Tests on native
 
 on:
   workflow_call:

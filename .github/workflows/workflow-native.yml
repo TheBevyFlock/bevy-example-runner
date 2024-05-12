@@ -44,6 +44,8 @@ jobs:
     name: Take Screenshots
     needs: [split-pages]
     runs-on: ${{ matrix.os }}
+    env:
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-14]
@@ -70,6 +72,12 @@ jobs:
               Write-Output "Processing $($_.FullName)"
               git apply --ignore-whitespace $($_.FullName)
           }
+
+      - name: Setup Sentry Reporting
+        shell: pwsh
+        run: |
+          cargo add vleue_sentry --git https://github.com/vleue/vleue_sentry -p bevy_internal --features subcrates --no-default-features
+          git apply --ignore-whitespace runner-patches/add_sentry.patch
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -241,3 +249,9 @@ jobs:
           cat pixeleagle-${{ matrix.os }}.json
 
           echo "created run $run"
+
+      - name: Upload Pixel Eagle status
+        uses: actions/upload-artifact@v4
+        with:
+          name: pixeleagle-${{ matrix.os }}
+          path: pixeleagle-${{ matrix.os }}.json

@@ -16,14 +16,11 @@ jobs:
     name: Get Environment
     runs-on: ubuntu-latest
     outputs:
-      pages: ${{ steps.env.outputs.pages }}
+      per_page: ${{ env.PER_PAGE }}
       gitref: ${{ steps.env.outputs.gitref }}
       date: ${{ steps.env.outputs.date }}
-      linux_percy_project: ${{ steps.env.outputs.linux_percy_project }}
-      windows_percy_project: ${{ steps.env.outputs.windows_percy_project }}
-      macos_percy_project: ${{ steps.env.outputs.macos_percy_project }}
-      mobile_percy_project: ${{ steps.env.outputs.mobile_percy_project }}
       pixeleagle_project: ${{ steps.env.outputs.pixeleagle_project }}
+      mobile_percy_project: ${{ steps.env.outputs.mobile_percy_project }}
       updated: ${{ steps.version-check.outputs.updated }}
     steps:
       - name: Checkout Bevy main branch
@@ -34,17 +31,10 @@ jobs:
       - name: Get Environment
         id: env
         run: |
-          example_count=`cat Cargo.toml | grep '\[\[example\]\]' | wc -l`
-          page_count=$((example_count / ${{ env.PER_PAGE }} + 1))
-
           echo "gitref=`git rev-parse HEAD`" >> $GITHUB_OUTPUT
           echo "date=`date +%Y%m%d%H%M`" >> $GITHUB_OUTPUT
-          echo "linux_percy_project=dede4209/Screenshots-Linux-Vulkan" >> $GITHUB_OUTPUT
-          echo "windows_percy_project=dede4209/Screenshots-Windows-DX12" >> $GITHUB_OUTPUT
-          echo "macos_percy_project=dede4209/Screenshots-macOS-Metal" >> $GITHUB_OUTPUT
-          echo "mobile_percy_project=dede4209/Bevy-Mobile-Example" >> $GITHUB_OUTPUT
           echo "pixeleagle_project=B25A040A-A980-4602-B90C-D480AB84076D" >> $GITHUB_OUTPUT
-          echo "pages=`python -c \"import json; print(json.dumps([i for i in range($page_count)]))\"`" >> $GITHUB_OUTPUT
+          echo "mobile_percy_project=dede4209/Bevy-Mobile-Example" >> $GITHUB_OUTPUT
       - uses: actions/checkout@v4
         with:
           ref: 'results'
@@ -56,248 +46,47 @@ jobs:
           updated=`if ls results/*-$gitref 1> /dev/null 2>&1; then echo "false"; else echo "true"; fi`
           echo "updated=$updated" >> $GITHUB_OUTPUT
 
-  take-screenshots:
-    name: Take Screenshots
-    needs: get-environment
+  native-run:
+    name: Native
+    needs: [get-environment]
+    uses: ./.github/workflows/workflow-native.yml
+    with:
+      gitref: ${{ needs.get-environment.outputs.gitref }}
+      pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
+      branch: "main"
+      repository: "bevyengine/bevy"
+      per_page: "${{ needs.get-environment.outputs.per_page }}"
+    secrets: inherit
+        
+  mobile-run:
+    name: Mobile
+    needs: [get-environment]
     if: needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch'
-    env:
-      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-14]
-        page: ${{ fromJSON(needs.get-environment.outputs.pages) }}
+    uses: ./.github/workflows/workflow-mobile.yml
+    with:
+      gitref: ${{ needs.get-environment.outputs.gitref }}
+      mobile_percy_project: ${{ needs.get-environment.outputs.mobile_percy_project }}
+      pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
+      branch: "main"
+      repository: "bevyengine/bevy"
+    secrets: inherit
 
-    steps:
-
-      - name: Checkout Bevy main branch
-        uses: actions/checkout@v4
-        with:
-          repository: 'bevyengine/bevy'
-          ref: ${{ needs.get-environment.outputs.gitref }}
-
-      - name: Checkout patches
-        uses: actions/checkout@v4
-        with:
-          path: 'runner-patches'  
-  
-      - name: Apply patches
-        shell: pwsh
-        run: |
-          Get-ChildItem "runner-patches/patches" -Filter *.patch | 
-          Foreach-Object {
-              Write-Output "Processing $($_.FullName)"
-              git apply --ignore-whitespace $($_.FullName)
-          }
-
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Install Bevy dependencies
-        if: runner.os == 'linux'
-        run: |
-          sudo apt-get update;
-          DEBIAN_FRONTEND=noninteractive sudo apt-get install --no-install-recommends -yq \
-            libasound2-dev libudev-dev libxkbcommon-x11-0;
-
-      - name: install xvfb, llvmpipe and lavapipe
-        if: runner.os == 'linux'
-        run: |
-          sudo apt-get update -y -qq
-          sudo add-apt-repository ppa:kisak/turtle -y || FAILED=true
-          # retry as it sometimes timeout
-          if [ $FAILED ]; then
-            sleep 5
-            sudo add-apt-repository ppa:kisak/turtle -y || FAILED=true
-            if [ $FAILED ]; then
-                  sleep 5
-                  sudo add-apt-repository ppa:kisak/turtle -y
-            fi
-          fi
-          sudo apt-get update
-          sudo apt install -y xvfb libegl1-mesa libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers
-
-      - name: Setup Sentry Reporting
-        shell: pwsh
-        run: |
-          cargo add vleue_sentry --git https://github.com/vleue/vleue_sentry -p bevy_internal --features subcrates --no-default-features
-          git apply --ignore-whitespace runner-patches/add_sentry.patch
-  
-      - uses: actions/cache/restore@v4
-        id: restore-cache
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
-          restore-keys: ${{ runner.os }}-cargo-
-
-      - name: Take Screenshots (Linux)
-        id: screenshots-linux
-        if: runner.os == 'linux'
-        continue-on-error: true
-        run: xvfb-run -s "-screen 0 1280x1024x24" cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot-frame 400 --fixed-frame-time 0.0125 --stop-frame 450 --in-ci --ignore-stress-tests --report-details --show-logs
-
-      - name: Take Screenshots (Windows)
-        id: screenshots-windows
-        if: runner.os == 'windows'
-        continue-on-error: true
-        shell: pwsh
-        run: |
-          Add-Type -AssemblyName System.Windows.Forms
-          $screen = [System.Windows.Forms.SystemInformation]::VirtualScreen
-          [Windows.Forms.Cursor]::Position = "$($screen.Width / 2),$($screen.Height / 2)"
-
-          cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot-frame 400 --fixed-frame-time 0.0125 --stop-frame 450 --in-ci --ignore-stress-tests --report-details --show-logs
-
-      - name: Take Screenshots (macOS)
-        id: screenshots-macos
-        if: runner.os == 'macos'
-        continue-on-error: true
-        run: cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ env.PER_PAGE }} run --screenshot-frame 400 --fixed-frame-time 0.0125 --stop-frame 450 --in-ci --ignore-stress-tests --report-details --show-logs
-  
-      - name: Log errors
-        shell: pwsh
-        run: |
-          if (Get-Content example-showcase-reports/no_screenshots) {
-            perl -p -e 's/(.*) - [.0-9]*\n/\1, /g' example-showcase-reports/no_screenshots > cleaned
-            $no_screenshots = Get-Content .\cleaned -Raw
-            echo "::warning title=No Screenshots ${{ runner.os }}/${{ matrix.page }}::$no_screenshots"
-          }
-          if (Get-Content example-showcase-reports/failures) {
-            perl -p -e 's/(.*) - [.0-9]*\n/\1, /g' example-showcase-reports/failures > cleaned
-            $failures = Get-Content .\cleaned -Raw
-            echo "::error title=Failed To Run ${{ runner.os }}/${{ matrix.page }}::$failures"
-          }
-
-      - name: Outputs run results
-        id: run-results
-        shell: pwsh
-        run: |
-          echo "has_success=$(![String]::IsNullOrWhiteSpace((Get-content example-showcase-reports/successes)))" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
-
-      - name: Upload Screenshots
-        uses: actions/upload-artifact@v4
-        with:
-          name: screenshots-${{ runner.os }}-${{ matrix.page }}
-          path: screenshots
-
-      - name: Upload Status
-        uses: actions/upload-artifact@v4
-        with:
-          name: status-${{ runner.os }}-${{ matrix.page }}
-          path: |
-            example-showcase-reports
-
-  send-to-percy:
-    name: Send screenshots to Percy
-    runs-on: ubuntu-latest
-    needs: [take-screenshots, get-environment]
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: Linux
-            percy_key: PERCY_TOKEN_LINUX_VULKAN
-            percy_project: ${{ needs.get-environment.outputs.linux_percy_project }}
-          - os: Windows
-            percy_key: PERCY_TOKEN_WINDOWS_DX12
-            percy_project: ${{ needs.get-environment.outputs.windows_percy_project }}
-          - os: macOS
-            percy_key: PERCY_TOKEN_MACOS_METAL
-            percy_project: ${{ needs.get-environment.outputs.macos_percy_project }}
-    steps:
-      
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: screenshots-${{ matrix.os }}-*
-
-      - name: Move examples to the correct folder
-        id: gather-examples
-        continue-on-error: true
-        run: |
-          mkdir screenshots-${{ matrix.os }}
-          for screenshotfolder in screenshots-${{ matrix.os }}-*
-          do
-            echo $screenshotfolder
-            rsync --verbose --archive $screenshotfolder/* screenshots-${{ matrix.os }}/
-            rm -rf $screenshotfolder
-          done
-      
-      - name: Remove images that are all black
-        if: steps.gather-examples.outcome == 'success'
-        run: |
-          set +e
-          sudo apt install -y imagemagick
-          for image in screenshots-${{ matrix.os }}/*/*.png
-          do
-            mean=`convert "$image" -format "%[mean]" info:`
-            if [[ "$?" = "1" ]]; then
-              echo "Error reading $image"
-              rm "$image"
-            fi
-            if [ "$mean" = 0 ]; then
-              echo "$image is all black"
-              rm "$image"
-            fi
-          done
-
-      - name: Remove example known to be random
-        if: steps.gather-examples.outcome == 'success'
-        run: |
-          rm "screenshots-${{ matrix.os }}/Animation/animated_fox.png" || true
-          rm "screenshots-${{ matrix.os }}/Animation/morph_targets.png" || true
-          rm "screenshots-${{ matrix.os }}/Async Tasks/async_compute.png" || true
-          rm "screenshots-${{ matrix.os }}/Async Tasks/external_source_external_thread.png" || true
-          rm "screenshots-${{ matrix.os }}/Games/alien_cake_addict.png" || true
-          rm "screenshots-${{ matrix.os }}/Games/contributors.png" || true
-          rm "screenshots-${{ matrix.os }}/UI (User Interface)/font_atlas_debug.png" || true
-          rm "screenshots-${{ matrix.os }}/Shaders/compute_shader_game_of_life.png" || true
-
-      - name: Reduce number of examples sent to Percy
-        if: steps.gather-examples.outcome == 'success'
-        run: |
-          rm -rf "screenshots-${{ matrix.os }}/Animation"
-          rm -rf "screenshots-${{ matrix.os }}/Application"
-          rm -rf "screenshots-${{ matrix.os }}/Assets"
-          rm -rf "screenshots-${{ matrix.os }}/Audio"
-          rm -rf "screenshots-${{ matrix.os }}/Dev tools"
-          rm -rf "screenshots-${{ matrix.os }}/ECS (Entity Component System)"
-          rm -rf "screenshots-${{ matrix.os }}/Games"
-          rm -rf "screenshots-${{ matrix.os }}/Gizmos"
-          rm -rf "screenshots-${{ matrix.os }}/Input"
-          rm -rf "screenshots-${{ matrix.os }}/Math"
-          rm -rf "screenshots-${{ matrix.os }}/Scene"
-          rm -rf "screenshots-${{ matrix.os }}/Shaders"
-          rm -rf "screenshots-${{ matrix.os }}/Time"
-          rm -rf "screenshots-${{ matrix.os }}/Tools"
-          rm -rf "screenshots-${{ matrix.os }}/Transforms"
-          rm -rf "screenshots-${{ matrix.os }}/Window"
-
-      - name: Send to Percy
-        if: steps.gather-examples.outcome == 'success'        
-        run: |
-          npm install -g @percy/cli@latest
-          npx percy upload screenshots-${{ matrix.os }}
-        env:
-          PERCY_TOKEN: ${{ secrets[matrix.percy_key] }}
-          PERCY_COMMIT: ${{ needs.get-environment.outputs.gitref }}
-
-      - name: Wait for result
-        if: steps.gather-examples.outcome == 'success'
-        run: |
-          npx percy build:wait --project ${{ matrix.percy_project }} --commit ${{ needs.get-environment.outputs.gitref }}
-        env:
-          PERCY_TOKEN: ${{ secrets[matrix.percy_key] }}
+  wasm-run:
+    name: Wasm
+    needs: [get-environment]
+    if: needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/workflow-wasm.yml
+    with:
+      gitref: ${{ needs.get-environment.outputs.gitref }}
+      pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
+      branch: "main"
+      repository: "bevyengine/bevy"
+    secrets: inherit
 
   update-results:
     name: Update Results
     runs-on: ubuntu-latest
-    needs: [send-to-percy, send-to-pixel-eagle, get-environment, mobile-run]
+    needs: [get-environment, native-run, mobile-run]
     if: always() && (needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch')
     permissions:
       contents: write
@@ -352,13 +141,6 @@ jobs:
           grep . macOS-failures-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/macOS-failures || true
           grep . macOS-no_screenshots-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/macOS-no_screenshots || true
 
-      - name: Save Percy results
-        run: |
-          curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.windows_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-percy
-          curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.linux_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Linux-percy
-          curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.macos_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/macOS-percy
-          curl 'https://percy.io/api/v1/projects/${{ needs.get-environment.outputs.mobile_percy_project }}/builds?filter\[sha\]=${{ needs.get-environment.outputs.gitref }}' | jq '.data[0].attributes' > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/mobile-percy
-
       - name: Download all Pixel Eagle artifacts
         uses: actions/download-artifact@v4
         with:
@@ -388,262 +170,12 @@ jobs:
           path: |
             results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}
 
-  rerun-failed-examples:
-    name: Rerun Failed Examples (without screenshot)
-    needs: [get-environment, update-results]
-    if: always() && (needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch')
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-14]
-    steps:
-
-      - name: Checkout Bevy main branch
-        uses: actions/checkout@v4
-        with:
-          repository: 'bevyengine/bevy'
-          ref: ${{ needs.get-environment.outputs.gitref }}
-
-      - name: Checkout patches
-        uses: actions/checkout@v4
-        with:
-          path: 'runner-patches'  
-  
-      - name: Apply patches
-        shell: pwsh
-        run: |
-          Get-ChildItem "runner-patches/patches" -Filter *.patch | 
-          Foreach-Object {
-              Write-Output "Processing $($_.FullName)"
-              git apply --ignore-whitespace $($_.FullName)
-          }
-  
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Download Aggregated Status
-        uses: actions/download-artifact@v4
-        with:
-          name: aggregated-status
-          path: aggregated-status
-
-      - name: Clean Up failures list
-        run: |
-          sed 's/.*\/\(.*\) - [.0-9]*/\1/g' aggregated-status/${{ runner.os }}-failures > failure-list
-  
-      - name: Install Bevy dependencies
-        if: runner.os == 'linux'
-        run: |
-          sudo apt-get update;
-          DEBIAN_FRONTEND=noninteractive sudo apt-get install --no-install-recommends -yq \
-            libasound2-dev libudev-dev;
-
-      - name: install xvfb, llvmpipe and lavapipe
-        if: runner.os == 'linux'
-        run: |
-          sudo apt-get update -y -qq
-          sudo add-apt-repository ppa:kisak/turtle -y || FAILED=true
-          # retry as it sometimes timeout
-          if [ $FAILED ]; then
-            sleep 5
-            sudo add-apt-repository ppa:kisak/turtle -y || FAILED=true
-            if [ $FAILED ]; then
-                  sleep 5
-                  sudo add-apt-repository ppa:kisak/turtle -y
-            fi
-          fi
-          sudo apt-get update
-          sudo apt install -y xvfb libegl1-mesa libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers
-
-      - uses: actions/cache/restore@v4
-        id: restore-cache
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
-          restore-keys: ${{ runner.os }}-cargo-
-
-      - name: Take Screenshots (Linux)
-        if: runner.os == 'linux'
-        continue-on-error: true
-        run: xvfb-run -s "-screen 0 1280x1024x24" cargo run -p example-showcase -- run --screenshot-frame 0 --fixed-frame-time 0.02 --stop-frame 200 --in-ci --ignore-stress-tests --report-details --show-logs --example-list failure-list
-
-      - name: Take Screenshots (Windows)
-        if: runner.os == 'windows'
-        continue-on-error: true
-        run: cargo run -p example-showcase -- run --screenshot-frame 0 --fixed-frame-time 0.02 --stop-frame 200 --in-ci --ignore-stress-tests --report-details --show-logs --example-list failure-list
-  
-      - name: Take Screenshots (macOS)
-        if: runner.os == 'macos'
-        continue-on-error: true
-        run: cargo run -p example-showcase -- run --screenshot-frame 0 --fixed-frame-time 0.02 --stop-frame 200 --in-ci --ignore-stress-tests --report-details --show-logs --example-list failure-list
-  
-      - name: Upload Rerun Status
-        uses: actions/upload-artifact@v4
-        with:
-          name: status-rerun-${{ runner.os }}
-          path: |
-            example-showcase-reports
-
-  update-results-with-rerun:
-    name: Update Results with Rerun
-    needs: [rerun-failed-examples, get-environment]
-    if: always() && (needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch')
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: 'results'
-          path: 'results'
-
-      - name: Download Rerun Status on Linux
-        uses: actions/download-artifact@v4
-        with:
-          name: status-rerun-Linux
-          path: status-rerun-Linux
-
-      - name: Download Rerun Status on Windows
-        uses: actions/download-artifact@v4
-        with:
-          name: status-rerun-Windows
-          path: status-rerun-Windows
-
-      - name: Download Rerun Status on macOS
-        uses: actions/download-artifact@v4
-        with:
-          name: status-rerun-macOS
-          path: status-rerun-macOS
-
-      - name: Store results in git
-        run: |
-          mv status-rerun-Windows/rerun-failed-examples results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/
-          mv status-rerun-Linux/rerun-failed-examples results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/
-          mv status-rerun-macOS/rerun-failed-examples results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/
-
-          cd results
-
-          git config user.name 'Workflow'
-          git config user.email '<>'
-
-          git add .
-          git commit -m "Update Results"
-          git push
-
   update-website:
     name: Update Website
-    needs: [update-results-with-rerun, get-environment]
+    needs: [get-environment, update-results]
     if: always() && (needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch')
     uses: ./.github/workflows/workflow-rebuild-website.yml
     permissions:
       contents: read
       pages: write
       id-token: write
-
-  mobile-run:
-    needs: [get-environment]
-    if: needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch'
-    uses: ./.github/workflows/workflow-mobile.yml
-    with:
-      gitref: ${{ needs.get-environment.outputs.gitref }}
-      mobile_percy_project: ${{ needs.get-environment.outputs.mobile_percy_project }}
-      pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
-      branch: "main"
-      repository: "bevyengine/bevy"
-    secrets: inherit
-
-  wasm-run:
-    needs: [get-environment]
-    if: needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch'
-    uses: ./.github/workflows/workflow-wasm.yml
-    with:
-      gitref: ${{ needs.get-environment.outputs.gitref }}
-      pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
-      branch: "main"
-      repository: "bevyengine/bevy"
-    secrets: inherit
-  
-
-  send-to-pixel-eagle:
-    name: Send screenshots to Pixel Eagle
-    runs-on: macos-14
-    needs: [take-screenshots, get-environment]
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: Linux
-          - os: macOS
-          - os: Windows
-    steps:
-      
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: screenshots-${{ matrix.os }}-*
-
-      - name: Move examples to the correct folder
-        id: gather-examples
-        continue-on-error: true
-        run: |
-          mkdir screenshots-${{ matrix.os }}
-          for screenshotfolder in screenshots-${{ matrix.os }}-*
-          do
-            echo $screenshotfolder
-            rsync --verbose --archive $screenshotfolder/* screenshots-${{ matrix.os }}/
-            rm -rf $screenshotfolder
-          done
-      
-      - name: Send to Pixel Eagle
-        if: steps.gather-examples.outcome == 'success'        
-        run: |
-          run=`curl https://pixel-eagle.vleue.com/${{ needs.get-environment.outputs.pixeleagle_project }}/runs --json '{"os":"${{ matrix.os }}", "gitref": "${{ needs.get-environment.outputs.gitref }}", "branch": "main"}' | jq '.id'`
-          
-          SAVEIFS=$IFS
-          
-          cd screenshots-${{ matrix.os }}
-          
-          IFS=$'\n'
-
-          # Build a json array of screenshots and their hashes
-          hashes='[';
-          for screenshot in $(find . -type f -name "*.png");
-          do
-            name=${screenshot:2}
-            echo $name
-            hash=`shasum -a 256 $screenshot | awk '{print $1}'`
-            hashes="$hashes [\"$name\",\"$hash\"],"
-          done
-          hashes=`echo $hashes | rev | cut -c 2- | rev`
-          hashes="$hashes]"
-          
-          IFS=$SAVEIFS          
-
-          # Upload screenshots with unknown hashes
-          curl https://pixel-eagle.vleue.com/${{ needs.get-environment.outputs.pixeleagle_project }}/runs/$run/hashes --json "$hashes" | jq '.[]|[.name] | @tsv' |
-            while IFS=$'\t' read -r name; do
-              name=`echo $name | tr -d '"'`
-              echo "Uploading $name"
-              curl https://pixel-eagle.vleue.com/${{ needs.get-environment.outputs.pixeleagle_project }}/runs/$run/screenshots -F "data=@./$name" -F "screenshot=$name" -H "Authorization: Bearer ${{ secrets.PIXELEAGLE }}"
-              echo
-            done
-          
-          IFS=$SAVEIFS
-
-          cd ..
-
-          curl https://pixel-eagle.vleue.com/${{ needs.get-environment.outputs.pixeleagle_project }}/runs/$run/compare/auto --json '{"os":"<equal>", "branch": "main"}' | jq '{project_id: .project_id, from: .from, to: .to}' > pixeleagle-${{ matrix.os }}.json
-          cat pixeleagle-${{ matrix.os }}.json
-
-          echo "created run $run"
-
-      - name: Upload Pixel Eagle status
-        uses: actions/upload-artifact@v4
-        with:
-          name: pixeleagle-${{ matrix.os }}
-          path: pixeleagle-${{ matrix.os }}.json

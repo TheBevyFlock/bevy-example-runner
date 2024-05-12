@@ -109,6 +109,15 @@ jobs:
       matrix:
         include:
           - os: "iOS"
+            device: "iPhone 11"
+            os_version: "14"
+          - os: "iOS"
+            device: "iPhone 12"
+            os_version: "14"
+          - os: "iOS"
+            device: "iPhone SE 2022"
+            os_version: "15"
+          - os: "iOS"
             device: "iPhone 13"
             os_version: "15"
           - os: "iOS"

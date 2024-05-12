@@ -249,3 +249,9 @@ jobs:
           cat pixeleagle-${{ matrix.os }}.json
 
           echo "created run $run"
+
+      - name: Upload Pixel Eagle status
+        uses: actions/upload-artifact@v4
+        with:
+          name: pixeleagle-${{ matrix.os }}
+          path: pixeleagle-${{ matrix.os }}.json

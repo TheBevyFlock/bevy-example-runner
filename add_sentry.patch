@@ -1,8 +1,8 @@
 diff --git a/Cargo.toml b/Cargo.toml
-index 184cb544ff..9aa093f828 100644
+index 14a405ce4..b2fd34624 100644
 --- a/Cargo.toml
 +++ b/Cargo.toml
-@@ -2924,3 +2924,8 @@ panic = "abort"
+@@ -3041,3 +3041,8 @@ panic = "abort"
  rustdoc-args = ["-Zunstable-options", "--cfg", "docsrs"]
  all-features = true
  cargo-args = ["-Zunstable-options", "-Zrustdoc-scrape-examples"]
@@ -12,7 +12,7 @@ index 184cb544ff..9aa093f828 100644
 +bevy_log = { path = "crates/bevy_log" }
 +bevy_utils = { path = "crates/bevy_utils" }
 diff --git a/crates/bevy_internal/src/default_plugins.rs b/crates/bevy_internal/src/default_plugins.rs
-index acfa89d0b6..816df6c018 100644
+index 10d595df6..68e48d92a 100644
 --- a/crates/bevy_internal/src/default_plugins.rs
 +++ b/crates/bevy_internal/src/default_plugins.rs
 @@ -44,7 +44,10 @@ impl PluginGroup for DefaultPlugins {
@@ -21,7 +21,7 @@ index acfa89d0b6..816df6c018 100644
              .add(bevy_app::PanicHandlerPlugin)
 -            .add(bevy_log::LogPlugin::default())
 +            .add(bevy_log::LogPlugin {
-+                update_subscriber: Some(vleue_sentry::sentry_reporter!(true)),
++                custom_layer: vleue_sentry::sentry_reporter!(true),
 +                ..Default::default()
 +            })
              .add(bevy_core::TaskPoolPlugin::default())

@@ -106,6 +106,7 @@ jobs:
     needs: [build-for-iOS, build-for-Android]
     strategy:
       fail-fast: false
+      max-parallel: 5
       matrix:
         include:
           - os: "iOS"

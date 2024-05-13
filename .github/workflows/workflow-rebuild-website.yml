@@ -14,6 +14,7 @@ jobs:
       id-token: write
     environment:
       name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
@@ -26,9 +27,9 @@ jobs:
         run: |
           cargo run -- results
       - name: Store generated html
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ./site
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4

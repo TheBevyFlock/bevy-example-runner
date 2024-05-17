@@ -23,7 +23,7 @@ on:
       platforms:
         required: false
         type: string
-        default: '[ubuntu-latest, macos-14]'
+        default: '["ubuntu-latest", "macos-14"]'
 
 jobs:
   split-pages:

@@ -20,6 +20,10 @@ on:
       per_page:
         required: true
         type: string
+      platforms:
+        required: false
+        type: string
+        default: '["ubuntu-latest", "macos-14"]'
 
 jobs:
   split-pages:
@@ -48,7 +52,7 @@ jobs:
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-14]
+        os: ${{ fromJSON(inputs.platforms) }}
         page: ${{ fromJSON(needs.split-pages.outputs.pages) }}
 
     steps:

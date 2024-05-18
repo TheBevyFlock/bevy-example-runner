@@ -50,6 +50,7 @@ jobs:
     name: Native
     needs: [get-environment]
     uses: ./.github/workflows/workflow-native.yml
+    if: needs.get-environment.outputs.updated == 'true' || github.event_name == 'workflow_dispatch'
     with:
       gitref: ${{ needs.get-environment.outputs.gitref }}
       pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}

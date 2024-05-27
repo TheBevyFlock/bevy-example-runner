@@ -313,6 +313,8 @@
             <tr {% if example.flaky -%}class="flaky" {% else -%}class="all-good" style="display: none;" {% endif -%}>
                 <td style="border-right: none;">{{ example.category }} / {{ example.name }}</td>
                 <td style="border-left: none;">
+                    <span class="windows"></span>
+                    <hr>
                     <span class="linux"></span>
                     <hr>
                     <span class="macos"></span>
@@ -320,11 +322,14 @@
                 {% for run in runs -%}
                 <td style="text-align: center;">
                     {% if run.results[example.name] -%}
+                    {{ macros::status(example_name=example.name, platform="Windows", run=run) }}
+                    <hr />
                     {{ macros::status(example_name=example.name, platform="Linux", run=run) }}
                     <hr />
                     {{ macros::status(example_name=example.name, platform="macOS", run=run) }}
                     {% else -%}
                     -
+                    <hr />-
                     <hr />-
                     {% endif -%}
                 </td>

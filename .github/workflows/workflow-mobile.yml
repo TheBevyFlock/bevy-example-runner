@@ -80,9 +80,8 @@ jobs:
           repository: ${{ inputs.repository }}
           ref: ${{ inputs.gitref }}
 
-      - uses: dtolnay/rust-toolchain@master
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: 1.77
           targets: x86_64-unknown-linux-gnu,aarch64-linux-android,armv7-linux-androideabi
 
       - name: Install Cargo APK

@@ -120,17 +120,6 @@ jobs:
           grep . Linux-failures-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Linux-failures || true
           grep . Linux-no_screenshots-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Linux-no_screenshots || true
 
-          # for report in status-Windows-*
-          # do
-          #   (cat $report/successes; echo) >> Windows-successes-concat
-          #   (cat $report/failures; echo) >> Windows-failures-concat
-          #   (cat $report/no_screenshots; echo) >> Windows-no_screenshots-concat
-          # done
-          # # remove empty lines
-          # grep . Windows-successes-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-successes || true
-          # grep . Windows-failures-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-failures || true
-          # grep . Windows-no_screenshots-concat > results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-no_screenshots || true
-
           for report in status-macOS-*
           do
             (cat $report/successes; echo) >> macOS-successes-concat
@@ -154,7 +143,6 @@ jobs:
       - name: Save Pixel Eagle results
         run: |
           mv pixeleagle-Linux/pixeleagle-Linux.json results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Linux-pixeleagle
-          # mv pixeleagle-Windows/pixeleagle-Windows.json results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-pixeleagle
           mv pixeleagle-macOS/pixeleagle-macOS.json results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/macOS-pixeleagle
 
       - name: Store results in git

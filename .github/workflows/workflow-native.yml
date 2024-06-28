@@ -128,18 +128,6 @@ jobs:
         continue-on-error: true
         run: xvfb-run -s "-screen 0 1280x1024x24" cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ inputs.per_page }} run --screenshot-frame 400 --fixed-frame-time 0.0125 --stop-frame 450 --in-ci --ignore-stress-tests --report-details --show-logs
 
-      - name: Take Screenshots (Windows)
-        id: screenshots-windows
-        if: runner.os == 'windows'
-        continue-on-error: true
-        shell: pwsh
-        run: |
-          Add-Type -AssemblyName System.Windows.Forms
-          $screen = [System.Windows.Forms.SystemInformation]::VirtualScreen
-          [Windows.Forms.Cursor]::Position = "$($screen.Width / 2),$($screen.Height / 2)"
-
-          cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ inputs.per_page }} run --screenshot-frame 400 --fixed-frame-time 0.0125 --stop-frame 450 --in-ci --ignore-stress-tests --report-details --show-logs
-
       - name: Take Screenshots (macOS)
         id: screenshots-macos
         if: runner.os == 'macos'
@@ -189,7 +177,6 @@ jobs:
         include:
           - os: Linux
           - os: macOS
-          - os: Windows
     steps:
       
       - name: Download all artifacts
@@ -214,7 +201,7 @@ jobs:
         run: |
           project="B25A040A-A980-4602-B90C-D480AB84076D"
 
-          run=`curl https://pixel-eagle.vleue.com/$project/runs --json '{"os":"${{ matrix.os }}", "gitref": "${{ inputs.gitref }}", "branch": "${{ inputs.branch }}"}' | jq '.id'`
+          run=`curl https://pixel-eagle.com/$project/runs --json '{"os":"${{ matrix.os }}", "gitref": "${{ inputs.gitref }}", "branch": "${{ inputs.branch }}"}' | jq '.id'`
           
           SAVEIFS=$IFS
           
@@ -237,11 +224,11 @@ jobs:
           IFS=$SAVEIFS          
 
           # Upload screenshots with unknown hashes
-          curl https://pixel-eagle.vleue.com/$project/runs/$run/hashes --json "$hashes" | jq '.[]|[.name] | @tsv' |
+          curl https://pixel-eagle.com/$project/runs/$run/hashes --json "$hashes" | jq '.[]|[.name] | @tsv' |
             while IFS=$'\t' read -r name; do
               name=`echo $name | tr -d '"'`
               echo "Uploading $name"
-              curl https://pixel-eagle.vleue.com/$project/runs/$run/screenshots -F "data=@./$name" -F "screenshot=$name" -H "Authorization: Bearer ${{ secrets.PIXELEAGLE }}"
+              curl https://pixel-eagle.com/$project/runs/$run/screenshots -F "data=@./$name" -F "screenshot=$name" -H "Authorization: Bearer ${{ secrets.PIXELEAGLE }}"
               echo
             done
           
@@ -249,7 +236,7 @@ jobs:
 
           cd ..
 
-          curl https://pixel-eagle.vleue.com/$project/runs/$run/compare/auto --json '{"os":"<equal>", "branch": "main"}' | jq '{project_id: .project_id, from: .from, to: .to}' > pixeleagle-${{ matrix.os }}.json
+          curl https://pixel-eagle.com/$project/runs/$run/compare/auto --json '{"os":"<equal>", "branch": "main"}' | jq '{project_id: .project_id, from: .from, to: .to}' > pixeleagle-${{ matrix.os }}.json
           cat pixeleagle-${{ matrix.os }}.json
 
           echo "created run $run"

@@ -122,7 +122,7 @@ jobs:
     
       - name: Send to Pixel Eagle
         run: |
-          run=`curl https://pixel-eagle.vleue.com/${{ inputs.pixeleagle_project }}/runs -H 'Content-Type: application/json' -d '{"api":"${{ matrix.api }}", "browser": "${{ matrix.browser }}", "os":"wasm", "gitref": "${{ inputs.gitref }}", "host-os": "${{ runner.os }}", "branch": "${{ inputs.branch }}"}' | jq '.id'`
+          run=`curl https://pixel-eagle.com/${{ inputs.pixeleagle_project }}/runs -H 'Content-Type: application/json' -d '{"api":"${{ matrix.api }}", "browser": "${{ matrix.browser }}", "os":"wasm", "gitref": "${{ inputs.gitref }}", "host-os": "${{ runner.os }}", "branch": "${{ inputs.branch }}"}' | jq '.id'`
             
           SAVEIFS=$IFS
           
@@ -146,14 +146,14 @@ jobs:
           IFS=$SAVEIFS          
 
           # Upload screenshots with unknown hashes
-          curl https://pixel-eagle.vleue.com/${{ inputs.pixeleagle_project }}/runs/$run/hashes -H 'Content-Type: application/json' -d "$hashes" | jq '.[]|[.name] | @tsv' |
+          curl https://pixel-eagle.com/${{ inputs.pixeleagle_project }}/runs/$run/hashes -H 'Content-Type: application/json' -d "$hashes" | jq '.[]|[.name] | @tsv' |
             while IFS=$'\t' read -r name; do
               name=`echo $name | tr -d '"'`
               echo "Uploading $name"
-              curl https://pixel-eagle.vleue.com/${{ inputs.pixeleagle_project }}/runs/$run/screenshots -F "data=@./screenshot-$name-${{ matrix.browser }}.png" -F "screenshot=$name" -H "Authorization: Bearer ${{ secrets.PIXELEAGLE }}"
+              curl https://pixel-eagle.com/${{ inputs.pixeleagle_project }}/runs/$run/screenshots -F "data=@./screenshot-$name-${{ matrix.browser }}.png" -F "screenshot=$name" -H "Authorization: Bearer ${{ secrets.PIXELEAGLE }}"
               echo
             done
           
           IFS=$SAVEIFS
 
-          curl https://pixel-eagle.vleue.com/${{ inputs.pixeleagle_project }}/runs/$run/compare/auto -H 'Content-Type: application/json' -d '{"api":"<equal>", "browser":"<equal>", "host-os":"<equal>", "branch": "main"}'
+          curl https://pixel-eagle.com/${{ inputs.pixeleagle_project }}/runs/$run/compare/auto -H 'Content-Type: application/json' -d '{"api":"<equal>", "browser":"<equal>", "host-os":"<equal>", "branch": "main"}'

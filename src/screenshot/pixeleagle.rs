@@ -43,7 +43,7 @@ pub fn read_results(results: String) -> Vec<ScreenshotData> {
     };
 
     let screenshots = ureq::get(&format!(
-        "https://pixel-eagle.vleue.com/{}/runs/{}/compare/{}",
+        "https://pixel-eagle.com/{}/runs/{}/compare/{}",
         target.project_id, target.from, target.to
     ))
     .call()
@@ -61,7 +61,7 @@ fn comparison_to_screenshot_data(comparison: Comparison) -> Vec<ScreenshotData> 
         result.push(ScreenshotData {
             example: screenshot.name.clone(),
             screenshot: ImageUrl(format!(
-                "https://pixel-eagle.vleue.com/{}/screenshot/{}",
+                "https://pixel-eagle.com/{}/screenshot/{}",
                 comparison.project_id.clone(),
                 screenshot.hash.clone()
             )),
@@ -69,7 +69,7 @@ fn comparison_to_screenshot_data(comparison: Comparison) -> Vec<ScreenshotData> 
             tag: None,
             diff_ratio: 0.0,
             snapshot_url: SnapshotViewerUrl(format!(
-                "https://pixel-eagle.vleue.com/project/{}/run/{}/compare/{}?screenshot={}",
+                "https://pixel-eagle.com/project/{}/run/{}/compare/{}?screenshot={}",
                 comparison.project_id, comparison.from, comparison.to, screenshot.name
             )),
         });
@@ -79,7 +79,7 @@ fn comparison_to_screenshot_data(comparison: Comparison) -> Vec<ScreenshotData> 
         result.push(ScreenshotData {
             example: screenshot.name.clone(),
             screenshot: ImageUrl(format!(
-                "https://pixel-eagle.vleue.com/{}/screenshot/{}",
+                "https://pixel-eagle.com/{}/screenshot/{}",
                 comparison.project_id.clone(),
                 screenshot.hash.clone()
             )),
@@ -87,7 +87,7 @@ fn comparison_to_screenshot_data(comparison: Comparison) -> Vec<ScreenshotData> 
             tag: None,
             diff_ratio: 0.0,
             snapshot_url: SnapshotViewerUrl(format!(
-                "https://pixel-eagle.vleue.com/project/{}/run/{}/compare/{}?screenshot={}",
+                "https://pixel-eagle.com/project/{}/run/{}/compare/{}?screenshot={}",
                 comparison.project_id, comparison.from, comparison.to, screenshot.name
             )),
         });
@@ -97,7 +97,7 @@ fn comparison_to_screenshot_data(comparison: Comparison) -> Vec<ScreenshotData> 
         result.push(ScreenshotData {
             example: screenshot.name.clone(),
             screenshot: ImageUrl(format!(
-                "https://pixel-eagle.vleue.com/{}/screenshot/{}",
+                "https://pixel-eagle.com/{}/screenshot/{}",
                 comparison.project_id.clone(),
                 screenshot.hash.clone()
             )),
@@ -111,7 +111,7 @@ fn comparison_to_screenshot_data(comparison: Comparison) -> Vec<ScreenshotData> 
                 })
                 .unwrap(),
             snapshot_url: SnapshotViewerUrl(format!(
-                "https://pixel-eagle.vleue.com/project/{}/run/{}/compare/{}?screenshot={}",
+                "https://pixel-eagle.com/project/{}/run/{}/compare/{}?screenshot={}",
                 comparison.project_id, comparison.from, comparison.to, screenshot.name
             )),
         });

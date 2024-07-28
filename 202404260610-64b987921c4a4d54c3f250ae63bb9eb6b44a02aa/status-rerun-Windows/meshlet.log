@@ -1,7 +1,0 @@
-==== stdout ====
-ERROR: Asset at path <bevy>/assets/models/bunny.meshlet_mesh is missing. Please download it from https://github.com/JMS55/bevy_meshlet_asset/blob/bd869887bc5c9c6e74e353f657d342bef84bacd8/bunny.meshlet_mesh
-
-==== stderr ====
-[1m[32m    Finished[0m release [optimized] target(s) in 0.36s
-[1m[32m     Running[0m `target\release\examples\meshlet.exe`
-[1m[31merror[0m[1m:[0m process didn't exit successfully: `target\release\examples\meshlet.exe` (exit code: 1)

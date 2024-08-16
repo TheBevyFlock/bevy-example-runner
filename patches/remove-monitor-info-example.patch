@@ -1,0 +1,19 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index 978c1b754..85dc42c5a 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -3395,14 +3395,3 @@ rustc-args = ["--cfg", "docsrs_dep"]
+ rustdoc-args = ["-Zunstable-options", "--generate-link-to-definition"]
+ all-features = true
+ cargo-args = ["-Zunstable-options", "-Zrustdoc-scrape-examples"]
+-
+-[[example]]
+-name = "monitor_info"
+-path = "examples/window/monitor_info.rs"
+-doc-scrape-examples = true
+-
+-[package.metadata.example.monitor_info]
+-name = "Monitor info"
+-description = "Displays information about available monitors (displays)."
+-category = "Window"
+-wasm = false

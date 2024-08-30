@@ -1,0 +1,31 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index fde3db1f42..09aa008186 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -1059,26 +1059,6 @@ description = "Demonstrates irradiance volumes"
+ category = "3D Rendering"
+ wasm = false
+ 
+-[[example]]
+-name = "meshlet"
+-path = "examples/3d/meshlet.rs"
+-doc-scrape-examples = true
+-required-features = ["meshlet"]
+-
+-[package.metadata.example.meshlet]
+-name = "Meshlet"
+-description = "Meshlet rendering for dense high-poly scenes (experimental)"
+-category = "3D Rendering"
+-wasm = false
+-setup = [
+-  [
+-    "curl",
+-    "-o",
+-    "assets/models/bunny.meshlet_mesh",
+-    "https://raw.githubusercontent.com/JMS55/bevy_meshlet_asset/b6c712cfc87c65de419f856845401aba336a7bcd/bunny.meshlet_mesh",
+-  ],
+-]
+-
+ [[example]]
+ name = "lightmaps"
+ path = "examples/3d/lightmaps.rs"

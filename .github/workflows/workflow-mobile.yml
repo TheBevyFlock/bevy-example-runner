@@ -71,6 +71,12 @@ jobs:
             -F "file=@examples/mobile/bevy_mobile_example.ipa" \
             -F "custom_id=$GITHUB_RUN_ID"
 
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app.ipa
+          path: examples/mobile/bevy_mobile_example.ipa
+          retention-days: 2
+
   build-for-Android:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -105,6 +111,12 @@ jobs:
             -X POST "https://api-cloud.browserstack.com/app-automate/upload" \
             -F "file=@examples/mobile/android_example/app/build/outputs/apk/debug/app-debug.apk" \
             -F "custom_id=$GITHUB_RUN_ID"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app.apk
+          path: examples/mobile/android_example/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 2
 
   take-screenshots:
     runs-on: ubuntu-latest

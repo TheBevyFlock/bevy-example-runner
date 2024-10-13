@@ -181,6 +181,20 @@ jobs:
           repository: ${{ inputs.repository }}
           ref: ${{ inputs.gitref }}
 
+      - name: Checkout patches
+        uses: actions/checkout@v4
+        with:
+          path: 'runner-patches'  
+  
+      - name: Apply patches
+        shell: pwsh
+        run: |
+          Get-ChildItem "runner-patches/patches" -Filter *.patch | 
+          Foreach-Object {
+              Write-Output "Processing $($_.FullName)"
+              git apply --ignore-whitespace $($_.FullName)
+          }
+  
       - name: Set Percy Token if needed
         if: "${{ inputs.mobile_percy_project != '' }}"
         run: echo "PERCY_TOKEN=${{ secrets.PERCY_TOKEN_MOBILE }}" >> $GITHUB_ENV

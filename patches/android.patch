@@ -1,0 +1,50 @@
+diff --git a/.github/start-mobile-example/specs/screenshot.js b/.github/start-mobile-example/specs/screenshot.js
+index 32417256d6..9dbc9e773b 100644
+--- a/.github/start-mobile-example/specs/screenshot.js
++++ b/.github/start-mobile-example/specs/screenshot.js
+@@ -5,7 +5,7 @@ describe('Running Bevy Example', () => {
+   it('can take a screenshot', async () => {
+ 
+     // Sleep to wait for app startup, device rotation, ...
+-    await new Promise(r => setTimeout(r, 2000));
++    await new Promise(r => setTimeout(r, 20000));
+ 
+     // Take local screenshot
+     await browser.saveScreenshot('./screenshot.png');
+diff --git a/examples/mobile/src/lib.rs b/examples/mobile/src/lib.rs
+index e69a91b933..7add8e039b 100644
+--- a/examples/mobile/src/lib.rs
++++ b/examples/mobile/src/lib.rs
+@@ -5,6 +5,10 @@ use bevy::{
+     input::{gestures::RotationGesture, touch::TouchPhase},
+     log::{Level, LogPlugin},
+     prelude::*,
++    render::{
++        settings::{Backends, RenderCreation, WgpuSettings},
++        RenderPlugin,
++    },
+     window::{AppLifecycle, WindowMode},
+ };
+ 
+@@ -30,6 +34,13 @@ fn main() {
+                     ..default()
+                 }),
+                 ..default()
++            })
++            .set(RenderPlugin {
++                render_creation: RenderCreation::Automatic(WgpuSettings {
++                    backends: Some(Backends::VULKAN),
++                    ..default()
++                }),
++                ..default()
+             }),
+     )
+     .add_systems(Startup, (setup_scene, setup_music))
+@@ -180,6 +191,7 @@ fn handle_lifetime(
+     };
+ 
+     for event in lifecycle_events.read() {
++        warn!("Lifecycle event: {:?}", event);
+         match event {
+             AppLifecycle::Idle | AppLifecycle::WillSuspend | AppLifecycle::WillResume => {}
+             AppLifecycle::Suspended => music_controller.pause(),

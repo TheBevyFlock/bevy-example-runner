@@ -50,6 +50,20 @@ jobs:
           repository: ${{ inputs.repository }}
           ref: ${{ inputs.gitref }}
 
+      - name: Checkout patches
+        uses: actions/checkout@v4
+        with:
+          path: 'runner-patches'  
+  
+      - name: Apply patches
+        shell: pwsh
+        run: |
+          Get-ChildItem "runner-patches/patches" -Filter *.patch | 
+          Foreach-Object {
+              Write-Output "Processing $($_.FullName)"
+              git apply --ignore-whitespace $($_.FullName)
+          }
+  
       - uses: dtolnay/rust-toolchain@stable
 
       - name: Add iOS targets
@@ -85,6 +99,20 @@ jobs:
         with:
           repository: ${{ inputs.repository }}
           ref: ${{ inputs.gitref }}
+
+      - name: Checkout patches
+        uses: actions/checkout@v4
+        with:
+          path: 'runner-patches'  
+  
+      - name: Apply patches
+        shell: pwsh
+        run: |
+          Get-ChildItem "runner-patches/patches" -Filter *.patch | 
+          Foreach-Object {
+              Write-Output "Processing $($_.FullName)"
+              git apply --ignore-whitespace $($_.FullName)
+          }
 
       - uses: dtolnay/rust-toolchain@stable
         with:

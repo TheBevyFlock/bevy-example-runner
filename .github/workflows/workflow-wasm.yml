@@ -27,7 +27,7 @@ jobs:
           - runner: "macos-14"
             browser: "chromium"
             api: "webgpu"
-          - runner: "ubuntu-latest"
+          - runner: "ubuntu-22.04"
             browser: "firefox"
             api: "webgl2"
           # works, but text is buggy

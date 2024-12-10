@@ -1,5 +1,5 @@
 name: Example report - PR (from issue)
-run-name: ${{ github.event.issue.number }}-${{ github.event.issue.title }}
+run-name: "#${{ github.event.issue.number }} for PR-${{ github.event.issue.title }}"
 
 on:
   issues:
@@ -32,7 +32,7 @@ jobs:
           ISSUE_NUMBER=${{ github.event.issue.number }}
           RUN_ID=${{ github.run_id }}
           PR_NUMBER=${{ github.event.issue.title }}
-          COMMENT_BODY="Testing Bevy PR: https://github.com/bevyengine/bevy/pull/$PR_NUMBER\nWorkflow run started: https://github.com/${{ github.repository }}/actions/runs/$RUN_ID"
+          COMMENT_BODY="Testing Bevy PR: https://github.com/bevyengine/bevy/pull/$PR_NUMBER \nWorkflow run started: https://github.com/${{ github.repository }}/actions/runs/$RUN_ID"
           gh issue comment $ISSUE_NUMBER --body "$COMMENT_BODY"
             
   get-environment:
@@ -98,6 +98,7 @@ jobs:
     name: Report on Issue
     needs: [get-environment, native-run, mobile-run, wasm-run]
     runs-on: ubuntu-latest
+    if: always()
     steps:
       - name: Comment with link to Pixel Eagle
         run: |

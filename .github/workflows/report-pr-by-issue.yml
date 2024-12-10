@@ -31,7 +31,8 @@ jobs:
         run: |
           ISSUE_NUMBER=${{ github.event.issue.number }}
           RUN_ID=${{ github.run_id }}
-          COMMENT_BODY="Workflow run started: https://github.com/${{ github.repository }}/actions/runs/$RUN_ID"
+          PR_NUMBER=${{ github.event.issue.title }}
+          COMMENT_BODY="Testing Bevy PR: https://github.com/bevyengine/bevy/pull/$PR_NUMBER\nWorkflow run started: https://github.com/${{ github.repository }}/actions/runs/$RUN_ID"
           gh issue comment $ISSUE_NUMBER --body "$COMMENT_BODY"
             
   get-environment:

@@ -106,7 +106,7 @@ jobs:
       - name: Comment with link to Pixel Eagle
         run: |
           ISSUE_NUMBER=${{ github.event.issue.number }}
-          COMMENT_BODY="All done! Check the results at: https://pixeleagle.com/project/${{ needs.get-environment.outputs.pixeleagle_project }}?filter=PR-${{ github.event.issue.title }}"
+          COMMENT_BODY="All done! Check the results at: https://pixel-eagle.com/project/${{ needs.get-environment.outputs.pixeleagle_project }}?filter=PR-${{ github.event.issue.title }}"
           gh issue comment $ISSUE_NUMBER --body "$COMMENT_BODY"
           gh issue close $ISSUE_NUMBER --reason completed
         env:

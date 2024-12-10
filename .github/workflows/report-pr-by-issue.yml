@@ -1,0 +1,100 @@
+name: Example report - PR (from issue)
+run-name: ${{ github.event.issue.number }}-${{ github.event.issue.title }}
+
+on:
+  issues:
+    types:
+      - opened
+
+env:
+  PER_PAGE: 20
+
+permissions:
+  issues: write
+
+jobs:
+  validate:
+    name: Validate Trigger
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if issue is a trigger or an actual issue
+        run: |
+          if ! [ -z "${{ github.event.issue.body }}" ]; then
+            echo "Issue body is not empty."
+            exit 1
+          fi
+          if ! [[ "${{ github.event.issue.title }}" =~ ^[0-9]+$ ]]; then
+            echo "Issue title is not a number."
+            exit 1
+          fi
+            
+  get-environment:
+    name: Get Environment
+    needs: [validate]
+    runs-on: ubuntu-latest
+    outputs:
+      per_page: ${{ env.PER_PAGE }}
+      gitref: ${{ steps.env.outputs.gitref }}
+      date: ${{ steps.env.outputs.date }}
+      pixeleagle_project: ${{ steps.env.outputs.pixeleagle_project }}
+    steps:
+      - name: Checkout Bevy main branch
+        uses: actions/checkout@v4
+        with:
+          repository: 'bevyengine/bevy'
+      - name: Switch to PR
+        run: |
+          git fetch origin pull/${{ github.event.issue.title }}/head:pr-${{ github.event.issue.title }}
+          git switch pr-${{ github.event.issue.title }}
+      - name: Get Environment
+        id: env
+        run: |
+          echo "gitref=`git rev-parse HEAD`" >> $GITHUB_OUTPUT
+          echo "date=`date +%Y%m%d%H%M`" >> $GITHUB_OUTPUT
+          echo "pixeleagle_project=B25A040A-A980-4602-B90C-D480AB84076D" >> $GITHUB_OUTPUT
+
+  native-run:
+    name: Native
+    needs: [get-environment]
+    uses: ./.github/workflows/workflow-native.yml
+    with:
+      gitref: ${{ needs.get-environment.outputs.gitref }}
+      pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
+      branch: "PR-${{ github.event.issue.title }}"
+      repository: "bevyengine/bevy"
+      per_page: "${{ needs.get-environment.outputs.per_page }}"
+    secrets: inherit
+        
+  mobile-run:
+    name: Mobile
+    needs: [get-environment]
+    uses: ./.github/workflows/workflow-mobile.yml
+    with:
+      gitref: ${{ needs.get-environment.outputs.gitref }}
+      pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
+      branch: "PR-${{ github.event.issue.title }}"
+      repository: "bevyengine/bevy"
+    secrets: inherit
+
+  wasm-run:
+    name: wasm
+    needs: [get-environment]
+    uses: ./.github/workflows/workflow-wasm.yml
+    with:
+      gitref: ${{ needs.get-environment.outputs.gitref }}
+      pixeleagle_project: ${{ needs.get-environment.outputs.pixeleagle_project }}
+      branch: "PR-${{ github.event.issue.title }}"
+      repository: "bevyengine/bevy"
+    secrets: inherit
+
+  report-on-issue:
+    name: Report on Issue
+    needs: [get-environment, native-run, mobile-run, wasm-run]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment with link to Pixel Eagle
+        run: |
+          ISSUE_NUMBER=${{ github.event.issue.number }}
+          COMMENT_BODY="All done! Check the results at: https://pixeleagle.com/project/${{ needs.get-environment.outputs.pixeleagle_project }}?filter=PR-${{ github.event.issue.title }}"
+          gh issue comment $ISSUE_NUMBER --body "$COMMENT_BODY"
+          gh issue close $ISSUE_NUMBER --reason completed

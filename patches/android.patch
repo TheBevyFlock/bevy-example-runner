@@ -1,5 +1,5 @@
 diff --git a/.github/start-mobile-example/specs/screenshot.js b/.github/start-mobile-example/specs/screenshot.js
-index 32417256d6..9dbc9e773b 100644
+index 32417256d..9dbc9e773 100644
 --- a/.github/start-mobile-example/specs/screenshot.js
 +++ b/.github/start-mobile-example/specs/screenshot.js
 @@ -5,7 +5,7 @@ describe('Running Bevy Example', () => {
@@ -12,7 +12,7 @@ index 32417256d6..9dbc9e773b 100644
      // Take local screenshot
      await browser.saveScreenshot('./screenshot.png');
 diff --git a/examples/mobile/src/lib.rs b/examples/mobile/src/lib.rs
-index e69a91b933..7add8e039b 100644
+index ee49c01c5..507a09005 100644
 --- a/examples/mobile/src/lib.rs
 +++ b/examples/mobile/src/lib.rs
 @@ -5,6 +5,10 @@ use bevy::{
@@ -24,9 +24,9 @@ index e69a91b933..7add8e039b 100644
 +        RenderPlugin,
 +    },
      window::{AppLifecycle, WindowMode},
+     winit::WinitSettings,
  };
- 
-@@ -30,6 +34,13 @@ fn main() {
+@@ -33,6 +37,13 @@ fn main() {
                      ..default()
                  }),
                  ..default()
@@ -39,12 +39,4 @@ index e69a91b933..7add8e039b 100644
 +                ..default()
              }),
      )
-     .add_systems(Startup, (setup_scene, setup_music))
-@@ -180,6 +191,7 @@ fn handle_lifetime(
-     };
- 
-     for event in lifecycle_events.read() {
-+        warn!("Lifecycle event: {:?}", event);
-         match event {
-             AppLifecycle::Idle | AppLifecycle::WillSuspend | AppLifecycle::WillResume => {}
-             AppLifecycle::Suspended => music_controller.pause(),
+     // Make the winit loop wait more aggressively when no user input is received

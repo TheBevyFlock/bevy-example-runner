@@ -27,6 +27,12 @@ jobs:
             echo "Issue title is not a number."
             exit 1
           fi
+      - name: Post comment with workflow run link
+        run: |
+          ISSUE_NUMBER=${{ github.event.issue.number }}
+          RUN_ID=${{ github.run_id }}
+          COMMENT_BODY="Workflow run started: https://github.com/${{ github.repository }}/actions/runs/$RUN_ID"
+          gh issue comment $ISSUE_NUMBER --body "$COMMENT_BODY"
             
   get-environment:
     name: Get Environment

@@ -99,9 +99,9 @@ jobs:
 
   report-on-issue:
     name: Report on Issue
-    needs: [get-environment, native-run, mobile-run, wasm-run]
+    needs: [validate, get-environment, native-run, mobile-run, wasm-run]
     runs-on: ubuntu-latest
-    if: always()
+    if: ${{ always() && needs.validate.result == 'success' }}
     steps:
       - name: Comment with link to Pixel Eagle
         run: |

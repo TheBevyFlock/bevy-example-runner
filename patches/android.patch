@@ -1,16 +1,3 @@
-diff --git a/.github/start-mobile-example/specs/screenshot.js b/.github/start-mobile-example/specs/screenshot.js
-index 32417256d..9dbc9e773 100644
---- a/.github/start-mobile-example/specs/screenshot.js
-+++ b/.github/start-mobile-example/specs/screenshot.js
-@@ -5,7 +5,7 @@ describe('Running Bevy Example', () => {
-   it('can take a screenshot', async () => {
- 
-     // Sleep to wait for app startup, device rotation, ...
--    await new Promise(r => setTimeout(r, 2000));
-+    await new Promise(r => setTimeout(r, 20000));
- 
-     // Take local screenshot
-     await browser.saveScreenshot('./screenshot.png');
 diff --git a/examples/mobile/src/lib.rs b/examples/mobile/src/lib.rs
 index ee49c01c5..e71a027fc 100644
 --- a/examples/mobile/src/lib.rs

@@ -12,31 +12,19 @@ index 32417256d..9dbc9e773 100644
      // Take local screenshot
      await browser.saveScreenshot('./screenshot.png');
 diff --git a/examples/mobile/src/lib.rs b/examples/mobile/src/lib.rs
-index ee49c01c5..507a09005 100644
+index ee49c01c5..e71a027fc 100644
 --- a/examples/mobile/src/lib.rs
 +++ b/examples/mobile/src/lib.rs
-@@ -5,6 +5,10 @@ use bevy::{
-     input::{gestures::RotationGesture, touch::TouchPhase},
-     log::{Level, LogPlugin},
-     prelude::*,
-+    render::{
-+        settings::{Backends, RenderCreation, WgpuSettings},
-+        RenderPlugin,
-+    },
-     window::{AppLifecycle, WindowMode},
-     winit::WinitSettings,
- };
-@@ -33,6 +37,13 @@ fn main() {
-                     ..default()
-                 }),
-                 ..default()
-+            })
-+            .set(RenderPlugin {
-+                render_creation: RenderCreation::Automatic(WgpuSettings {
-+                    backends: Some(Backends::VULKAN),
-+                    ..default()
-+                }),
-+                ..default()
-             }),
-     )
-     // Make the winit loop wait more aggressively when no user input is received
+@@ -175,8 +175,11 @@ fn setup_music(asset_server: Res<AssetServer>, mut commands: Commands) {
+ // This is handled by the OS on iOS, but not on Android.
+ fn handle_lifetime(
+     mut lifecycle_events: EventReader<AppLifecycle>,
+-    music_controller: Single<&AudioSink>,
++    music_controller: Option<Single<&AudioSink>>,
+ ) {
++    let Some(music_controller) = music_controller else {
++        return;
++    };
+     for event in lifecycle_events.read() {
+         match event {
+             AppLifecycle::Idle | AppLifecycle::WillSuspend | AppLifecycle::WillResume => {}

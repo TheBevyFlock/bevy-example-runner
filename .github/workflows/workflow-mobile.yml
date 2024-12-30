@@ -177,9 +177,6 @@ jobs:
           - os: "Android"
             device: "Google Pixel 8"
             os_version: "14.0"
-          - os: "Android"
-            device: "Google Pixel 9"
-            os_version: "15.0"
     steps:
       - uses: actions/checkout@v4
         with:

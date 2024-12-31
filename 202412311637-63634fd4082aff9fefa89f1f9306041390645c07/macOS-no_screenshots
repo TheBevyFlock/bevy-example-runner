@@ -1,0 +1,38 @@
+ECS (Entity Component System)/system_piping - 0.2712273
+Application/headless - 0.3148279
+ECS (Entity Component System)/observer_propagation - 0.27051544
+Reflection/type_data - 0.4788989
+Time/time - 0.27831382
+Input/char_input_events - 1.0635467
+3D Rendering/transparency_3d - 0.7817376
+Application/plugin - 0.641254
+State/custom_transitions - 0.77751875
+3D Rendering/lighting - 1.1851622
+Application/no_renderer - 0.5850656
+Animation/animated_ui - 0.7010125
+Games/alien_cake_addict - 0.60663605
+UI (User Interface)/transparency_ui - 0.62681305
+ECS (Entity Component System)/iter_combinations - 0.6439115
+UI (User Interface)/scroll - 0.72028786
+ECS (Entity Component System)/nondeterministic_system_order - 0.5822108
+UI (User Interface)/ui_material - 0.58519095
+2D Rendering/2d_shapes - 0.5873618
+ECS (Entity Component System)/dynamic - 0.24002562
+Camera/first_person_view_model - 0.6579552
+Input/mouse_input_events - 0.6070998
+Application/empty - 0.2432107
+Application/headless_renderer - 0.9845573
+ECS (Entity Component System)/send_and_receive_events - 0.23949958
+ECS (Entity Component System)/system_closure - 0.28038555
+Reflection/dynamic_types - 0.32388422
+Application/without_winit - 1.624495
+ECS (Entity Component System)/ecs_guide - 25.762068
+ECS (Entity Component System)/custom_query_param - 0.2452053
+Reflection/custom_attributes - 0.26655966
+ECS (Entity Component System)/system_param - 0.7127122
+ECS (Entity Component System)/system_stepping - 0.7448506
+ECS (Entity Component System)/startup_system - 0.24929142
+Application/custom_loop - 0.2867743
+ECS (Entity Component System)/immutable_components - 0.2950553
+Reflection/function_reflection - 0.8567945
+ECS (Entity Component System)/custom_schedule - 0.28459674

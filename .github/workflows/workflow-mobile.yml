@@ -270,7 +270,10 @@ jobs:
       - name: Wait for screenshots comparison
         if: ${{ inputs.mobile_percy_project != '' }}
         run: |
-          npm install -g @percy/cli@latest
-          npx percy build:wait --project ${{ inputs.mobile_percy_project }} --commit ${{ inputs.gitref }}
+          # npm install -g @percy/cli@latest
+          # npx percy build:wait --project ${{ inputs.mobile_percy_project }} --commit ${{ inputs.gitref }}
+          # there's an issue with percy APIs, it returns forbidden for this query
+          # for now, just wait a few seconds
+          sleep 30
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN_MOBILE }}

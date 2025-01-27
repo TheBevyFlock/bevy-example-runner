@@ -24,6 +24,30 @@ on:
         required: false
         type: string
         default: '["ubuntu-22.04", "macos-14"]'
+  workflow_dispatch:
+    inputs:
+      repository:
+        required: true
+        type: string
+        default: 'bevyengine/bevy'
+      gitref:
+        required: true
+        type: string
+      pixeleagle_project:
+        required: true
+        type: string
+        default: 'B25A040A-A980-4602-B90C-D480AB84076D'
+      branch:
+        required: true
+        type: string
+        default: 'main'
+      per_page:
+        required: true
+        type: string
+      platforms:
+        required: false
+        type: string
+        default: '["ubuntu-22.04", "macos-14"]'
 
 jobs:
   split-pages:

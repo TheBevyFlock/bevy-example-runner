@@ -15,6 +15,21 @@ on:
       branch:
         required: true
         type: string
+  workflow_dispatch:
+    inputs:
+      repository:
+        required: true
+        type: string
+      gitref:
+        required: true
+        type: string
+      pixeleagle_project:
+        required: true
+        type: string
+        default: 'B25A040A-A980-4602-B90C-D480AB84076D'
+      branch:
+        required: true
+        type: string
 
 jobs:
   wasm-run:

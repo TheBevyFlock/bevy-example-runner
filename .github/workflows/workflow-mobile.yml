@@ -36,6 +36,7 @@ on:
       pixeleagle_project:
         required: true
         type: string
+        default: 'B25A040A-A980-4602-B90C-D480AB84076D'
       branch:
         required: true
         type: string

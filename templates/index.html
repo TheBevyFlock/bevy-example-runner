@@ -264,6 +264,7 @@
                         <div>{{ run.date }}</div>
                         <a href="https://github.com/bevyengine/bevy/commit/{{ run.commit }}">{{
                             run.commit|truncate(length=7, end="") }}</a>
+                        <a title="Copy commit hash" class="icon-link copy-commit" href="#" data-value="{{ run.commit }}"><i class="fa-solid fa-copy fa-flip-both"></i></a>
                     </div>
                 </th>
                 {% endfor -%}
@@ -354,6 +355,25 @@
                 popovers[i].scrollTop = popovers[i].scrollHeight;
             }
         });
+
+        const copyCommitLinkList = document.getElementsByClassName('copy-commit');
+        for (let i = 0; i < copyCommitLinkList.length; i++) {
+            copyCommitLinkList[i].addEventListener('click', event => {
+                event.preventDefault();
+
+                const commit = event.currentTarget.getAttribute('data-value');
+                navigator.clipboard.writeText(commit);
+
+                const icon = event.currentTarget.querySelector("i");
+                icon.classList.remove("fa-copy");
+                icon.classList.add("fa-check");
+
+                setTimeout(() => {
+                    icon.classList.remove("fa-check");
+                    icon.classList.add("fa-copy");
+                }, 2000);
+            });
+        }
     </script>
 </body>
 

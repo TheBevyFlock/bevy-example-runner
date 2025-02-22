@@ -1,5 +1,5 @@
 {% import "macros.html" as macros %}
-
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -342,7 +342,7 @@
         crossorigin="anonymous"></script>
     <script>
         const popoverTriggerList = document.querySelectorAll(' [data-bs-toggle="popover" ]')
-        const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+        const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl, { container: 'body' }))
 
         function toggle_visibility() {
             const examples = document.getElementsByClassName("all-good");

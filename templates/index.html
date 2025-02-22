@@ -28,6 +28,8 @@
             position: sticky;
             top: 0;
             background-color: var(--bs-dark-bg-subtle);
+            /* Prevent bleed-through of hr tags and ::before content in table */
+            z-index: 1
         }
 
         table {

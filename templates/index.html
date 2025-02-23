@@ -361,6 +361,20 @@
             }
         });
 
+        // Popovers are initially positioned before the image loads and need to be adjusted
+        // once the image is partially loaded and the container is resized.
+        let popoverResizeObserver = null;
+        document.addEventListener("inserted.bs.popover", (event) => {
+            const popover = document.querySelector(".popover");
+
+            popoverResizeObserver?.disconnect();
+            popoverResizeObserver = new ResizeObserver(() => {
+                const instance = bootstrap.Popover.getInstance(event.target);
+                instance.update();
+            });
+            popoverResizeObserver.observe(popover);
+        });
+
         const copyCommitLinkList = document.getElementsByClassName('copy-commit');
         for (let i = 0; i < copyCommitLinkList.length; i++) {
             copyCommitLinkList[i].addEventListener('click', event => {

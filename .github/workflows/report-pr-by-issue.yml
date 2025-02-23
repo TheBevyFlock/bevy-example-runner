@@ -16,24 +16,31 @@ jobs:
   validate:
     name: Validate Trigger
     runs-on: ubuntu-latest
+    outputs:
+      is_issue_trigger: ${{ steps.check_trigger.outputs.is_issue_trigger }}
+    env:
+      PR_BODY: "${{ github.event.issue.body }}"
+      PR_TITLE: "${{ github.event.issue.title }}"
     steps:
-      - name: Check if issue is a trigger or an actual issue
+      - id: check_trigger
+        name: Check if issue is a trigger or an actual issue
         run: |
-          if ! [ -z "${{ github.event.issue.body }}" ]; then
+          echo "is_issue_trigger=true" >> $GITHUB_OUTPUT
+          if ! [ -z "$PR_BODY" ]; then
             echo "Issue body is not empty."
-            exit 1
+            echo "is_issue_trigger=false" >> $GITHUB_OUTPUT
           fi
-          if ! [[ "${{ github.event.issue.title }}" =~ ^[0-9]+$ ]]; then
+          if ! [[ "$PR_TITLE" =~ ^[0-9]+$ ]]; then
             echo "Issue title is not a number."
-            exit 1
+            echo "is_issue_trigger=false" >> $GITHUB_OUTPUT
           fi
       - name: Post comment with workflow run link
+        if: steps.check_trigger.outputs.is_issue_trigger == 'true'
         run: |
           ISSUE_NUMBER=${{ github.event.issue.number }}
           RUN_ID=${{ github.run_id }}
-          PR_NUMBER=${{ github.event.issue.title }}
           LF=$'\n'
-          COMMENT_BODY="Testing Bevy PR: https://github.com/bevyengine/bevy/pull/$PR_NUMBER ${LF}Workflow run started: https://github.com/${{ github.repository }}/actions/runs/$RUN_ID"
+          COMMENT_BODY="Testing Bevy PR: https://github.com/bevyengine/bevy/pull/$PR_TITLE ${LF}Workflow run started: https://github.com/${{ github.repository }}/actions/runs/$RUN_ID"
           gh issue comment $ISSUE_NUMBER --body "$COMMENT_BODY"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -42,6 +49,7 @@ jobs:
   get-environment:
     name: Get Environment
     needs: [validate]
+    if: needs.validate.outputs.is_issue_trigger == 'true'
     runs-on: ubuntu-latest
     outputs:
       per_page: ${{ env.PER_PAGE }}
@@ -52,7 +60,7 @@ jobs:
       - name: Checkout Bevy main branch
         uses: actions/checkout@v4
         with:
-          repository: 'bevyengine/bevy'
+          repository: "bevyengine/bevy"
       - name: Switch to PR
         run: |
           git fetch origin pull/${{ github.event.issue.title }}/head:pr-${{ github.event.issue.title }}
@@ -75,7 +83,7 @@ jobs:
       repository: "bevyengine/bevy"
       per_page: "${{ needs.get-environment.outputs.per_page }}"
     secrets: inherit
-        
+
   mobile-run:
     name: Mobile
     needs: [get-environment]
@@ -102,7 +110,7 @@ jobs:
     name: Report on Issue
     needs: [validate, get-environment, native-run, mobile-run, wasm-run]
     runs-on: ubuntu-latest
-    if: ${{ always() && needs.validate.result == 'success' }}
+    if: ${{ always() && needs.validate.outputs.is_issue_trigger == 'true' && needs.validate.result == 'success' }}
     steps:
       - name: Comment with link to Pixel Eagle
         run: |

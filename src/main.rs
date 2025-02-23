@@ -1,4 +1,5 @@
 use chrono::NaiveDateTime;
+use clap::Parser;
 use serde::Serialize;
 use std::{
     collections::{HashMap, HashSet},
@@ -109,8 +110,22 @@ impl FromStr for Kind {
     }
 }
 
+/// Generates the example report site
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Args {
+    /// Path to the directory containing processed results.
+    path: std::path::PathBuf,
+
+    /// Limit the number of results processed. Defaults to 30.
+    #[arg(long, default_value_t = 30)]
+    limit: usize,
+}
+
 fn main() {
-    let paths = fs::read_dir(std::env::args().nth(1).as_deref().unwrap()).unwrap();
+    let args = Args::parse();
+
+    let paths = fs::read_dir(args.path).unwrap();
 
     let _ = fs::create_dir("./site");
 
@@ -124,7 +139,7 @@ fn main() {
     folders.sort();
     folders.reverse();
 
-    for (i, run_path) in folders.iter().take(30).enumerate() {
+    for (i, run_path) in folders.iter().take(args.limit).enumerate() {
         let file_name = run_path.file_name().unwrap().to_str().unwrap();
         if file_name.starts_with(".") {
             continue;

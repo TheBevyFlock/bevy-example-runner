@@ -42,7 +42,7 @@ jobs:
           - runner: "macos-14"
             browser: "chromium"
             api: "webgpu"
-          - runner: "ubuntu-22.04"
+          - runner: "ubuntu-24.04"
             browser: "firefox"
             api: "webgl2"
           # works, but text is buggy
@@ -80,24 +80,7 @@ jobs:
 
       - uses: dtolnay/rust-toolchain@stable
         with:
-          target: wasm32-unknown-unknown  
-  
-      - name: install xvfb, llvmpipe and lavapipe
-        if: runner.os == 'linux'
-        run: |
-          sudo apt-get update -y -qq
-          sudo add-apt-repository ppa:kisak/turtle -y || FAILED=true
-          # retry as it sometimes timeout
-          if [ $FAILED ]; then
-            sleep 5
-            sudo add-apt-repository ppa:kisak/turtle -y || FAILED=true
-            if [ $FAILED ]; then
-                  sleep 5
-                  sudo add-apt-repository ppa:kisak/turtle -y
-            fi
-          fi
-          sudo apt-get update
-          sudo apt install -y xvfb libegl1-mesa libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers
+          target: wasm32-unknown-unknown
 
       - name: Install wasm-bindgen
         run: cargo install --force wasm-bindgen-cli

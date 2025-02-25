@@ -8,9 +8,9 @@
     data-bs-content='<img class="img-fluid" src="{{ run.screenshots[example_name][platform].0 }}" />'>
     <a href="{{ run.screenshots[example_name][platform].2 }}" target="_blank">
         {% if run.screenshots[example_name][platform].1 == "Similar" -%}
-        {{ icons::changed() }}
-        {% else -%}
         {{ icons::success() }}
+        {% else -%}
+        {{ icons::changed() }}
         {% endif -%}
     </a>
 </div>

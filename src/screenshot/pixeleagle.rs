@@ -61,7 +61,7 @@ fn comparison_to_screenshot_data(comparison: Comparison) -> Vec<ScreenshotData> 
         result.push(ScreenshotData {
             example: screenshot.name.clone(),
             screenshot: ImageUrl(format!(
-                "https://pixel-eagle.com/{}/screenshot/{}",
+                "https://pixel-eagle.com/files/{}/screenshot/{}",
                 comparison.project_id.clone(),
                 screenshot.hash.clone()
             )),

@@ -16,6 +16,11 @@ pub fn build_site(
 
     let mut tera = Tera::default();
     tera.add_raw_template(
+        "icons.html",
+        &std::fs::read_to_string("./templates/icons.html").unwrap(),
+    )
+    .unwrap();
+    tera.add_raw_template(
         "macros.html",
         &std::fs::read_to_string("./templates/macros.html").unwrap(),
     )

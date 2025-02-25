@@ -1,4 +1,5 @@
 {% import "macros.html" as macros %}
+{% import "icons.html" as icons %}
 <!DOCTYPE html>
 <html>
 
@@ -239,21 +240,20 @@
         <thead>
             <tr>
                 <th class="no-border" style="min-width: 35em;">
-                    <div style="padding: 3px;">
-                        <span class="success"></span> Example ran successfully, screenshot didn't change
+                    <div class="p-1">
+                        {{ icons::success(class="fa-fw") }} Example ran successfully, screenshot didn't change
                     </div>
-                    <div style="padding: 3px;">
-                        <span class="missing-screenshot"></span> Example ran successfully, but couldn't capture a
+                    <div class="p-1">
+                        {{ icons::missing_screenshot(class="fa-fw") }} Example ran successfully, but couldn't capture a
                         screenshot
                     </div>
-                    <div style="padding: 3px;">
-                        <span class="changed"></span> Example ran successfully, screenshot changed
+                    <div class="p-1">
+                        {{ icons::changed(class="fa-fw") }} Example ran successfully, screenshot changed
                     </div>
-                    <div style="padding: 3px;">
-                        <span class="fail"></span> Error running the example
+                    <div class="p-1">
+                        {{ icons::fail(class="fa-fw") }} Error running the example
                     </div>
-                    <br />
-                    <div class="form-check form-switch form-check-reverse">
+                    <div class="form-check form-switch form-check-reverse mt-3">
                         <input class="form-check-input" type="checkbox" id="flexSwitchCheckReverse" checked
                             onclick="toggle_visibility()">
                         <label class="form-check-label" for="flexSwitchCheckReverse">Only show flaky examples</label>
@@ -277,20 +277,23 @@
             {% if example.category == "Mobile" %}
             <tr {% if example.flaky -%}class="flaky" {% else -%}class="all-good" style="display: none;" {% endif -%}>
                 <td style="border-right: none;">{{ example.category }} / {{ example.name }}</td>
-                <td style="border-left: none;">
+                <td style="border-left: none;" class="text-center">
                     {% for mobile in all_mobile_platforms | sort %}
-                    {% if mobile is starting_with("Android") %}
-                    <span class="android platform-tooltip"><span class="tooltiptext">{{ mobile }}</span></span>
-                    {% elif mobile is starting_with("iOS") %}
-                    <span class="ios platform-tooltip"><span class="tooltiptext">{{ mobile }}</span></span>
-                    {% endif %}
-                    {% if not loop.last %}
-                    <hr />
-                    {% endif %}
+                    <span class="platform-tooltip">
+                        {% if mobile is starting_with("Android") %}
+                        {{ icons::android() }}
+                        {% elif mobile is starting_with("iOS") %}
+                        {{ icons::ios() }}
+                        {% endif %}
+                        <span class="tooltiptext">{{mobile}}</span>
+                        </span>
+                        {% if not loop.last %}
+                        <hr />
+                        {% endif %}
                     {% endfor %}
                 </td>
                 {% for run in runs -%}
-                <td style="text-align: center;">
+                <td class="text-center">
                     {% if run.results[example.name] -%}
                     {% for mobile in all_mobile_platforms | sort %}
                     {{ macros::status(example_name=example.name, platform=mobile, run=run) }}
@@ -315,13 +318,13 @@
             {% if example.category != "Mobile" %}
             <tr {% if example.flaky -%}class="flaky" {% else -%}class="all-good" style="display: none;" {% endif -%}>
                 <td style="border-right: none;">{{ example.category }} / {{ example.name }}</td>
-                <td style="border-left: none;">
-                    <span class="linux"></span>
+                <td style="border-left: none;" class="text-center">
+                    {{ icons::linux() }}
                     <hr>
-                    <span class="macos"></span>
+                    {{ icons::macos() }}
                 </td>
                 {% for run in runs -%}
-                <td style="text-align: center;">
+                <td class="text-center">
                     {% if run.results[example.name] -%}
                     {{ macros::status(example_name=example.name, platform="Linux", run=run) }}
                     <hr />

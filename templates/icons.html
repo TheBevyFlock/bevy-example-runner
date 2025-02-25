@@ -1,0 +1,39 @@
+{# Status #}
+
+{% macro success(class="") %}
+<i class="fa-check fa-solid text-success-emphasis {{ class }}"></i>
+{% endmacro %}
+
+{% macro fail(class="") %}
+<i class="fa-triangle-exclamation fa-solid text-danger {{ class }}"></i>
+{% endmacro %}
+
+{% macro changed(class="") %}
+<i class="fa-star fa-solid text-warning-emphasis {{ class }}"></i>
+{% endmacro %}
+
+{% macro missing_screenshot(class="") %}
+<i class="fa-eye-slash text-info-emphasis fa-regular {{ class }}"></i>
+{% endmacro %}
+
+{# Platform #}
+
+{% macro windows(class="") %}
+<i class="fa-brands fa-windows {{ class }}"></i>
+{% endmacro %}
+
+{% macro macos(class="") %}
+<i class="fa-brands fa-apple {{ class }}"></i>
+{% endmacro %}
+
+{% macro ios(class="") %}
+<i class="fa-brands fa-apple {{ class }}"></i>
+{% endmacro %}
+
+{% macro linux(class="") %}
+<i class="fa-brands fa-linux {{ class }}"></i>
+{% endmacro %}
+
+{% macro android(class="") %}
+<i class="fa-brands fa-android {{ class }}"></i>
+{% endmacro %}

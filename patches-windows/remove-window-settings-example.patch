@@ -5,7 +5,7 @@ index 7bd99fc3a..f6a64d097 100644
 @@ -3526,17 +3526,6 @@ description = "Illustrates making the window transparent and hiding the window d
  category = "Window"
  wasm = false
-
+ 
 -[[example]]
 -name = "window_settings"
 -path = "examples/window/window_settings.rs"

@@ -24,7 +24,7 @@ on:
       platforms:
         required: false
         type: string
-        default: '["ubuntu-24.04", "macos-14"]'
+        default: '["ubuntu-24.04", "macos-14", "windows-2022"]'
   workflow_dispatch:
     inputs:
       repository:
@@ -50,7 +50,7 @@ on:
       platforms:
         required: false
         type: string
-        default: '["ubuntu-24.04", "macos-14"]'
+        default: '["ubuntu-24.04", "macos-14", "windows-2022"]'
 
 jobs:
   split-pages:
@@ -104,6 +104,16 @@ jobs:
               git apply --ignore-whitespace $($_.FullName)
           }
 
+      - name: (Windows) Apply patches
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Get-ChildItem "runner-patches/patches-windows" -Filter *.patch | 
+          Foreach-Object {
+              Write-Output "Processing $($_.FullName)"
+              git apply --ignore-whitespace $($_.FullName)
+          }
+
       # - name: Setup Sentry Reporting
       #   shell: pwsh
       #   run: |
@@ -113,14 +123,14 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Install Bevy dependencies
+      - name: (Linux) Install Bevy dependencies
         if: runner.os == 'linux'
         run: |
           sudo apt-get update;
           DEBIAN_FRONTEND=noninteractive sudo apt-get install --no-install-recommends -yq \
             libasound2-dev libudev-dev libxkbcommon-x11-0;
 
-      - name: install xvfb, llvmpipe and lavapipe
+      - name: (Linux) install xvfb, llvmpipe and lavapipe
         if: runner.os == 'linux'
         run: |
           sudo apt-get update -y -qq
@@ -136,6 +146,18 @@ jobs:
           fi
           sudo apt-get update
           sudo apt install -y xvfb libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers
+
+      - name: (Windows) Install DXC
+        if: runner.os == 'windows'
+        shell: bash
+        run: |
+          set -e
+
+          # from https://github.com/microsoft/DirectXShaderCompiler/releases
+          curl.exe -L --retry 5 https://github.com/microsoft/DirectXShaderCompiler/releases/download/v1.8.2502/dxc_2025_02_20.zip -o dxc.zip
+          7z.exe e dxc.zip -odxc bin/x64/{dxc.exe,dxcompiler.dll,dxil.dll}
+
+          cp dxc/* .
 
       - uses: actions/cache/restore@v4
         id: restore-cache
@@ -160,7 +182,21 @@ jobs:
         if: runner.os == 'macos'
         continue-on-error: true
         run: cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ inputs.per_page }} run --screenshot-frame 400 --fixed-frame-time 0.0125 --stop-frame 450 --in-ci --ignore-stress-tests --report-details --show-logs
-  
+
+      - name: Take Screenshots (Windows)
+        id: screenshots-windows
+        if: runner.os == 'windows'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          Add-Type -AssemblyName System.Windows.Forms
+          $screen = [System.Windows.Forms.SystemInformation]::VirtualScreen
+          [Windows.Forms.Cursor]::Position = "$($screen.Width / 2),$($screen.Height / 2)"
+
+          cargo run -p example-showcase -- --page ${{ matrix.page }} --per-page ${{ inputs.per_page }} run --screenshot-frame 400 --fixed-frame-time 0.0125 --stop-frame 450 --in-ci --ignore-stress-tests --report-details --show-logs
+        env:
+          WGPU_BACKEND: dx12
+
       - name: Log errors
         shell: pwsh
         run: |
@@ -204,6 +240,7 @@ jobs:
         include:
           - os: Linux
           - os: macOS
+          - os: Windows
     steps:
       
       - name: Download all artifacts

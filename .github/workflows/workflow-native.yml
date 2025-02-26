@@ -147,13 +147,7 @@ jobs:
           curl.exe -L --retry 5 https://github.com/microsoft/DirectXShaderCompiler/releases/download/v1.8.2502/dxc_2025_02_20.zip -o dxc.zip
           7z.exe e dxc.zip -odxc bin/x64/{dxc.exe,dxcompiler.dll,dxil.dll}
 
-          ls
-          echo '---'
-          ls dxc/
-          echo '---'
-          ls dcx/*
-
-          cp dxc/bin/x64/* .
+          cp dxc/* .
 
       - uses: actions/cache/restore@v4
         id: restore-cache

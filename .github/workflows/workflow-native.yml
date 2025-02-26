@@ -149,9 +149,9 @@ jobs:
 
           ls
           echo '---'
-          ls *
+          ls dxc/
           echo '---'
-          ls */*
+          ls dcx/*
 
           cp dxc/bin/x64/* .
 

@@ -23,7 +23,7 @@ on:
       platforms:
         required: false
         type: string
-        default: '["ubuntu-22.04", "macos-14"]'
+        default: '["ubuntu-24.04", "macos-14"]'
   workflow_dispatch:
     inputs:
       repository:
@@ -132,7 +132,7 @@ jobs:
             fi
           fi
           sudo apt-get update
-          sudo apt install -y xvfb libegl1-mesa libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers
+          sudo apt install -y xvfb libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers
 
       - uses: actions/cache/restore@v4
         id: restore-cache

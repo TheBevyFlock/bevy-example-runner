@@ -24,7 +24,7 @@ on:
       platforms:
         required: false
         type: string
-        default: '["ubuntu-24.04", "macos-14", "windows-2022"]'
+        default: '["windows-2022", "macos-14", "ubuntu-24.04"]'
   workflow_dispatch:
     inputs:
       repository:
@@ -50,7 +50,7 @@ on:
       platforms:
         required: false
         type: string
-        default: '["ubuntu-24.04", "macos-14", "windows-2022"]'
+        default: '["windows-2022", "macos-14", "ubuntu-24.04"]'
 
 jobs:
   split-pages:

@@ -322,6 +322,8 @@
                     {{ icons::linux() }}
                     <hr>
                     {{ icons::macos() }}
+                    <hr>
+                    {{ icons::windows() }}
                 </td>
                 {% for run in runs -%}
                 <td class="text-center">
@@ -329,8 +331,11 @@
                     {{ macros::status(example_name=example.name, platform="Linux", run=run) }}
                     <hr />
                     {{ macros::status(example_name=example.name, platform="macOS", run=run) }}
+                    <hr />
+                    {{ macros::status(example_name=example.name, platform="Windows", run=run) }}
                     {% else -%}
                     -
+                    <hr />-
                     <hr />-
                     {% endif -%}
                 </td>

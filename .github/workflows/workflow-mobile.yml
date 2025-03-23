@@ -47,6 +47,17 @@ on:
         description: "Branch name to use as a tag in Pixel Eagle"
 
 jobs:
+  create-pixel-eagle-run:
+    runs-on: ubuntu-latest
+    outputs:
+      pixeleagle_run: ${{ steps.run.outputs.pixeleagle_run }}
+    steps:
+      - name: Create Run
+        id: run
+        run: |
+          run=`curl https://pixel-eagle.com/${{ inputs.pixeleagle_project }}/runs -H 'Content-Type: application/json' -d '{"os":"mobile", "gitref": "${{ inputs.gitref }}", "branch": "${{ inputs.branch }}"}' --oauth2-bearer ${{ secrets.PIXELEAGLE }} | jq '.id'`
+          echo "pixeleagle_run=$run" >> $GITHUB_OUTPUT
+
   build-for-iOS:
     runs-on: macos-latest
     timeout-minutes: 30
@@ -155,7 +166,7 @@ jobs:
   take-screenshots:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: [build-for-iOS, build-for-Android]
+    needs: [build-for-iOS, build-for-Android, create-pixel-eagle-run]
     strategy:
       fail-fast: false
       max-parallel: 7
@@ -259,7 +270,17 @@ jobs:
         with:
           name: screenshots-${{ matrix.device }}-${{ matrix.os_version }}
           path: .github/start-mobile-example/*.png
-      
+
+      - name: Send to Pixel Eagle (common project)
+        run: |
+          for screenshot in $(find . -type f -maxdepth 1 -name "*.png");
+          do
+            file=${screenshot:2}
+            name=$file-${{ matrix.device }}-${{ matrix.os }}-${{ matrix.os_version }}
+            echo $name
+            curl https://pixel-eagle.com/${{ inputs.pixeleagle_project }}/runs/${{ needs.create-pixel-eagle-run.output.pixeleagle_run }}/screenshots -F "data=@./$file" -F "screenshot=$name" --oauth2-bearer ${{ secrets.PIXELEAGLE }}
+          done
+
       - name: Send to Pixel Eagle
         run: |
           run=`curl https://pixel-eagle.com/${{ inputs.pixeleagle_project }}/runs -H 'Content-Type: application/json' -d '{"device":"${{ matrix.device }}", "os":"${{ matrix.os }}-${{ matrix.os_version }}", "adapter": "${{ matrix.adapter }}", "gitref": "${{ inputs.gitref }}", "branch": "${{ inputs.branch }}"}' --oauth2-bearer ${{ secrets.PIXELEAGLE }} | jq '.id'`
@@ -313,3 +334,16 @@ jobs:
           sleep 30
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN_MOBILE }}
+
+  mobile-check-result-pixel-eagle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [take-screenshots]
+    if: always()
+    steps:
+      - name: Trigger screenshots comparison
+        run: |
+          curl https://pixel-eagle.com/${{ inputs.pixeleagle_project }}/runs/${{ needs.create-pixel-eagle-run.output.pixeleagle_run }}/compare/auto -H 'Content-Type: application/json' -d '{"os":"<equal>", "branch": "main"}' --oauth2-bearer ${{ secrets.PIXELEAGLE }}
+      - name: Wait a bit
+        run: |
+          sleep 30

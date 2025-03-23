@@ -273,6 +273,7 @@ jobs:
 
       - name: Send to Pixel Eagle (common project)
         run: |
+          cd .github/start-mobile-example
           for screenshot in $(find . -type f -maxdepth 1 -name "*.png");
           do
             file=${screenshot:2}

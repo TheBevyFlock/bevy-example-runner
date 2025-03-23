@@ -156,6 +156,7 @@ jobs:
           mv pixeleagle-Linux/pixeleagle-Linux.json results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Linux-pixeleagle
           mv pixeleagle-macOS/pixeleagle-macOS.json results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/macOS-pixeleagle
           mv pixeleagle-Windows/pixeleagle-Windows.json results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/Windows-pixeleagle
+          mv pixeleagle-mobile/pixeleagle-mobile.json results/${{ needs.get-environment.outputs.date }}-${{ needs.get-environment.outputs.gitref }}/mobile-pixeleagle
 
       - name: Store results in git
         run: |

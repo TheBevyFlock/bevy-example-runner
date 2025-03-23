@@ -277,7 +277,7 @@ jobs:
           for screenshot in $(find . -type f -maxdepth 1 -name "*.png");
           do
             file=${screenshot:2}
-            name=${{ matrix.os }}-${{ matrix.device }}-${{ matrix.os_version }}-$file
+            name="${{ matrix.os }}-${{ matrix.device }}-${{ matrix.os_version }}-$file"
             echo $name
             curl https://pixel-eagle.com/${{ inputs.pixeleagle_project }}/runs/${{ needs.create-pixel-eagle-run.outputs.pixeleagle_run }}/screenshots -F "data=@./$file" -F "screenshot=$name" --oauth2-bearer ${{ secrets.PIXELEAGLE }}
           done

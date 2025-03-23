@@ -278,7 +278,7 @@ jobs:
             file=${screenshot:2}
             name=$file-${{ matrix.device }}-${{ matrix.os }}-${{ matrix.os_version }}
             echo $name
-            curl https://pixel-eagle.com/${{ inputs.pixeleagle_project }}/runs/${{ needs.create-pixel-eagle-run.output.pixeleagle_run }}/screenshots -F "data=@./$file" -F "screenshot=$name" --oauth2-bearer ${{ secrets.PIXELEAGLE }}
+            curl https://pixel-eagle.com/${{ inputs.pixeleagle_project }}/runs/${{ needs.create-pixel-eagle-run.outputs.pixeleagle_run }}/screenshots -F "data=@./$file" -F "screenshot=$name" --oauth2-bearer ${{ secrets.PIXELEAGLE }}
           done
 
       - name: Send to Pixel Eagle
@@ -343,7 +343,7 @@ jobs:
     steps:
       - name: Trigger screenshots comparison
         run: |
-          curl https://pixel-eagle.com/${{ inputs.pixeleagle_project }}/runs/${{ needs.create-pixel-eagle-run.output.pixeleagle_run }}/compare/auto -H 'Content-Type: application/json' -d '{"os":"<equal>", "branch": "main"}' --oauth2-bearer ${{ secrets.PIXELEAGLE }}
+          curl https://pixel-eagle.com/${{ inputs.pixeleagle_project }}/runs/${{ needs.create-pixel-eagle-run.outputs.pixeleagle_run }}/compare/auto -H 'Content-Type: application/json' -d '{"os":"<equal>", "branch": "main"}' --oauth2-bearer ${{ secrets.PIXELEAGLE }}
       - name: Wait a bit
         run: |
           sleep 30

@@ -3,7 +3,7 @@ name: Example report - main
 on:
   workflow_dispatch:
   schedule:
-    - cron:  '0 */3 * * *'
+    - cron: "0 */3 * * *"
 
 concurrency:
   group: ${{ github.repository }}-example-report
@@ -26,8 +26,8 @@ jobs:
       - name: Checkout Bevy main branch
         uses: actions/checkout@v4
         with:
-          repository: 'bevyengine/bevy'
-          ref: 'main'
+          repository: "bevyengine/bevy"
+          ref: "main"
       - name: Get Environment
         id: env
         run: |
@@ -37,8 +37,8 @@ jobs:
           echo "mobile_percy_project=dede4209/Bevy-Mobile-Example" >> $GITHUB_OUTPUT
       - uses: actions/checkout@v4
         with:
-          ref: 'results'
-          path: 'results'
+          ref: "results"
+          path: "results"
       - name: Check if current Bevy version already ran
         id: version-check
         run: |
@@ -58,7 +58,7 @@ jobs:
       repository: "bevyengine/bevy"
       per_page: "${{ needs.get-environment.outputs.per_page }}"
     secrets: inherit
-        
+
   mobile-run:
     name: Mobile
     needs: [get-environment]
@@ -92,11 +92,10 @@ jobs:
     permissions:
       contents: write
     steps:
-      
       - uses: actions/checkout@v4
         with:
-          ref: 'results'
-          path: 'results'
+          ref: "results"
+          path: "results"
 
       - name: Download all status artifacts
         uses: actions/download-artifact@v4

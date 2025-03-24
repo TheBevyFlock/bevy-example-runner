@@ -302,7 +302,7 @@ jobs:
   mobile-check-result-pixel-eagle:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: [take-screenshots]
+    needs: [take-screenshots, create-pixel-eagle-run]
     if: always()
     steps:
       - name: Trigger screenshots comparison

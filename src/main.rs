@@ -37,8 +37,8 @@ impl Hash for Example {
 struct Run {
     date: String,
     commit: String,
-    results: HashMap<String, HashMap<String, Kind>>,
-    screenshots: HashMap<String, HashMap<String, (ImageUrl, ScreenshotState, SnapshotViewerUrl)>>,
+    results: HashMap<String, HashMap<Platform, Kind>>,
+    screenshots: HashMap<String, HashMap<Platform, (ImageUrl, ScreenshotState, SnapshotViewerUrl)>>,
     logs: HashMap<String, HashMap<String, String>>,
 }
 
@@ -184,22 +184,22 @@ fn main() {
                     run.results
                         .entry(example.name)
                         .or_insert_with(HashMap::new)
-                        .insert(platform.to_string().clone(), kind.clone());
+                        .insert(platform.clone(), kind.clone());
                 });
             }
             if [Kind::Percy, Kind::PixelEagle].contains(&kind) {
                 println!("  - {:?} / {:?}", kind, platform);
                 let content = fs::read_to_string(&path).unwrap();
                 let screenshots = match kind {
-                    Kind::Percy => percy::read_results(content),
+                    Kind::Percy => continue, //percy::read_results(content),
                     Kind::PixelEagle => pixeleagle::read_results(content),
                     _ => unreachable!(),
                 };
                 for ScreenshotData {
-                    example,
+                    mut example,
                     screenshot,
                     mut changed,
-                    tag,
+                    mut tag,
                     diff_ratio,
                     snapshot_url,
                 } in screenshots.into_iter()
@@ -207,6 +207,11 @@ fn main() {
                     let (category, name) = if platform == Platform::Mobile {
                         if let Some(tag) = tag.as_ref() {
                             all_mobile_platforms.insert(tag.clone());
+                        } else {
+                            let parts = example.split('-').collect::<Vec<_>>();
+                            tag = Some(format!("{} {} / {}", parts[0], parts[2], parts[1]));
+                            all_mobile_platforms.insert(tag.clone().unwrap());
+                            example = "Bevy Mobile Example".to_string();
                         }
                         (ExampleCategory("Mobile".to_string()), example)
                     } else {
@@ -227,6 +232,9 @@ fn main() {
                             flaky: true,
                             ..previous
                         });
+                    } else {
+                        let previous = all_examples.take(&example).unwrap_or(example.clone());
+                        all_examples.insert(previous);
                     }
                     if diff_ratio == 0.0 && changed == ScreenshotState::Changed {
                         println!(
@@ -238,23 +246,13 @@ fn main() {
                     let platform = tag
                         .clone()
                         .map(|tag| Platform::Tag(tag.clone()))
-                        .unwrap_or_else(|| platform.clone())
-                        .to_string();
+                        .unwrap_or_else(|| platform.clone());
                     // If there is a screenshot but no results, mark as success
                     run.results
                         .entry(example.name.clone())
                         .or_insert_with(HashMap::new)
                         .entry(platform.clone())
                         .or_insert_with(|| Kind::Successes);
-                    // Keeping Percy results over PixelEagle for now
-                    // TODO: remove
-                    if let Some(existing_screenshots) = run.screenshots.get(&example.name) {
-                        if existing_screenshots.contains_key(&platform) {
-                            if kind == Kind::PixelEagle {
-                                continue;
-                            }
-                        }
-                    }
                     run.screenshots
                         .entry(example.name)
                         .or_insert_with(HashMap::new)
@@ -285,7 +283,7 @@ fn main() {
                                 run.results
                                     .entry(example.name)
                                     .or_insert_with(HashMap::new)
-                                    .insert(rerun_platform.to_string(), Kind::NoScreenshots);
+                                    .insert(rerun_platform.clone(), Kind::NoScreenshots);
                             });
                     }
                     if kind.ends_with(".log") {

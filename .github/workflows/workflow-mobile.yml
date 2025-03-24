@@ -6,11 +6,11 @@ on:
       repository:
         required: true
         type: string
-        default: 'bevyengine/bevy'
+        default: "bevyengine/bevy"
       gitref:
         required: true
         type: string
-        default: 'main'
+        default: "main"
       mobile_percy_project:
         required: false
         type: string
@@ -25,23 +25,39 @@ on:
       repository:
         required: true
         type: string
-        default: 'bevyengine/bevy'
+        default: "bevyengine/bevy"
+        description: "Bevy repository to use"
       gitref:
         required: true
         type: string
-        default: 'main'
+        default: "main"
+        description: "Commit or branch name to run on"
       mobile_percy_project:
         required: false
         type: string
+        description: "Percy project to send results to"
       pixeleagle_project:
         required: true
         type: string
-        default: 'B25A040A-A980-4602-B90C-D480AB84076D'
+        default: "B25A040A-A980-4602-B90C-D480AB84076D"
+        description: "Pixel Eagle project to send results to"
       branch:
         required: true
         type: string
+        description: "Branch name to use as a tag in Pixel Eagle"
 
 jobs:
+  create-pixel-eagle-run:
+    runs-on: ubuntu-latest
+    outputs:
+      pixeleagle_run: ${{ steps.run.outputs.pixeleagle_run }}
+    steps:
+      - name: Create Run
+        id: run
+        run: |
+          run=`curl https://pixel-eagle.com/${{ inputs.pixeleagle_project }}/runs -H 'Content-Type: application/json' -d '{"os":"mobile", "gitref": "${{ inputs.gitref }}", "branch": "${{ inputs.branch }}"}' --oauth2-bearer ${{ secrets.PIXELEAGLE }} | jq '.id'`
+          echo "pixeleagle_run=$run" >> $GITHUB_OUTPUT
+
   build-for-iOS:
     runs-on: macos-latest
     timeout-minutes: 30
@@ -54,17 +70,17 @@ jobs:
       - name: Checkout patches
         uses: actions/checkout@v4
         with:
-          path: 'runner-patches'  
-  
+          path: "runner-patches"
+
       - name: Apply patches
         shell: pwsh
         run: |
-          Get-ChildItem "runner-patches/patches" -Filter *.patch | 
+          Get-ChildItem "runner-patches/patches" -Filter *.patch |
           Foreach-Object {
               Write-Output "Processing $($_.FullName)"
               git apply --ignore-whitespace $($_.FullName)
           }
-  
+
       - uses: dtolnay/rust-toolchain@stable
 
       - name: Add iOS targets
@@ -104,12 +120,12 @@ jobs:
       - name: Checkout patches
         uses: actions/checkout@v4
         with:
-          path: 'runner-patches'  
-  
+          path: "runner-patches"
+
       - name: Apply patches
         shell: pwsh
         run: |
-          Get-ChildItem "runner-patches/patches" -Filter *.patch | 
+          Get-ChildItem "runner-patches/patches" -Filter *.patch |
           Foreach-Object {
               Write-Output "Processing $($_.FullName)"
               git apply --ignore-whitespace $($_.FullName)
@@ -122,8 +138,8 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
-          distribution: 'temurin'
+          java-version: "17"
+          distribution: "temurin"
 
       - name: Install Cargo NDK
         run: cargo install --force cargo-ndk
@@ -150,7 +166,7 @@ jobs:
   take-screenshots:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: [build-for-iOS, build-for-Android]
+    needs: [build-for-iOS, build-for-Android, create-pixel-eagle-run]
     strategy:
       fail-fast: false
       max-parallel: 7
@@ -217,17 +233,17 @@ jobs:
       - name: Checkout patches
         uses: actions/checkout@v4
         with:
-          path: 'runner-patches'  
-  
+          path: "runner-patches"
+
       - name: Apply patches
         shell: pwsh
         run: |
-          Get-ChildItem "runner-patches/patches" -Filter *.patch | 
+          Get-ChildItem "runner-patches/patches" -Filter *.patch |
           Foreach-Object {
               Write-Output "Processing $($_.FullName)"
               git apply --ignore-whitespace $($_.FullName)
           }
-  
+
       - name: Set Percy Token if needed
         if: "${{ inputs.mobile_percy_project != '' }}"
         run: echo "PERCY_TOKEN=${{ secrets.PERCY_TOKEN_MOBILE }}" >> $GITHUB_ENV
@@ -247,51 +263,25 @@ jobs:
           PERCY_COMMIT: ${{ inputs.gitref }}
           PERCY_PARALLEL_NONCE: ${{ github.run_id }}
           PERCY_PARALLEL_TOTAL: ${{ strategy.job-total }}
-    
+
       - name: Save screenshots
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: screenshots-${{ matrix.device }}-${{ matrix.os_version }}
           path: .github/start-mobile-example/*.png
-      
+
       - name: Send to Pixel Eagle
         run: |
-          run=`curl https://pixel-eagle.com/${{ inputs.pixeleagle_project }}/runs -H 'Content-Type: application/json' -d '{"device":"${{ matrix.device }}", "os":"${{ matrix.os }}-${{ matrix.os_version }}", "adapter": "${{ matrix.adapter }}", "gitref": "${{ inputs.gitref }}", "branch": "${{ inputs.branch }}"}' --oauth2-bearer ${{ secrets.PIXELEAGLE }} | jq '.id'`
-            
-          SAVEIFS=$IFS
-          
-          IFS=$'\n'
-
           cd .github/start-mobile-example
-
-          # Build a json array of screenshots and their hashes
-          hashes='[';
           for screenshot in $(find . -type f -maxdepth 1 -name "*.png");
           do
-            name=${screenshot:2}
+            file=${screenshot:2}
+            name="${{ matrix.os }}-${{ matrix.device }}-${{ matrix.os_version }}-$file"
             echo $name
-            hash=`shasum -a 256 $screenshot | awk '{print $1}'`
-            hashes="$hashes [\"$name\",\"$hash\"],"
+            curl https://pixel-eagle.com/${{ inputs.pixeleagle_project }}/runs/${{ needs.create-pixel-eagle-run.outputs.pixeleagle_run }}/screenshots -F "data=@./$file" -F "screenshot=$name" --oauth2-bearer ${{ secrets.PIXELEAGLE }}
           done
-          hashes=`echo $hashes | rev | cut -c 2- | rev`
-          hashes="$hashes]"
-          
-          IFS=$SAVEIFS          
 
-          # Upload screenshots with unknown hashes
-          curl https://pixel-eagle.com/${{ inputs.pixeleagle_project }}/runs/$run/hashes -H 'Content-Type: application/json' -d "$hashes" --oauth2-bearer ${{ secrets.PIXELEAGLE }} | jq '.[]|[.name] | @tsv' |
-            while IFS=$'\t' read -r name; do
-              name=`echo $name | tr -d '"'`
-              echo "Uploading $name"
-              curl https://pixel-eagle.com/${{ inputs.pixeleagle_project }}/runs/$run/screenshots -F "data=@./$name" -F "screenshot=$name" --oauth2-bearer ${{ secrets.PIXELEAGLE }}
-              echo
-            done
-          
-          IFS=$SAVEIFS
-
-          curl https://pixel-eagle.com/${{ inputs.pixeleagle_project }}/runs/$run/compare/auto -H 'Content-Type: application/json' -d '{"os":"<equal>", "device":"<equal>", "branch": "main"}' --oauth2-bearer ${{ secrets.PIXELEAGLE }}
-  
   mobile-check-result:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -308,3 +298,24 @@ jobs:
           sleep 30
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN_MOBILE }}
+
+  mobile-check-result-pixel-eagle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [take-screenshots]
+    if: always()
+    steps:
+      - name: Trigger screenshots comparison
+        run: |
+          curl https://pixel-eagle.com/${{ inputs.pixeleagle_project }}/runs/${{ needs.create-pixel-eagle-run.outputs.pixeleagle_run }}/compare/auto -H 'Content-Type: application/json' -d '{"os":"<equal>", "branch": "main"}' --oauth2-bearer ${{ secrets.PIXELEAGLE }} | jq '{project_id: .project_id, from: .from, to: .to}' > pixeleagle-mobile.json
+          cat pixeleagle-mobile.json
+
+      - name: Upload Pixel Eagle status
+        uses: actions/upload-artifact@v4
+        with:
+          name: pixeleagle-mobile
+          path: pixeleagle-mobile.json
+
+      - name: Wait a bit
+        run: |
+          sleep 30

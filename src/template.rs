@@ -1,14 +1,56 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
+use serde::Serialize;
 use tera::{Context, Tera};
 
-use crate::{Example, Run};
+use crate::{screenshot::ScreenshotState, Example, ImageUrl, Kind, Run, SnapshotViewerUrl};
+
+#[derive(Debug, Serialize, Default)]
+struct StringRun {
+    date: String,
+    commit: String,
+    results: HashMap<String, HashMap<String, Kind>>,
+    screenshots: HashMap<String, HashMap<String, (ImageUrl, ScreenshotState, SnapshotViewerUrl)>>,
+    logs: HashMap<String, HashMap<String, String>>,
+}
+
+impl From<Run> for StringRun {
+    fn from(value: Run) -> Self {
+        StringRun {
+            date: value.date.clone(),
+            commit: value.commit.clone(),
+            results: value
+                .results
+                .iter()
+                .map(|(k, v)| {
+                    (
+                        k.clone(),
+                        v.iter().map(|(k, v)| (k.to_string(), v.clone())).collect(),
+                    )
+                })
+                .collect(),
+            screenshots: value
+                .screenshots
+                .iter()
+                .map(|(k, v)| {
+                    (
+                        k.clone(),
+                        v.iter().map(|(k, v)| (k.to_string(), v.clone())).collect(),
+                    )
+                })
+                .collect(),
+
+            logs: value.logs.clone(),
+        }
+    }
+}
 
 pub fn build_site(
     runs: Vec<Run>,
     all_examples: Vec<Example>,
     all_mobile_platforms: HashSet<String>,
 ) {
+    let runs: Vec<StringRun> = runs.into_iter().map(|r| r.into()).collect();
     let mut context = Context::new();
     context.insert("runs".to_string(), &runs);
     context.insert("all_examples".to_string(), &all_examples);

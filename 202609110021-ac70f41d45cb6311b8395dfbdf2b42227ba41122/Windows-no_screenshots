@@ -1,0 +1,37 @@
+ECS (Entity Component System)/observer_propagation - 0.9150445
+Reflection/function_reflection - 0.9778306
+ECS (Entity Component System)/callbacks - 0.8327614
+Reflection/custom_attributes - 0.8094107
+3D Rendering/lighting - 328.80566
+3D Rendering/transmission - 617.951
+3D Rendering/fog - 1338.0007
+Application/empty - 0.8897808
+ECS (Entity Component System)/ecs_guide - 20.893486
+ECS (Entity Component System)/custom_query_param - 0.8527161
+Application/headless_renderer - 24.42292
+ECS (Entity Component System)/system_param - 1.2843503
+ECS (Entity Component System)/immutable_components - 0.9339815
+ECS (Entity Component System)/custom_executor - 0.8210464
+Application/custom_loop - 0.9013549
+ECS (Entity Component System)/system_stepping - 0.960346
+3D Rendering/spotlight - 532.25726
+3D Rendering/post_processing - 997.06055
+Application/without_winit - 1.329625
+ECS (Entity Component System)/system_piping - 0.84974706
+ECS (Entity Component System)/relationships - 0.8103765
+Reflection/type_data - 0.8406697
+Camera/pan_orbit_camera_ortho - 3941.0398
+Time/time - 0.8867114
+Shaders Advanced/mesh_shader_intro - 3.1830845
+ECS (Entity Component System)/custom_schedule - 0.6829853
+Application/headless - 0.87314457
+ECS (Entity Component System)/system_closure - 1.0162979
+3D Rendering/contact_shadows - 1222.7188
+ECS (Entity Component System)/dynamic - 0.9347354
+ECS (Entity Component System)/startup_system - 0.870026
+3D Rendering/tonemapping - 838.90045
+Application/externally_driven_headless_renderer - 3.0170105
+3D Rendering/light_probe_blending - 93.047585
+3D Rendering/meshlet - 2.0612733
+3D Rendering/atmosphere - 3961.0505
+3D Rendering/color_grading - 819.97644
